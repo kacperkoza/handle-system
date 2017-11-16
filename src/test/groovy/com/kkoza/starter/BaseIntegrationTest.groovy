@@ -1,6 +1,7 @@
 package com.kkoza.starter
 
-import com.github.fakemongo.Fongo
+import com.kkoza.starter.measurements.Measurement
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -16,17 +17,21 @@ class BaseIntegrationTest extends Specification {
 
     RestTemplate restTemplate
 
+    @Autowired
     MongoTemplate mongoTemplate
 
     @LocalServerPort
     int port
 
     def setup() {
-        mongoTemplate = new MongoTemplate(new Fongo("test_db").getMongo(), "test")
         restTemplate = new RestTemplate()
     }
 
     String localUrl(String endpoint) {
         return "http://localhost:${port}/${endpoint}"
+    }
+
+    def save(Measurement measurement) {
+        mongoTemplate.save(measurement)
     }
 }

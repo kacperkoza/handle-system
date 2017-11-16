@@ -1,5 +1,7 @@
 package com.kkoza.starter.measurements
 
+import com.kkoza.starter.measurements.api.MeasurementList
+
 class MeasurementFacade(
         private val measurementOperation: MeasurementOperation
 ) {
@@ -8,7 +10,7 @@ class MeasurementFacade(
         measurementOperation.add(measurement)
     }
 
-    fun findAll(): List<Measurement> {
-        return measurementOperation.findAll()
+    fun get(sort: String?, offset: Int?, limit: Int?): MeasurementList {
+        return measurementOperation.get(sort, offset, limit)
     }
 }

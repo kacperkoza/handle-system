@@ -1,44 +1,42 @@
 package com.kkoza.starter.measurements
 
 import org.joda.time.DateTime
+import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-
-@RestController
-@RequestMapping("/measurements")
-class MeasurementsEndpoint(
-        private val measurementFacade: MeasurementFacade
-) {
-
-
-    @GetMapping
-    fun getAllMeasurements(): ResponseEntity<MeasurementsResponse> {
-        val measurements = measurementFacade.findAll()
-        return ResponseEntity.ok(MeasurementsResponse(measurements))
-    }
-}
-
-
-data class MeasurementsResponse(
-        val measurements: List<Measurement>
-)
-
+import org.springframework.data.mongodb.core.mapping.Field
 
 @Document(collection = Measurement.COLLECTION_NAME)
 data class Measurement(
+        @Id
         val id: String? = null,
+
+        @Field(DATE)
         val date: DateTime,
+
+        @Field(HANDLE_POSITION)
         val handlePosition: HandlePosition,
+
+        @Field(TEMPERATURE)
         val temperature: Temperature,
+
+        @Field(ALARM)
         val alarm: Alarm,
+
+        @Field(SOUND_LEVEL)
         val soundLevel: SoundLevel,
+
+        @Field(HANDLE_TIME)
         val handleTime: Int //wtf?
 ) {
     companion object {
         const val COLLECTION_NAME = "measurements"
+
+        const val DATE = "date"
+        const val HANDLE_POSITION = "handle_position"
+        const val TEMPERATURE = "temperature"
+        const val ALARM = "alarm"
+        const val SOUND_LEVEL = "sound_level"
+        const val HANDLE_TIME = "handle_time"
     }
 }
 
@@ -55,7 +53,7 @@ data class SoundLevel(
 
 data class Temperature(
         val value: Double,
-        val unit: String = "C"
+        val unit: String = "°C"
 )
 
 enum class HandlePosition {

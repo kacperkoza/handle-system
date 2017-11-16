@@ -2,14 +2,14 @@ package com.kkoza.starter.config
 
 import com.mongodb.*
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration
 import org.springframework.stereotype.Component
 
 
 @Configuration
+@Profile("!integration")
 class MongoConfiguration(
         private val mongoProperties: MongoProperties,
         @Value("\${application.name}") private val applicationName: String
@@ -42,13 +42,11 @@ class MongoConfiguration(
 }
 
 @Component
-@EnableConfigurationProperties
-@ConfigurationProperties("mongodb")
-data class MongoProperties(
-        val host: String = "ds261745.mlab.com",
-        val port: Int = 61745,
-        val database: String = "handlesystem",
-        val username: String = "kacper",
-        val password: String = "kacper",
-        val socketTimeout: Int = 2000
+class MongoProperties(
+        @Value("\${mongodb.host}") var host: String,
+        @Value("\${mongodb.port}") val port: Int,
+        @Value("\${mongodb.database}") val database: String,
+        @Value("\${mongodb.username}") val username: String,
+        @Value("\${mongodb.password}") val password: String,
+        @Value("\${mongodb.socketTimeout}") val socketTimeout: Int
 )

@@ -1,0 +1,10 @@
+application:
+  name: handle-system
+
+mongodb:
+  host: ds261745.mlab.com
+  port: 61745
+  database: handlesystem
+  username: kacper
+  password: kacper
+  socketTimeout: 2000
