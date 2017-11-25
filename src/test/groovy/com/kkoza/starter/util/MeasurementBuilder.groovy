@@ -11,12 +11,13 @@ class MeasurementBuilder {
 
     String id = 'any'
     DateTime date = DateTime.now()
+    String handleId = 'handle-id'
     HandlePosition handlePosition = HandlePosition.CLOSED
-    Double temperature = 20.3
+    Double temperature = 20.3d
     boolean fire = false
     boolean burglar = false
     boolean frost = false
-    Double sound = -35.3
+    Double sound = -35.3d
     Integer handleTime = 110
 
     static MeasurementBuilder create() {
@@ -30,6 +31,11 @@ class MeasurementBuilder {
 
     MeasurementBuilder setDate(DateTime date) {
         this.date = date
+        return this
+    }
+
+    MeasurementBuilder setHandleId(String handleId) {
+        this.handleId = handleId
         return this
     }
 
@@ -64,6 +70,7 @@ class MeasurementBuilder {
         return new Measurement(
                 id,
                 date,
+                handleId,
                 handlePosition,
                 new Temperature(temperature, "°C"),
                 new Alarm(fire, burglar, frost),

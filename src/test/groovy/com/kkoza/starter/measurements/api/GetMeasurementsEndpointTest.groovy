@@ -7,7 +7,7 @@ import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared
 import spock.lang.Unroll
 
-class MeasurementsEndpointTest extends BaseIntegrationTest {
+class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
     @Shared
     def first = MeasurementBuilder.create()
@@ -35,7 +35,7 @@ class MeasurementsEndpointTest extends BaseIntegrationTest {
     }
 
     @Unroll
-    def "should sort all measurements by #sortType"() {
+    def "[GET] should sort all measurements by #sortType"() {
         when:
         def response = executeGet("/measurements?sort=$sortType")
 
@@ -49,7 +49,7 @@ class MeasurementsEndpointTest extends BaseIntegrationTest {
         'date_oldest' || ['3', '2', '1']
     }
 
-    def "should return BAD REQUEST [400] for invalid sortType"() {
+    def "[GET] should return BAD REQUEST [400] for invalid sortType"() {
         when:
         executeGet("/measurements?sort=$invalidSortType")
 
@@ -61,15 +61,16 @@ class MeasurementsEndpointTest extends BaseIntegrationTest {
         invalidSortType << ['ebe ebe', 'data', 'date', 'unknown']
     }
 
-    def "should sort by 'date_latest' when sort type is not specified"() {
+    def "[GET] should sort by 'date_latest' when sort type is not specified"() {
         when:
         def response = executeGet("/measurements")
+
         then:
         response.body.measurements.collect({ it.id }) == ['1', '2', '3']
     }
 
     @Unroll
-    def "should use offset #inputOffset and limit #inputLimit properly"() {
+    def "[GET] should use offset #inputOffset and limit #inputLimit properly"() {
         given:
         save(MeasurementBuilder.create().setId('4').setDate(DateTime.now()).build())
         save(MeasurementBuilder.create().setId('5').setDate(DateTime.now().minusMillis(100)).build())
@@ -93,7 +94,7 @@ class MeasurementsEndpointTest extends BaseIntegrationTest {
         0           | 100        || ['4', '5', '6', '1', '2', '3'] | 6
     }
 
-    def "should return BAD_REQUEST [400] when limit or offset is lower than 0"() {
+    def "[GET] should return BAD_REQUEST [400] when limit or offset is lower than 0"() {
         when:
         executeGet("/measurements?limit=$limit&offset=$offset")
 

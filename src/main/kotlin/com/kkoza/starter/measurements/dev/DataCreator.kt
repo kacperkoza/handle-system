@@ -24,6 +24,7 @@ class DataCreator(
         measurementFacade.add(Measurement(
                 null,
                 DateTime.now(),
+                "handle-id",
                 HandlePosition.CLOSED,
                 Temperature(random.nextDouble() * 30),
                 Alarm(false, false, false),
@@ -33,6 +34,7 @@ class DataCreator(
         measurementFacade.add(Measurement(
                 null,
                 DateTime.now().minusMinutes(15),
+                "handle-id",
                 list[random.nextInt(3)],
                 Temperature(random.nextDouble() * 30),
                 Alarm(random.nextBoolean() && random.nextBoolean(), false, false),
@@ -42,6 +44,7 @@ class DataCreator(
         measurementFacade.add(Measurement(
                 null,
                 DateTime.now().minusMinutes(30),
+                "handle-id",
                 list[random.nextInt(3)],
                 Temperature(random.nextDouble() * 30),
                 Alarm(false, random.nextBoolean() && random.nextBoolean(), false),
@@ -52,6 +55,7 @@ class DataCreator(
         measurementFacade.add(Measurement(
                 null,
                 DateTime.now().minusMinutes(45),
+                "handle-id",
                 list[random.nextInt(3)],
                 Temperature(random.nextDouble() * 30),
                 Alarm(false, false, random.nextBoolean() && random.nextBoolean()),

@@ -8,10 +8,14 @@ import org.springframework.data.mongodb.core.mapping.Field
 @Document(collection = Measurement.COLLECTION_NAME)
 data class Measurement(
         @Id
+        @Field(ID)
         val id: String? = null,
 
         @Field(DATE)
         val date: DateTime,
+
+        @Field(HANDLE_ID)
+        val handleId: String,
 
         @Field(HANDLE_POSITION)
         val handlePosition: HandlePosition,
@@ -31,7 +35,9 @@ data class Measurement(
     companion object {
         const val COLLECTION_NAME = "measurements"
 
+        const val ID = "_id"
         const val DATE = "date"
+        const val HANDLE_ID = "handle_id"
         const val HANDLE_POSITION = "handle_position"
         const val TEMPERATURE = "temperature"
         const val ALARM = "alarm"

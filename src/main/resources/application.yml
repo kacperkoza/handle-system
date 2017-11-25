@@ -8,3 +8,6 @@ mongodb:
   username: kacper
   password: kacper
   socketTimeout: 2000
+
+smsClient:
+  client: fake

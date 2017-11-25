@@ -1,17 +1,40 @@
 package com.kkoza.starter.measurements.api
 
-import com.kkoza.starter.measurements.Measurement
-import com.kkoza.starter.measurements.MeasurementFacade
+import com.kkoza.starter.measurements.*
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
 import com.kkoza.starter.measurements.exception.InvalidSortTypeException
+import org.joda.time.DateTime
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.net.URI
 
 @RestController
 @RequestMapping("/measurements")
 class MeasurementsEndpoint(
         private val measurementFacade: MeasurementFacade
 ) {
+
+    @PostMapping
+    fun addMeasurements(@RequestBody(required = true) measurementDto: MeasurementDto): ResponseEntity<Void> {
+        val handlePostition = when (measurementDto.handlePosition) {
+            0 -> HandlePosition.CLOSED
+            1 -> HandlePosition.OPEN
+            2 -> HandlePosition.REPEALED
+            else -> throw RuntimeException("elo")
+        }
+        val id = measurementFacade.add(measurementDto.let {
+            Measurement(
+                    null,
+                    it.date,
+                    it.handleId,
+                    handlePostition,
+                    Temperature(it.temperature),
+                    Alarm(it.fire, it.burglary, it.frost),
+                    SoundLevel(it.soundLevel),
+                    it.handleTime)
+        })
+        return ResponseEntity.created(URI("http://localhost:8080/measurements/$id")).build()
+    }
 
     @GetMapping
     fun getMeasurements(
@@ -22,6 +45,13 @@ class MeasurementsEndpoint(
         val list = measurementFacade.get(sort, offset, limit)
         return ResponseEntity.ok(list)
     }
+
+    @DeleteMapping("/{id}")
+    fun deleteMeasurement(@PathVariable("id", required = true) id: String): ResponseEntity<Void> {
+        measurementFacade.deleteById(id)
+        return ResponseEntity.ok(null)
+    }
+
 
     @ExceptionHandler(InvalidSortTypeException::class)
     fun handleInvalidSortTypeException(ex: InvalidSortTypeException): ResponseEntity<String> {
@@ -44,16 +74,28 @@ enum class SortType {
     SOUND_LEVEL_DESCENDING;
 
     companion object {
-        fun from(string: String?): SortType {
-            string ?: return SortType.DATE_LATEST
+        fun from(source: String?): SortType {
+            source ?: return SortType.DATE_LATEST
             return try {
-                SortType.valueOf(string.toUpperCase())
+                SortType.valueOf(source.toUpperCase())
             } catch (ex: IllegalArgumentException) {
-                throw InvalidSortTypeException(string)
+                throw InvalidSortTypeException(source)
             }
         }
     }
 }
+
+data class MeasurementDto(
+        val date: DateTime,
+        val handleId: String,
+        val handlePosition: Int,
+        val temperature: Double,
+        val fire: Boolean,
+        val burglary: Boolean,
+        val frost: Boolean,
+        val soundLevel: Double,
+        val handleTime: Int
+)
 
 
 data class MeasurementList(
