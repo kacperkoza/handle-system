@@ -1,6 +1,6 @@
 package com.kkoza.starter.measurements
 
-import com.kkoza.starter.util.MeasurementBuilder
+import com.kkoza.starter.testutil.MeasurementBuilder
 
 class DangerEventNotifierTest extends MeasurementFacadeSpec {
 

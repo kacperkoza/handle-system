@@ -1,6 +1,7 @@
 package com.kkoza.starter
 
 import com.kkoza.starter.measurements.Measurement
+import com.kkoza.starter.user.UserDocument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.embedded.LocalServerPort
 import org.springframework.boot.test.context.SpringBootTest
@@ -25,6 +26,8 @@ class BaseIntegrationTest extends Specification {
 
     def setup() {
         restTemplate = new RestTemplate()
+        mongoTemplate.dropCollection(Measurement.class)
+        mongoTemplate.dropCollection(UserDocument.class)
     }
 
     String localUrl(String endpoint) {
@@ -33,5 +36,9 @@ class BaseIntegrationTest extends Specification {
 
     def save(Measurement measurement) {
         mongoTemplate.save(measurement)
+    }
+
+    def save(UserDocument userDocument) {
+        mongoTemplate.save(userDocument)
     }
 }

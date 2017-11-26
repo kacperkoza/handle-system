@@ -1,4 +1,4 @@
-package com.kkoza.starter.util
+package com.kkoza.starter.testutil
 
 import com.kkoza.starter.measurements.Alarm
 import com.kkoza.starter.measurements.HandlePosition

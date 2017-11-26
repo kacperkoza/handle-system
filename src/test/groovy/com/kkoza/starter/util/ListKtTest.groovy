@@ -7,7 +7,6 @@ import static com.kkoza.starter.util.ListKt.takeIfNotNull
 
 class ListKtTest extends Specification {
 
-
     def "should drop first #n elements when n is not null"() {
         given:
         def list = [1, 2, 3, 4]

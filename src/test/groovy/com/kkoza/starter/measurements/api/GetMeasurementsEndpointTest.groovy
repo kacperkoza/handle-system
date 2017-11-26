@@ -1,7 +1,7 @@
 package com.kkoza.starter.measurements.api
 
 import com.kkoza.starter.BaseIntegrationTest
-import com.kkoza.starter.util.MeasurementBuilder
+import com.kkoza.starter.testutil.MeasurementBuilder
 import org.joda.time.DateTime
 import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared

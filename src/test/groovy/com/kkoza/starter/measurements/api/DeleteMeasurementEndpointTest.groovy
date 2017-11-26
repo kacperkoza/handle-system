@@ -2,7 +2,7 @@ package com.kkoza.starter.measurements.api
 
 import com.kkoza.starter.BaseIntegrationTest
 import com.kkoza.starter.measurements.Measurement
-import com.kkoza.starter.util.MeasurementBuilder
+import com.kkoza.starter.testutil.MeasurementBuilder
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus

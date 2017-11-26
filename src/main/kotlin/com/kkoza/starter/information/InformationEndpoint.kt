@@ -17,26 +17,4 @@ class InformationEndpoint(private val webApplicationContext: WebApplicationConte
         return ResponseEntity(allBeans, HttpStatus.OK)
     }
 
-    @GetMapping(value = "/hello")
-    fun hello(): ResponseEntity<String> {
-        return ResponseEntity("Hello world!", HttpStatus.OK)
-    }
-
-    @GetMapping(value = "/example")
-    fun example(): ResponseEntity<List<Person>> {
-        return ResponseEntity(getPersonList(), HttpStatus.OK)
-    }
-
-    private fun getPersonList(): List<Person> {
-        return listOf(
-                Person("John", "Smith"),
-                Person("Jacob", "Pelly"),
-                Person("Michael", "Fellow"))
-    }
-
 }
-
-data class Person(
-        val name: String,
-        val surname: String
-)
