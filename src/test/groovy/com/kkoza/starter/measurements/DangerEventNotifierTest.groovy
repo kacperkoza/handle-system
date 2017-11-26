@@ -1,10 +1,6 @@
 package com.kkoza.starter.measurements
 
-import com.kkoza.starter.measurements.api.MeasurementDto
 import com.kkoza.starter.util.MeasurementBuilder
-import org.joda.time.DateTime
-import spock.lang.Shared
-import spock.lang.Unroll
 
 class DangerEventNotifierTest extends MeasurementFacadeSpec {
 

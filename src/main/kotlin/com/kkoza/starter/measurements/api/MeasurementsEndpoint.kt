@@ -16,7 +16,7 @@ class MeasurementsEndpoint(
 
     @PostMapping
     fun addMeasurements(@RequestBody(required = true) measurementDto: MeasurementDto): ResponseEntity<Void> {
-        val handlePostition = when (measurementDto.handlePosition) {
+        val handlePosition = when (measurementDto.handlePosition) {
             0 -> HandlePosition.CLOSED
             1 -> HandlePosition.OPEN
             2 -> HandlePosition.REPEALED
@@ -27,7 +27,7 @@ class MeasurementsEndpoint(
                     null,
                     it.date,
                     it.handleId,
-                    handlePostition,
+                    handlePosition,
                     Temperature(it.temperature),
                     Alarm(it.fire, it.burglary, it.frost),
                     SoundLevel(it.soundLevel),
