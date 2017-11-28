@@ -12,7 +12,7 @@ import java.lang.invoke.MethodHandles
 import java.util.*
 
 @Component
-@Profile("!integration")
+@Profile("local")
 class ScheduledAdder(val measurementFacade: MeasurementFacade) {
 
     private val random = Random()

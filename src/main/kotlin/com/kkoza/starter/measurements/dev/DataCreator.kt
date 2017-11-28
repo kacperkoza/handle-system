@@ -10,7 +10,7 @@ import java.util.*
  * Creates some fake documents and saves in database during app start
  */
 @Component
-@Profile("!integration")
+@Profile("local")
 class DataCreator(
         measurementFacade: MeasurementFacade
 ) {

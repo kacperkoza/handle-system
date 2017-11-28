@@ -3,6 +3,7 @@ package com.kkoza.starter.user.api
 import com.kkoza.starter.user.UserDocument
 import com.kkoza.starter.user.UserFacade
 import com.kkoza.starter.user.ValidationResult
+import com.kkoza.starter.user.dto.LoginDto
 import com.kkoza.starter.user.dto.UserDto
 import com.kkoza.starter.user.exception.ExistingEmailException
 import com.kkoza.starter.user.exception.ExistingLoginException
