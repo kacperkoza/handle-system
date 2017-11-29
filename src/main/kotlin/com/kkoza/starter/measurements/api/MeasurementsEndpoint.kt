@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
-@RequestMapping("/measurements")
+@RequestMapping
 class MeasurementsEndpoint(
         private val measurementFacade: MeasurementFacade
 ) {
 
-    @PostMapping
-    fun addMeasurements(@RequestBody(required = true) measurementDto: MeasurementDto): ResponseEntity<Void> {
+    @PostMapping("/users/measurements")
+    fun addMeasurements(
+            @RequestBody(required = true) measurementDto: MeasurementDto): ResponseEntity<Void> {
         val handlePosition = when (measurementDto.handlePosition) {
             0 -> HandlePosition.CLOSED
             1 -> HandlePosition.OPEN
@@ -36,17 +37,18 @@ class MeasurementsEndpoint(
         return ResponseEntity.created(URI("http://localhost:8080/measurements/$id")).build()
     }
 
-    @GetMapping
+    @GetMapping("users/{userId}/measurements")
     fun getMeasurements(
+            @PathVariable(value = "userId", required = true) userId: String,
             @RequestParam(value = "sort", required = false) sort: String?,
             @RequestParam(value = "offset", required = false) offset: Int?,
             @RequestParam(value = "limit", required = false) limit: Int?
     ): ResponseEntity<MeasurementList> {
-        val list = measurementFacade.get(sort, offset, limit)
+        val list = measurementFacade.get(userId, sort, offset, limit)
         return ResponseEntity.ok(list)
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("users/measurements/{id}")
     fun deleteMeasurement(@PathVariable("id", required = true) id: String): ResponseEntity<Void> {
         measurementFacade.deleteById(id)
         return ResponseEntity.ok(null)
@@ -86,7 +88,7 @@ enum class SortType {
 }
 
 data class MeasurementDto(
-        val date: DateTime,
+        val date: DateTime = DateTime.now(),
         val handleId: String,
         val handlePosition: Int,
         val temperature: Double,

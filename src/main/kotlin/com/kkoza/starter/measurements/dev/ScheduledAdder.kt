@@ -21,7 +21,7 @@ class ScheduledAdder(val measurementFacade: MeasurementFacade) {
         private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
     }
 
-    @Scheduled(fixedDelay = 3000)
+//    @Scheduled(fixedDelay = 3000)
     fun add() {
         logger.info("Scheduler added new measurement")
         val measurement = Measurement(

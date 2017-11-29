@@ -10,7 +10,15 @@ class UserFacade(private val userOperation: UserOperation) {
     }
 
     fun updateUser(userDocument: UserDocument) {
-        userOperation.upsert(userDocument)
+        userOperation.save(userDocument)
+    }
+
+    fun findUser(userId: String): UserDocument {
+        return userOperation.findUserById(userId)
+    }
+
+    fun findUserWithHandle(handleId: String): UserDocument? {
+        return userOperation.findUserWithHandle(handleId)
     }
 
 

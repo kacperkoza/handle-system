@@ -15,7 +15,7 @@ class UserRepository(val mongoTemplate: MongoTemplate) {
     }
 
     fun save(userDocument: UserDocument): UserDocument {
-        logger.info("Save or update new user ${userDocument.userId}")
+        logger.info("Save or update new user ${userDocument.login}")
         mongoTemplate.save(userDocument)
         return userDocument
     }
@@ -34,5 +34,19 @@ class UserRepository(val mongoTemplate: MongoTemplate) {
                 UserDocument::class.java
         )
         return user != null
+    }
+
+    fun findByUserId(userId: String): UserDocument {
+        return mongoTemplate.findOne(
+                Query(Criteria(UserDocument.USER_ID).`is`(userId)),
+                UserDocument::class.java
+        )
+    }
+
+    fun findUserWithHandle(handleId: String): UserDocument? {
+        return mongoTemplate.findOne(
+                Query(Criteria.where(UserDocument.HANDLE_IDS).`is`(handleId)),
+                UserDocument::class.java
+        )
     }
 }

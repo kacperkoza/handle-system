@@ -16,11 +16,16 @@ import java.net.URI
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping
 class UserEndpoint(private val userFacade: UserFacade) {
 
     companion object {
         private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
+    }
+
+    @GetMapping("/users/{userId}")
+    fun getUser(@PathVariable(name = "userId", required = true) userId: String): ResponseEntity<UserDocument> {
+        return ResponseEntity.ok().body(userFacade.findUser(userId))
     }
 
     @PostMapping("/register")
@@ -32,12 +37,13 @@ class UserEndpoint(private val userFacade: UserFacade) {
                 userDto.name,
                 userDto.surname,
                 userDto.email,
-                userDto.phoneNumber
+                userDto.phoneNumber,
+                userDto.handles
         ))
         return ResponseEntity.created(URI("http://localhost:8080/users/${userDocument.userId}")).build()
     }
 
-    @PutMapping
+    @PutMapping("/users")
     fun update(@RequestBody userDto: UserDto): ResponseEntity<Void> {
         userFacade.updateUser(UserDocument(
                 userDto.id,
@@ -46,7 +52,8 @@ class UserEndpoint(private val userFacade: UserFacade) {
                 userDto.name,
                 userDto.surname,
                 userDto.email,
-                userDto.phoneNumber
+                userDto.phoneNumber,
+                userDto.handles
         ))
         return ResponseEntity.ok(null)
     }

@@ -3,6 +3,8 @@ package com.kkoza.starter.measurements
 import com.kkoza.starter.measurements.api.MeasurementList
 import com.kkoza.starter.measurements.api.SortType
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
+import com.kkoza.starter.user.UserDocument
+import com.kkoza.starter.user.UserFacade
 import com.kkoza.starter.util.dropIfNotNull
 import com.kkoza.starter.util.takeIfNotNull
 import org.apache.log4j.Logger
@@ -11,7 +13,8 @@ import java.lang.invoke.MethodHandles
 
 class MeasurementOperation(
         private val measurementRepository: MeasurementRepository,
-        private val dangerEventNotifier: DangerEventNotifier
+        private val dangerEventNotifier: DangerEventNotifier,
+        private val userFacade: UserFacade
 ) {
 
     companion object {
@@ -19,17 +22,21 @@ class MeasurementOperation(
     }
 
     fun add(measurement: Measurement): String {
+        val user: UserDocument? = userFacade.findUserWithHandle(measurement.handleId)
         logger.info("Add new $measurement")
-        dangerEventNotifier.notify(measurement, "jakis numer telefonu")
+        if (user != null) {
+            dangerEventNotifier.notify(measurement, user.phoneNumber)
+        }
         return measurementRepository.add(measurement)
     }
 
-    fun get(sort: String?, offset: Int?, limit: Int?): MeasurementList {
-        logger.info("get list with sort = $sort, offset = $offset, limit = $limit,")
+    fun get(userId: String, sort: String?, offset: Int?, limit: Int?): MeasurementList {
+        logger.info("get list with sort = $sort, offset = $offset, limit = $limit for userId = $userId")
         if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
         if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
         val sortType = SortType.from(sort)
-        val list = measurementRepository.get(getSortOrder(sortType))
+        val handles = userFacade.findUser(userId).handles
+        val list = measurementRepository.get(handles, getSortOrder(sortType))
         return MeasurementList(
                 list.size,
                 limit,

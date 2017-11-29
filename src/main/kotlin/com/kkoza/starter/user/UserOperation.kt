@@ -13,11 +13,6 @@ class UserOperation(private val userRepository: UserRepository,
         return userRepository.save(userDocument)
     }
 
-    fun upsert(userDocument: UserDocument) {
-        userValidator.validate(userDocument)
-        userRepository.save(userDocument)
-    }
-
     private fun validateUserDocument(userDocument: UserDocument) {
         throwExceptionIfEmailExists(userDocument)
         throwExceptionIfLoginExists(userDocument)
@@ -37,5 +32,13 @@ class UserOperation(private val userRepository: UserRepository,
                 throw ExistingEmailException(it)
             }
         }
+    }
+
+    fun findUserById(userId: String): UserDocument {
+        return userRepository.findByUserId(userId)
+    }
+
+    fun findUserWithHandle(handleId: String): UserDocument? {
+        return userRepository.findUserWithHandle(handleId)
     }
 }
