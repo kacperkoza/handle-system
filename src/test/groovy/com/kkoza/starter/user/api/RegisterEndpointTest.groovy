@@ -16,11 +16,8 @@ class RegisterEndpointTest extends BaseIntegrationTest {
     def '[POST] should add new user with valid data with CREATED [201] status'() {
         given:
         UserDto validUserDto = UserBuilder.create(null)
-                .setLogin('valid-existingLogin')
-                .setPassword('valid-existingPassword')
-                .setName('valid-name')
-                .setSurname('valid-surname')
                 .setEmail('email@gmail.com')
+                .setPassword('valid-existingPassword')
                 .setPhoneNumber('123456789')
                 .buildDto()
 
@@ -28,13 +25,13 @@ class RegisterEndpointTest extends BaseIntegrationTest {
         def location = postForLocation(validUserDto).toASCIIString()
 
         then:
-        location.contains('http://localhost:8080/users/')
+        location.contains('/users/')
         location.substring(location.lastIndexOf('/')).size() > 0
     }
 
     def '[POST] should return UNPROCESSABLE_ENTITY [422] when new user\'s login already exists'() {
         given:
-        def userBuilder = UserBuilder.create(null).setLogin('at-least-6-characters')
+        def userBuilder = UserBuilder.create(null)
         save(userBuilder.buildDocument())
 
         when:
@@ -72,23 +69,21 @@ class RegisterEndpointTest extends BaseIntegrationTest {
 
     def '[PUT] should update existing use with OK [200] status'() {
         given:
-        def user = UserBuilder.create(null).setLogin('example-existingLogin').setPassword('example-existingPassword').buildDocument()
+        def user = UserBuilder.create(null).setPassword('password').buildDocument()
         save(user)
-        def userDto = UserBuilder.create(user.userId).setLogin('new-existingLogin').setPassword('new-existingPassword').buildDto()
+        def userDto = UserBuilder.create(null).setPassword('new-password').buildDto()
 
         when:
         def response = restTemplate.exchange(
-                localUrl("/users"),
+                localUrl("/users/${user.userId}"),
                 HttpMethod.PUT,
                 new HttpEntity<Object>(userDto),
-                Void
-        )
+                Void)
+        UserDocument userDocument = mongoTemplate.findOne(new Query(), UserDocument.class)
 
         then:
         response.statusCode == HttpStatus.OK
-        UserDocument userDocument = mongoTemplate.findOne(new Query(), UserDocument.class)
-        userDocument.login == 'new-existingLogin'
-        userDocument.password == 'new-existingPassword'
+        userDocument.password == 'new-password'
     }
 
     private URI postForLocation(UserDto userDto) {

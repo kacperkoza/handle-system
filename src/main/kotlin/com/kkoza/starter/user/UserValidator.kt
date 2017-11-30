@@ -11,7 +11,7 @@ class UserValidator {
         private const val REQUIRED_LENGTH = 6
 
         const val EMAIL_FIELD = "email"
-        const val LOGIN_FIELD = "login"
+        const val LOGIN_FIELD = "email"
         const val PASSWORD_FIELD = "password"
         const val NAME_FIELD = "name"
         const val SURNAME_FIELD = "surname"
@@ -26,21 +26,8 @@ class UserValidator {
                 errors.put(EMAIL_FIELD, "invalid email")
             }
 
-            if (!isLengthValid(it.login)) {
-                errors.put(LOGIN_FIELD, "login lentgh < 6")
-            }
-
             if (!isLengthValid(it.password)) {
                 errors.put(PASSWORD_FIELD, "password length < 6")
-            }
-
-
-            if (it.name.isBlank()) {
-                errors.put(NAME_FIELD, "name cannot be empty")
-            }
-
-            if (it.surname.isBlank()) {
-                errors.put(SURNAME_FIELD, "surname cannot be empty")
             }
 
             if (it.phoneNumber.length != 9) {

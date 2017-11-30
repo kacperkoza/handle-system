@@ -20,15 +20,6 @@ class UserOperation(private val userRepository: UserRepository,
 
     private fun validateUserDocument(userDocument: UserDocument) {
         throwExceptionIfEmailExists(userDocument)
-        throwExceptionIfLoginExists(userDocument)
-    }
-
-    private fun throwExceptionIfLoginExists(userDocument: UserDocument) {
-        userDocument.login.let {
-            if (userRepository.loginExists(it)) {
-                throw ExistingLoginException(it)
-            }
-        }
     }
 
     private fun throwExceptionIfEmailExists(userDocument: UserDocument) {

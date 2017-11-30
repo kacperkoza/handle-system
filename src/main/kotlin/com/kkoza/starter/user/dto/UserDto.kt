@@ -1,12 +1,11 @@
 package com.kkoza.starter.user.dto
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class UserDto(
-        val id: String? = null,
-        val login: String,
-        val password: String,
-        val name: String,
-        val surname: String,
         val email: String,
+        val password: String,
         val phoneNumber: String,
         val handles: List<String>
 )

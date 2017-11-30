@@ -15,17 +15,9 @@ class UserRepository(val mongoTemplate: MongoTemplate) {
     }
 
     fun save(userDocument: UserDocument): UserDocument {
-        logger.info("Save or update new user ${userDocument.login}")
+        logger.info("Save or update new user ${userDocument.email}")
         mongoTemplate.save(userDocument)
         return userDocument
-    }
-
-    fun loginExists(login: String): Boolean {
-        val user = mongoTemplate.findOne(
-                Query(Criteria(UserDocument.LOGIN).`is`(login)),
-                UserDocument::class.java
-        )
-        return user != null
     }
 
     fun emailExists(email: String): Boolean {

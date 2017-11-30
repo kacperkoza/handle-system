@@ -40,7 +40,7 @@ class SessionService(val userRepository: UserRepository,
 
 class InvalidSessionException(sessionId: String) : RuntimeException("Session $sessionId is not valid")
 
-class NotExistingUserException(login: String) : RuntimeException("User with provided credentials login = $login not found")
+class NotExistingUserException(login: String) : RuntimeException("User with provided credentials email = $login not found")
 
 @Document(collection = Session.SESSIONS)
 data class Session(

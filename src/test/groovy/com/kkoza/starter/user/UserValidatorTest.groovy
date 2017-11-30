@@ -20,18 +20,6 @@ class UserValidatorTest extends Specification {
         ensureKeyWithInvalidFieldExists(ex, UserValidator.EMAIL_FIELD)
     }
 
-    def 'should throw exception when login length is < 6'() {
-        given:
-        def user = UserBuilder.create(null).setLogin('login').buildDocument()
-
-        when:
-        userValidator.validate(user)
-
-        then:
-        def ex = thrown(InvalidUserDataException)
-        ensureKeyWithInvalidFieldExists(ex, UserValidator.LOGIN_FIELD)
-    }
-
     def 'should throw exception when password length is < 6'() {
         given:
         def user = UserBuilder.create(null).setPassword('passw').buildDocument()
@@ -42,30 +30,6 @@ class UserValidatorTest extends Specification {
         then:
         def ex = thrown(InvalidUserDataException)
         ensureKeyWithInvalidFieldExists(ex, UserValidator.PASSWORD_FIELD)
-    }
-
-    def 'should throw exception when name is blank'() {
-        given:
-        def user = UserBuilder.create(null).setName('').buildDocument()
-
-        when:
-        userValidator.validate(user)
-
-        then:
-        def ex = thrown(InvalidUserDataException)
-        ensureKeyWithInvalidFieldExists(ex, UserValidator.NAME_FIELD)
-    }
-
-    def 'should throw exception when surname is blank'() {
-        given:
-        def user = UserBuilder.create(null).setSurname(' ').buildDocument()
-
-        when:
-        userValidator.validate(user)
-
-        then:
-        def ex = thrown(InvalidUserDataException)
-        ensureKeyWithInvalidFieldExists(ex, UserValidator.SURNAME_FIELD)
     }
 
     def 'should throw exception when phone number length is other than 9'() {
@@ -84,10 +48,7 @@ class UserValidatorTest extends Specification {
         given:
         def user = UserBuilder.create(null)
                 .setEmail('email@gmail.com')
-                .setLogin('123456')
                 .setPassword('123456')
-                .setName('not-blank')
-                .setSurname('not-blank')
                 .setPhoneNumber('123456789')
                 .buildDocument()
 

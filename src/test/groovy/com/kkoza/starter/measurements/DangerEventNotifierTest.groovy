@@ -11,7 +11,7 @@ class DangerEventNotifierTest extends MeasurementFacadeSpec {
                 .setAlarm(fire, burglar, frost)
                 .setHandleId('handle-id')
                 .build()
-        userRepository.findUserWithHandle('handle-id') >> new UserDocument(null, '', '', '', '', '', '123456789', [])
+        userRepository.findUserWithHandle('handle-id') >> new UserDocument(null, '', '', '123456789', [])
 
         when:
         measurementFacade.add(measurement)

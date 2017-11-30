@@ -11,22 +11,12 @@ class UserDocument(
         @Indexed(unique = true)
         val userId: String? = null,
 
-        @Field(LOGIN)
-        @Indexed(unique = true)
-        val login: String,
-
-        @Field(PASSWORD)
-        val password: String,
-
-        @Field(NAME)
-        val name: String,
-
-        @Field(SURNAME)
-        val surname: String,
-
         @Field(EMAIL)
         @Indexed(unique = true)
         val email: String,
+
+        @Field(PASSWORD)
+        val password: String,
 
         @Field(PHONE_NUMBER)
         val phoneNumber: String,
@@ -36,10 +26,8 @@ class UserDocument(
 ) {
     companion object {
         const val USER_ID = "_id"
-        const val LOGIN = "login"
+        const val LOGIN = "email"
         const val PASSWORD = "password"
-        const val NAME = "name"
-        const val SURNAME = "surname"
         const val EMAIL = "email"
         const val PHONE_NUMBER = "phone_number"
         const val HANDLE_IDS = "handles"

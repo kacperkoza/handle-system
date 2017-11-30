@@ -8,20 +8,18 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.client.HttpClientErrorException
-import spock.lang.Ignore
 import spock.lang.Shared
-import sun.net.httpserver.HttpsServerImpl
 
 class LoginIntegrationTest extends BaseIntegrationTest {
 
     @Shared
-    String existingLogin = 'existingLogin'
+    String existingEmail = 'existingEmail'
 
     @Shared
     String existingPassword = 'existingPassword'
 
     @Shared
-    UserDocument userDocument = UserBuilder.create('user-id').setLogin(existingLogin).setPassword(existingPassword).buildDocument()
+    UserDocument userDocument = UserBuilder.create('user-id').setEmail(existingEmail).setPassword(existingPassword).buildDocument()
 
     def setup() {
         save(userDocument)
@@ -29,7 +27,7 @@ class LoginIntegrationTest extends BaseIntegrationTest {
 
     def '[POST] should return OK [200] after succesful login'() {
         given:
-        def loginDto = new LoginDto(existingLogin, existingPassword)
+        def loginDto = new LoginDto(existingEmail, existingPassword)
 
         when:
         def response = executePost(loginDto)
@@ -40,7 +38,7 @@ class LoginIntegrationTest extends BaseIntegrationTest {
 
     def '[POST] should return \'Set-Cookie\' header after successful login'() {
         given:
-        def loginDto = new LoginDto(existingLogin, existingPassword)
+        def loginDto = new LoginDto(existingEmail, existingPassword)
 
         when:
         def response = executePost(loginDto)
@@ -66,7 +64,7 @@ class LoginIntegrationTest extends BaseIntegrationTest {
 
     private ResponseEntity<Void> executePost(LoginDto loginDto) {
         restTemplate.postForEntity(
-                localUrl("/login"),
+                localUrl("/email"),
                 new HttpEntity(loginDto),
                 Void)
     }

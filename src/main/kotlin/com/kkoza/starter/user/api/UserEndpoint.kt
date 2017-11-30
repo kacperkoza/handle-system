@@ -39,35 +39,29 @@ class UserEndpoint(
     fun register(@RequestBody userDto: UserDto): ResponseEntity<UserDocument> {
         val userDocument: UserDocument = userFacade.register(UserDocument(
                 null,
-                userDto.login,
-                userDto.password,
-                userDto.name,
-                userDto.surname,
                 userDto.email,
+                userDto.password,
                 userDto.phoneNumber,
-                userDto.handles
+                emptyList()
         ))
-        return ResponseEntity.created(URI("http://localhost:8080/users/${userDocument.userId}")).build()
+        return ResponseEntity.created(URI("/users/${userDocument.userId}")).build()
     }
 
-    @PutMapping("/users")
-    fun update(@RequestBody userDto: UserDto): ResponseEntity<Void> {
+    @PutMapping("/users/{userId}")
+    fun update(@PathVariable("userId") userId: String,
+               @RequestBody userDto: UserDto): ResponseEntity<Void> {
         userFacade.updateUser(UserDocument(
-                userDto.id,
-                userDto.login,
-                userDto.password,
-                userDto.name,
-                userDto.surname,
+                userId,
                 userDto.email,
+                userDto.password,
                 userDto.phoneNumber,
-                userDto.handles
-        ))
+                userDto.handles))
         return ResponseEntity.ok(null)
     }
 
-    @PostMapping("/login")
+    @PostMapping("/email")
     fun login(@RequestBody loginDto: LoginDto): ResponseEntity<String> {
-        val user = userFacade.findUserByCredentials(loginDto.login, loginDto.password) ?: throw NotExistingUserException(loginDto.login)
+        val user = userFacade.findUserByCredentials(loginDto.email, loginDto.password) ?: throw NotExistingUserException(loginDto.email)
         val session = SessionService.createSession(user.userId!!)
         val headers = HttpHeaders()
         headers.add("Set-Cookie", "SESSIONID=$session")

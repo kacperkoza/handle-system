@@ -31,7 +31,6 @@ class DeleteMeasurementEndpointTest extends BaseIntegrationTest {
         then:
         response.statusCode == HttpStatus.OK
         mongoTemplate.findAll(Measurement).size() == 0
-
     }
 
     private ResponseEntity<Void> executePost(String id) {
