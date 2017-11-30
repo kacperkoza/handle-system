@@ -1,5 +1,8 @@
 package com.kkoza.starter.user.api
 
+import com.kkoza.starter.session.InvalidSessionException
+import com.kkoza.starter.session.NotExistingUserException
+import com.kkoza.starter.session.SessionService
 import com.kkoza.starter.user.UserDocument
 import com.kkoza.starter.user.UserFacade
 import com.kkoza.starter.user.ValidationResult
@@ -9,6 +12,8 @@ import com.kkoza.starter.user.exception.ExistingEmailException
 import com.kkoza.starter.user.exception.ExistingLoginException
 import com.kkoza.starter.user.exception.InvalidUserDataException
 import org.apache.log4j.Logger
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.lang.invoke.MethodHandles
@@ -17,7 +22,9 @@ import java.net.URI
 
 @RestController
 @RequestMapping
-class UserEndpoint(private val userFacade: UserFacade) {
+class UserEndpoint(
+        private val userFacade: UserFacade,
+        private val SessionService: SessionService) {
 
     companion object {
         private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
@@ -58,6 +65,15 @@ class UserEndpoint(private val userFacade: UserFacade) {
         return ResponseEntity.ok(null)
     }
 
+    @PostMapping("/login")
+    fun login(@RequestBody loginDto: LoginDto): ResponseEntity<String> {
+        val user = userFacade.findUserByCredentials(loginDto.login, loginDto.password) ?: throw NotExistingUserException(loginDto.login)
+        val session = SessionService.createSession(user.userId!!)
+        val headers = HttpHeaders()
+        headers.add("Set-Cookie", "SESSIONID=$session")
+        return ResponseEntity(headers, HttpStatus.OK)
+    }
+
     @ExceptionHandler(InvalidUserDataException::class)
     fun handleInvalidUserDataException(ex: InvalidUserDataException): ResponseEntity<ValidationResult> {
         logger.info("invalid user data. Errors: ${ex.validationResult}")
@@ -74,6 +90,18 @@ class UserEndpoint(private val userFacade: UserFacade) {
     fun handleExistingLoginException(ex: ExistingLoginException): ResponseEntity<String> {
         logger.info("invalid user data. Errors: ${ex.message}")
         return ResponseEntity.unprocessableEntity().body(ex.message)
+    }
+
+    @ExceptionHandler(NotExistingUserException::class)
+    fun handleNotExistingUserException(ex: NotExistingUserException): ResponseEntity<String> {
+        logger.info("invalid user credentials: ${ex.message}")
+        return ResponseEntity(HttpStatus.UNAUTHORIZED)
+    }
+
+    @ExceptionHandler(InvalidSessionException::class)
+    fun handleInvalidSessionException(ex: InvalidSessionException): ResponseEntity<String> {
+        logger.info("Invalid session: ${ex.message}")
+        return ResponseEntity(ex.message!!, HttpStatus.UNAUTHORIZED)
     }
 }
 

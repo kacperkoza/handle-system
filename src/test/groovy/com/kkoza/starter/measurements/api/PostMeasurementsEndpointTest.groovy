@@ -7,7 +7,7 @@ class PostMeasurementsEndpointTest extends BaseIntegrationTest {
 
     def '[POST] should create new measurement with CREATED [201] status'() {
         given:
-        def measurement = new MeasurementDto(DateTime.now(), 'handle-id', 0, 0, false, true, false, 10.0, 15)
+        def measurement = new MeasurementDto('handle-id', 0, 0, false, true, false, 10.0, 15)
 
         when:
         def location = restTemplate.postForLocation(
@@ -16,7 +16,7 @@ class PostMeasurementsEndpointTest extends BaseIntegrationTest {
         ).toASCIIString()
 
         then:
-        location.contains("http://localhost:8080/measurements/")
+        location.contains("/measurements/")
         location.substring(location.lastIndexOf("/")).size() > 0
     }
 }

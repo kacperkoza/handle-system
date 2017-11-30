@@ -6,12 +6,13 @@ import com.kkoza.starter.user.dto.UserDto
 class UserBuilder {
 
     String id = 'any-id'
-    String login = 'any-login'
-    String password = 'any-password'
+    String login = 'any-existingLogin'
+    String password = 'any-existingPassword'
     String name = 'any-name'
     String surname = 'any-surname'
     String email = 'email@email.com'
     String phoneNumber = '123456789'
+    List<String> handles = ['handle-id']
 
     static UserBuilder create(String id) {
         def builder = new UserBuilder()
@@ -49,6 +50,11 @@ class UserBuilder {
         return this
     }
 
+    UserBuilder setHandles(List<String> handles) {
+        this.handles = handles
+        return this
+    }
+
     UserDto buildDto() {
         return new UserDto(
                 id,
@@ -57,7 +63,8 @@ class UserBuilder {
                 name,
                 surname,
                 email,
-                phoneNumber
+                phoneNumber,
+                handles
         )
     }
 
@@ -69,7 +76,8 @@ class UserBuilder {
                 name,
                 surname,
                 email,
-                phoneNumber)
+                phoneNumber,
+                handles)
     }
 
 }

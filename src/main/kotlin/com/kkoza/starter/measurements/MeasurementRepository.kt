@@ -1,7 +1,5 @@
 package com.kkoza.starter.measurements
 
-import com.kkoza.starter.user.UserDocument
-import com.kkoza.starter.user.dto.UserDto
 import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria

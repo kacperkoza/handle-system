@@ -3,6 +3,7 @@ package com.kkoza.starter.measurements.api
 import com.kkoza.starter.measurements.*
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
 import com.kkoza.starter.measurements.exception.InvalidSortTypeException
+import com.kkoza.starter.session.SessionService
 import org.joda.time.DateTime
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -11,10 +12,11 @@ import java.net.URI
 @RestController
 @RequestMapping
 class MeasurementsEndpoint(
-        private val measurementFacade: MeasurementFacade
+        private val measurementFacade: MeasurementFacade,
+        private val sessionService: SessionService
 ) {
 
-    @PostMapping("/users/measurements")
+    @PostMapping("/measurements")
     fun addMeasurements(
             @RequestBody(required = true) measurementDto: MeasurementDto): ResponseEntity<Void> {
         val handlePosition = when (measurementDto.handlePosition) {
@@ -26,24 +28,27 @@ class MeasurementsEndpoint(
         val id = measurementFacade.add(measurementDto.let {
             Measurement(
                     null,
-                    it.date,
+                    DateTime.now(),
                     it.handleId,
                     handlePosition,
                     Temperature(it.temperature),
                     Alarm(it.fire, it.burglary, it.frost),
+
                     SoundLevel(it.soundLevel),
                     it.handleTime)
         })
-        return ResponseEntity.created(URI("http://localhost:8080/measurements/$id")).build()
+        return ResponseEntity.created(URI("/measurements/$id")).build()
     }
 
-    @GetMapping("users/{userId}/measurements")
+    @GetMapping("users/measurements")
     fun getMeasurements(
-            @PathVariable(value = "userId", required = true) userId: String,
+            @CookieValue(name = "SESSIONID", required = true) sessionId: String,
+//            @RequestHeader(name = "SESSIONID") sessionId: String,
             @RequestParam(value = "sort", required = false) sort: String?,
             @RequestParam(value = "offset", required = false) offset: Int?,
             @RequestParam(value = "limit", required = false) limit: Int?
     ): ResponseEntity<MeasurementList> {
+        val userId = sessionService.findUserId(sessionId)
         val list = measurementFacade.get(userId, sort, offset, limit)
         return ResponseEntity.ok(list)
     }
@@ -88,7 +93,6 @@ enum class SortType {
 }
 
 data class MeasurementDto(
-        val date: DateTime = DateTime.now(),
         val handleId: String,
         val handlePosition: Int,
         val temperature: Double,

@@ -4,7 +4,7 @@ import com.kkoza.starter.measurements.api.MeasurementList
 import com.kkoza.starter.measurements.api.SortType
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
 import com.kkoza.starter.user.UserDocument
-import com.kkoza.starter.user.UserFacade
+import com.kkoza.starter.user.UserRepository
 import com.kkoza.starter.util.dropIfNotNull
 import com.kkoza.starter.util.takeIfNotNull
 import org.apache.log4j.Logger
@@ -14,7 +14,7 @@ import java.lang.invoke.MethodHandles
 class MeasurementOperation(
         private val measurementRepository: MeasurementRepository,
         private val dangerEventNotifier: DangerEventNotifier,
-        private val userFacade: UserFacade
+        private val userRepository: UserRepository
 ) {
 
     companion object {
@@ -22,7 +22,7 @@ class MeasurementOperation(
     }
 
     fun add(measurement: Measurement): String {
-        val user: UserDocument? = userFacade.findUserWithHandle(measurement.handleId)
+        val user: UserDocument? = userRepository.findUserWithHandle(measurement.handleId)
         logger.info("Add new $measurement")
         if (user != null) {
             dangerEventNotifier.notify(measurement, user.phoneNumber)
@@ -35,7 +35,7 @@ class MeasurementOperation(
         if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
         if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
         val sortType = SortType.from(sort)
-        val handles = userFacade.findUser(userId).handles
+        val handles = userRepository.findByUserId(userId).handles
         val list = measurementRepository.get(handles, getSortOrder(sortType))
         return MeasurementList(
                 list.size,

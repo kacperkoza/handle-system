@@ -1,8 +1,13 @@
 package com.kkoza.starter.measurements.api
 
 import com.kkoza.starter.BaseIntegrationTest
+import com.kkoza.starter.session.Session
 import com.kkoza.starter.testutil.MeasurementBuilder
+import com.kkoza.starter.testutil.UserBuilder
 import org.joda.time.DateTime
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared
 import spock.lang.Unroll
@@ -12,32 +17,42 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     @Shared
     def first = MeasurementBuilder.create()
             .setId('1')
+            .setHandleId('handle')
             .setDate(DateTime.now().minusHours(1))
             .build()
 
     @Shared
     def second = MeasurementBuilder.create()
             .setId('2')
+            .setHandleId('handle')
             .setDate(DateTime.now().minusDays(1))
             .build()
 
     @Shared
     def third = MeasurementBuilder.create()
             .setId('3')
+            .setHandleId('handle')
             .setDate(DateTime.now().minusDays(6))
             .build()
+
+    @Shared
+    def user = UserBuilder.create('user-id').setHandles(['handle']).buildDocument()
+
+    @Shared
+    def session = new Session('session-id', 'user-id', DateTime.now())
 
     def setup() {
         save(second)
         save(first)
         save(third)
-
+        save(user)
+        save(session)
     }
 
     @Unroll
     def "[GET] should sort all measurements by #sortType"() {
         when:
-        def response = executeGet("/measurements?sort=$sortType")
+        def response = executeGet("/users/measurements?sort=$sortType")
 
         then:
         response.body.measurements.collect({ it.id }) == expectedOrder
@@ -51,7 +66,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
     def "[GET] should return BAD REQUEST [400] for invalid sortType"() {
         when:
-        executeGet("/measurements?sort=$invalidSortType")
+        executeGet("/users/measurements?sort=$invalidSortType")
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -63,7 +78,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
     def "[GET] should sort by 'date_latest' when sort type is not specified"() {
         when:
-        def response = executeGet("/measurements")
+        def response = executeGet("/users/measurements")
 
         then:
         response.body.measurements.collect({ it.id }) == ['1', '2', '3']
@@ -72,12 +87,12 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     @Unroll
     def "[GET] should use offset #inputOffset and limit #inputLimit properly"() {
         given:
-        save(MeasurementBuilder.create().setId('4').setDate(DateTime.now()).build())
-        save(MeasurementBuilder.create().setId('5').setDate(DateTime.now().minusMillis(100)).build())
-        save(MeasurementBuilder.create().setId('6').setDate(DateTime.now().minusMillis(200)).build())
+        save(MeasurementBuilder.create().setHandleId('handle').setId('4').setDate(DateTime.now()).build())
+        save(MeasurementBuilder.create().setHandleId('handle').setId('5').setDate(DateTime.now().minusMillis(100)).build())
+        save(MeasurementBuilder.create().setHandleId('handle').setId('6').setDate(DateTime.now().minusMillis(200)).build())
 
         when:
-        def response = executeGet("/measurements?limit=$inputLimit&offset=$inputOffset")
+        def response = executeGet("/users/measurements?limit=$inputLimit&offset=$inputOffset")
 
         then:
         with(response.body) {
@@ -96,7 +111,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
     def "[GET] should return BAD_REQUEST [400] when limit or offset is lower than 0"() {
         when:
-        executeGet("/measurements?limit=$limit&offset=$offset")
+        executeGet("users/measurements?limit=$limit&offset=$offset")
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -111,9 +126,15 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     }
 
     def executeGet(String endpoint) {
-        restTemplate.getForEntity(
+        def headers = new HttpHeaders()
+        headers.add("Cookie", "SESSIONID=session-id")
+        def entity = new HttpEntity(headers)
+        restTemplate.exchange(
                 localUrl(endpoint),
-                MeasurementList.class)
+                HttpMethod.GET,
+                entity,
+                MeasurementList.class
+        )
     }
 
 }

@@ -13,6 +13,11 @@ class UserOperation(private val userRepository: UserRepository,
         return userRepository.save(userDocument)
     }
 
+    fun update(userDocument: UserDocument) {
+        userValidator.validate(userDocument)
+        userRepository.save(userDocument)
+    }
+
     private fun validateUserDocument(userDocument: UserDocument) {
         throwExceptionIfEmailExists(userDocument)
         throwExceptionIfLoginExists(userDocument)

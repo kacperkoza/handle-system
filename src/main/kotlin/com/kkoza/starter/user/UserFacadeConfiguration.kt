@@ -11,7 +11,7 @@ class UserFacadeConfiguration {
     fun userFacade(mongoTemplate: MongoTemplate): UserFacade {
         val userRepository = UserRepository(mongoTemplate)
         val userOperation = UserOperation(userRepository, UserValidator())
-        return UserFacade(userOperation)
+        return UserFacade(userOperation, userRepository)
 
     }
 }

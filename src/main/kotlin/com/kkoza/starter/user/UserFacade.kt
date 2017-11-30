@@ -3,14 +3,16 @@ package com.kkoza.starter.user
 import org.springframework.stereotype.Component
 
 @Component
-class UserFacade(private val userOperation: UserOperation) {
+class UserFacade(
+        private val userOperation: UserOperation,
+        private val userRepository: UserRepository) {
 
     fun register(userDocument: UserDocument): UserDocument {
         return userOperation.save(userDocument)
     }
 
     fun updateUser(userDocument: UserDocument) {
-        userOperation.save(userDocument)
+        userOperation.update(userDocument)
     }
 
     fun findUser(userId: String): UserDocument {
@@ -21,5 +23,8 @@ class UserFacade(private val userOperation: UserOperation) {
         return userOperation.findUserWithHandle(handleId)
     }
 
+    fun findUserByCredentials(login: String, password: String): UserDocument? {
+        return userRepository.findUserByCredentials(login, password)
+    }
 
 }

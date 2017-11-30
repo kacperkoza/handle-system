@@ -49,4 +49,11 @@ class UserRepository(val mongoTemplate: MongoTemplate) {
                 UserDocument::class.java
         )
     }
+
+    fun findUserByCredentials(login: String, password: String): UserDocument? {
+        return mongoTemplate.findOne(
+                Query(Criteria.where(UserDocument.LOGIN).`is`(login).and(UserDocument.PASSWORD).`is`(password)),
+                UserDocument::class.java
+        )
+    }
 }

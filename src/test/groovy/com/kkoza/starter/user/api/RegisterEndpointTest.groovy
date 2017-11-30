@@ -16,8 +16,8 @@ class RegisterEndpointTest extends BaseIntegrationTest {
     def '[POST] should add new user with valid data with CREATED [201] status'() {
         given:
         UserDto validUserDto = UserBuilder.create(null)
-                .setLogin('valid-login')
-                .setPassword('valid-password')
+                .setLogin('valid-existingLogin')
+                .setPassword('valid-existingPassword')
                 .setName('valid-name')
                 .setSurname('valid-surname')
                 .setEmail('email@gmail.com')
@@ -72,9 +72,9 @@ class RegisterEndpointTest extends BaseIntegrationTest {
 
     def '[PUT] should update existing use with OK [200] status'() {
         given:
-        def user = UserBuilder.create(null).setLogin('example-login').setPassword('example-password').buildDocument()
+        def user = UserBuilder.create(null).setLogin('example-existingLogin').setPassword('example-existingPassword').buildDocument()
         save(user)
-        def userDto = UserBuilder.create(user.userId).setLogin('new-login').setPassword('new-password').buildDto()
+        def userDto = UserBuilder.create(user.userId).setLogin('new-existingLogin').setPassword('new-existingPassword').buildDto()
 
         when:
         def response = restTemplate.exchange(
@@ -87,13 +87,13 @@ class RegisterEndpointTest extends BaseIntegrationTest {
         then:
         response.statusCode == HttpStatus.OK
         UserDocument userDocument = mongoTemplate.findOne(new Query(), UserDocument.class)
-        userDocument.login == 'new-login'
-        userDocument.password == 'new-password'
+        userDocument.login == 'new-existingLogin'
+        userDocument.password == 'new-existingPassword'
     }
 
     private URI postForLocation(UserDto userDto) {
         restTemplate.postForLocation(
-                localUrl('users/register'),
+                localUrl('/register'),
                 userDto
         )
     }

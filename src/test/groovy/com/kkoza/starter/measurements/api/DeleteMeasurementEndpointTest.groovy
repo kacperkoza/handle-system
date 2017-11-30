@@ -2,12 +2,23 @@ package com.kkoza.starter.measurements.api
 
 import com.kkoza.starter.BaseIntegrationTest
 import com.kkoza.starter.measurements.Measurement
+import com.kkoza.starter.session.Session
 import com.kkoza.starter.testutil.MeasurementBuilder
+import org.joda.time.DateTime
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 
 class DeleteMeasurementEndpointTest extends BaseIntegrationTest {
+
+    def setup() {
+        save(new Session(
+                'sess',
+                'user-id',
+                DateTime.now()))
+    }
 
     def '[DELETE] should return OK [200] when delete measurement by id'() {
         given:
@@ -15,15 +26,21 @@ class DeleteMeasurementEndpointTest extends BaseIntegrationTest {
         save(MeasurementBuilder.create().setId(id).build())
 
         when:
-        def response = restTemplate.exchange(
-                localUrl("/measurements/$id"),
-                HttpMethod.DELETE,
-                new HttpEntity<Object>(),
-                Void)
+        def response = executePost(id)
 
         then:
         response.statusCode == HttpStatus.OK
         mongoTemplate.findAll(Measurement).size() == 0
 
+    }
+
+    private ResponseEntity<Void> executePost(String id) {
+        def headers = new HttpHeaders()
+        headers.set("Cookie", "SESSIONID=sess")
+        restTemplate.exchange(
+                localUrl("users/measurements/$id"),
+                HttpMethod.DELETE,
+                new HttpEntity<Object>(),
+                Void)
     }
 }
