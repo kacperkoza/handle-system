@@ -13,8 +13,7 @@ import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Service
 
 @Service
-class SessionService(val userRepository: UserRepository,
-                     val mongoTemplate: MongoTemplate) {
+class SessionService(val mongoTemplate: MongoTemplate) {
 
     fun createSession(userId: String): String {
         val session = Session(null, userId, DateTime.now())
@@ -22,14 +21,15 @@ class SessionService(val userRepository: UserRepository,
         return session.id!!
     }
 
-    fun findUserId(sessionId: String): String {
+    fun findUserIdAndUpdateSession(sessionId: String): String {
         val session = mongoTemplate.findOne(
                 Query(Criteria.where(Session.SESSION_ID).`is`(sessionId)),
                 Session::class.java) ?: throw InvalidSessionException(sessionId)
-        return session.userId!!
+        updateSession(sessionId)
+        return session.userId
     }
 
-    fun updateSession(sessionId: String) {
+    private fun updateSession(sessionId: String) {
         mongoTemplate.updateFirst(
                 Query(Criteria.where(Session.SESSION_ID).`is`(sessionId)),
                 Update().set(Session.VALID, DateTime.now()),

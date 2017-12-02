@@ -15,7 +15,7 @@ class UserFacade(
         userOperation.update(userDocument)
     }
 
-    fun findUser(userId: String): UserDocument {
+    fun findUserById(userId: String): UserDocument? {
         return userOperation.findUserById(userId)
     }
 

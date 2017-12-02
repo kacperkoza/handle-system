@@ -11,6 +11,10 @@ import com.kkoza.starter.user.dto.UserDto
 import com.kkoza.starter.user.exception.ExistingEmailException
 import com.kkoza.starter.user.exception.ExistingLoginException
 import com.kkoza.starter.user.exception.InvalidUserDataException
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiOperation
+import io.swagger.annotations.ApiResponse
+import io.swagger.annotations.ApiResponses
 import org.apache.log4j.Logger
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -21,22 +25,18 @@ import java.net.URI
 
 
 @RestController
-@RequestMapping
-class UserEndpoint(
-        private val userFacade: UserFacade,
-        private val SessionService: SessionService) {
+@Api(description = "Register, login, edit user information")
+class UserEndpoint(private val userFacade: UserFacade, private val SessionService: SessionService) {
 
     companion object {
         private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
     }
 
-    @GetMapping("/users/{userId}")
-    fun getUser(@PathVariable(name = "userId", required = true) userId: String): ResponseEntity<UserDocument> {
-        return ResponseEntity.ok().body(userFacade.findUser(userId))
-    }
-
-    @PostMapping("/register")
-    fun register(@RequestBody userDto: UserDto): ResponseEntity<UserDocument> {
+    @ApiOperation(value = "Should be used to create new user")
+    @ApiResponses(ApiResponse(code = 201, message = "Successfully created new user. See 'Location' in response headers"),
+            ApiResponse(code = 422, message = "Email already exists or provided user data are not correct"))
+    @PostMapping("/users")
+    fun createNewUser(@RequestBody userDto: UserDto): ResponseEntity<Void> {
         val userDocument: UserDocument = userFacade.register(UserDocument(
                 null,
                 userDto.email,
@@ -47,9 +47,21 @@ class UserEndpoint(
         return ResponseEntity.created(URI("/users/${userDocument.userId}")).build()
     }
 
+    @ApiOperation(value = "Find existing user by ID", response = UserDocument::class)
+    @ApiResponses(ApiResponse(code = 200, message = "User was found, see response body", response = UserDocument::class),
+            ApiResponse(code = 404, message = "User not found"))
+    @GetMapping("/users/{userId}")
+    fun findUserById(@PathVariable(name = "userId", required = true) userId: String): ResponseEntity<UserDocument?> {
+        val user: UserDocument? = userFacade.findUserById(userId) ?: return ResponseEntity(null, HttpStatus.NOT_FOUND)
+        return ResponseEntity.ok().body(user)
+    }
+
+    @ApiOperation(value = "Override existing user")
+    @ApiResponses(ApiResponse(code = 200, message = "User was successfully overridden."),
+            ApiResponse(code = 422, message = "Email already exists or provided user data are not correct"))
     @PutMapping("/users/{userId}")
-    fun update(@PathVariable("userId") userId: String,
-               @RequestBody userDto: UserDto): ResponseEntity<Void> {
+    fun updateExistingUser(@PathVariable("userId") userId: String,
+                           @RequestBody userDto: UserDto): ResponseEntity<Void> {
         userFacade.updateUser(UserDocument(
                 userId,
                 userDto.email,
@@ -59,8 +71,12 @@ class UserEndpoint(
         return ResponseEntity.ok(null)
     }
 
-    @PostMapping("/email")
-    fun login(@RequestBody loginDto: LoginDto): ResponseEntity<String> {
+    @ApiOperation(value = "Login with user's credentials to create cookie session")
+    @ApiResponses(
+            ApiResponse(code = 200, message = "Credentials were found and new session is created"),
+            ApiResponse(code = 401, message = "Provided credentials weren't found"))
+    @PostMapping("/login")
+    fun login(@RequestBody loginDto: LoginDto): ResponseEntity<Void> {
         val user = userFacade.findUserByCredentials(loginDto.email, loginDto.password) ?: throw NotExistingUserException(loginDto.email)
         val session = SessionService.createSession(user.userId!!)
         val headers = HttpHeaders()

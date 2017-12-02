@@ -30,7 +30,7 @@ class UserOperation(private val userRepository: UserRepository,
         }
     }
 
-    fun findUserById(userId: String): UserDocument {
+    fun findUserById(userId: String): UserDocument? {
         return userRepository.findByUserId(userId)
     }
 

@@ -64,7 +64,7 @@ class LoginIntegrationTest extends BaseIntegrationTest {
 
     private ResponseEntity<Void> executePost(LoginDto loginDto) {
         restTemplate.postForEntity(
-                localUrl("/email"),
+                localUrl("/login"),
                 new HttpEntity(loginDto),
                 Void)
     }

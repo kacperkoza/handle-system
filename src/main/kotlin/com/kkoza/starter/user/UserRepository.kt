@@ -28,7 +28,7 @@ class UserRepository(val mongoTemplate: MongoTemplate) {
         return user != null
     }
 
-    fun findByUserId(userId: String): UserDocument {
+    fun findByUserId(userId: String): UserDocument? {
         return mongoTemplate.findOne(
                 Query(Criteria(UserDocument.USER_ID).`is`(userId)),
                 UserDocument::class.java

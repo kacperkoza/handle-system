@@ -35,7 +35,7 @@ class MeasurementOperation(
         if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
         if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
         val sortType = SortType.from(sort)
-        val handles = userRepository.findByUserId(userId).handles
+        val handles = userRepository.findByUserId(userId)!!.handles
         val list = measurementRepository.get(handles, getSortOrder(sortType))
         return MeasurementList(
                 list.size,

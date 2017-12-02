@@ -43,7 +43,7 @@ class MongoConfiguration(
 }
 
 @Component
-class MongoProperties(
+data class MongoProperties(
         @Value("\${mongodb.host}") var host: String,
         @Value("\${mongodb.port}") val port: Int,
         @Value("\${mongodb.database}") val database: String,

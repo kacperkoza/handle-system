@@ -88,7 +88,7 @@ class RegisterEndpointTest extends BaseIntegrationTest {
 
     private URI postForLocation(UserDto userDto) {
         restTemplate.postForLocation(
-                localUrl('/register'),
+                localUrl('/users'),
                 userDto
         )
     }
