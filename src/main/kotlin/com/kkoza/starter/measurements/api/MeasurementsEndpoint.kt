@@ -4,18 +4,21 @@ import com.kkoza.starter.measurements.*
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
 import com.kkoza.starter.measurements.exception.InvalidSortTypeException
 import com.kkoza.starter.session.SessionService
+import io.swagger.annotations.*
 import org.joda.time.DateTime
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
-@RequestMapping
+@Api(value = "Information about user's measurements", description = "Add, get, delete user's measurements")
 class MeasurementsEndpoint(
         private val measurementFacade: MeasurementFacade,
         private val sessionService: SessionService
 ) {
 
+    @ApiOperation(value = "Used to create new measurement")
+    @ApiResponse(code = 201, message = "Successfully created new measurement. See 'Location' in headers")
     @PostMapping("/measurements")
     fun addMeasurements(
             @RequestBody(required = true) measurementDto: MeasurementDto): ResponseEntity<Void> {
@@ -40,10 +43,14 @@ class MeasurementsEndpoint(
         return ResponseEntity.created(URI("/measurements/$id")).build()
     }
 
+    @ApiOperation(value = "Get list of user measurements")
+    @ApiResponses(ApiResponse(code = 200, message = "Return list with measurement prepared for pagination"),
+            ApiResponse(code = 401, message = "User is not authorized"))
     @GetMapping("users/measurements")
     fun getMeasurements(
+            @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue(name = "SESSIONID", required = true) sessionId: String,
-//            @RequestHeader(name = "SESSIONID") sessionId: String,
+            @ApiParam(value = "Sort data by any of value (case insensitive)", allowableValues = "date_latest, date_oldest")
             @RequestParam(value = "sort", required = false) sort: String?,
             @RequestParam(value = "offset", required = false) offset: Int?,
             @RequestParam(value = "limit", required = false) limit: Int?
@@ -53,8 +60,15 @@ class MeasurementsEndpoint(
         return ResponseEntity.ok(list)
     }
 
+    @ApiOperation(value = "Delete measurement by ID")
+    @ApiResponses(ApiResponse(code = 200, message = "Measurement was deleted if existed"),
+            ApiResponse(code = 401, message = "User is not authorized"))
     @DeleteMapping("users/measurements/{id}")
-    fun deleteMeasurement(@PathVariable("id", required = true) id: String): ResponseEntity<Void> {
+    fun deleteMeasurement(
+            @ApiParam(value = "Valid user's session cookie", required = true)
+            @CookieValue(name = "SESSIONID", required = true) sessionId: String,
+            @PathVariable("id", required = true) id: String): ResponseEntity<Void> {
+        sessionService.findUserIdAndUpdateSession(sessionId)
         measurementFacade.deleteById(id)
         return ResponseEntity.ok(null)
     }
