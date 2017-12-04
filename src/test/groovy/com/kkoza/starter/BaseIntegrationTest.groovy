@@ -1,7 +1,7 @@
 package com.kkoza.starter
 
 import com.kkoza.starter.measurements.MeasurementDocument
-import com.kkoza.starter.session.Session
+import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.user.UserDocument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.embedded.LocalServerPort
@@ -43,7 +43,7 @@ class BaseIntegrationTest extends Specification {
         mongoTemplate.save(userDocument)
     }
 
-    def save(Session session) {
+    def save(SessionDocument session) {
         mongoTemplate.save(session)
     }
 }

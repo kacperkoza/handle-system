@@ -36,6 +36,7 @@ class UserRepository(val mongoTemplate: MongoTemplate) {
     }
 
     fun findUserWithHandle(handleId: String): UserDocument? {
+        logger.info("Find user with handle $handleId")
         return mongoTemplate.findOne(
                 Query(Criteria.where(UserDocument.HANDLE_IDS).`is`(handleId)),
                 UserDocument::class.java
@@ -43,6 +44,7 @@ class UserRepository(val mongoTemplate: MongoTemplate) {
     }
 
     fun findUserByCredentials(login: String, password: String): UserDocument? {
+        logger.info("Find user with credentials login = $login, password = $password")
         return mongoTemplate.findOne(
                 Query(Criteria.where(UserDocument.LOGIN).`is`(login).and(UserDocument.PASSWORD).`is`(password)),
                 UserDocument::class.java

@@ -1,6 +1,5 @@
 package com.kkoza.starter.session
 
-import com.kkoza.starter.user.UserRepository
 import org.joda.time.DateTime
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -16,24 +15,24 @@ import org.springframework.stereotype.Service
 class SessionService(val mongoTemplate: MongoTemplate) {
 
     fun createSession(userId: String): String {
-        val session = Session(null, userId, DateTime.now())
+        val session = SessionDocument(null, userId, DateTime.now())
         mongoTemplate.save(session)
         return session.id!!
     }
 
     fun findUserIdAndUpdateSession(sessionId: String): String {
         val session = mongoTemplate.findOne(
-                Query(Criteria.where(Session.SESSION_ID).`is`(sessionId)),
-                Session::class.java) ?: throw InvalidSessionException(sessionId)
+                Query(Criteria.where(SessionDocument.SESSION_ID).`is`(sessionId)),
+                SessionDocument::class.java) ?: throw InvalidSessionException(sessionId)
         updateSession(sessionId)
         return session.userId
     }
 
     private fun updateSession(sessionId: String) {
         mongoTemplate.updateFirst(
-                Query(Criteria.where(Session.SESSION_ID).`is`(sessionId)),
-                Update().set(Session.VALID, DateTime.now()),
-                Session::class.java
+                Query(Criteria.where(SessionDocument.SESSION_ID).`is`(sessionId)),
+                Update().set(SessionDocument.VALID, DateTime.now()),
+                SessionDocument::class.java
         )
     }
 }
@@ -42,8 +41,8 @@ class InvalidSessionException(sessionId: String) : RuntimeException("Session $se
 
 class NotExistingUserException(login: String) : RuntimeException("User with provided credentials email = $login not found")
 
-@Document(collection = Session.SESSIONS)
-data class Session(
+@Document(collection = SessionDocument.SESSIONS)
+data class SessionDocument(
         @Id
         @Field(SESSION_ID)
         val id: String?,

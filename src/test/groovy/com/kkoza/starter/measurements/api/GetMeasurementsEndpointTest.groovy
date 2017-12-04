@@ -1,7 +1,7 @@
 package com.kkoza.starter.measurements.api
 
 import com.kkoza.starter.BaseIntegrationTest
-import com.kkoza.starter.session.Session
+import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.testutil.MeasurementBuilder
 import com.kkoza.starter.testutil.UserBuilder
 import org.joda.time.DateTime
@@ -45,7 +45,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     def user = UserBuilder.create('user-id').setHandles(['handle']).buildDocument()
 
     @Shared
-    def session = new Session('session-id', 'user-id', DateTime.now())
+    def session = new SessionDocument('session-id', 'user-id', DateTime.now())
 
     def setup() {
         save(second)

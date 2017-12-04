@@ -2,7 +2,7 @@ package com.kkoza.starter.measurements.api
 
 import com.kkoza.starter.BaseIntegrationTest
 import com.kkoza.starter.measurements.MeasurementDocument
-import com.kkoza.starter.session.Session
+import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.testutil.MeasurementBuilder
 import org.joda.time.DateTime
 import org.springframework.http.HttpEntity
@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity
 class DeleteMeasurementEndpointTest extends BaseIntegrationTest {
 
     def setup() {
-        save(new Session(
+        save(new SessionDocument(
                 'sess',
                 'user-id',
                 DateTime.now()))

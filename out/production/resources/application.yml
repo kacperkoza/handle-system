@@ -8,3 +8,10 @@ mongodb:
   username: kacper
   password: kacper
   socketTimeout: 2000
+
+smsClient:
+  client: fake
+
+origins:
+  github: https://jeremianastaziak3.github.io
+  localhost: http://localhost:3000
