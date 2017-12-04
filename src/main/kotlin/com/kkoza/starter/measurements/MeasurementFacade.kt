@@ -6,8 +6,8 @@ class MeasurementFacade(
         private val measurementOperation: MeasurementOperation
 ) {
 
-    fun add(measurement: Measurement): String {
-        return measurementOperation.add(measurement)
+    fun add(measurementDocument: MeasurementDocument): String {
+        return measurementOperation.add(measurementDocument)
     }
 
     fun get(userId: String, sort: String?, offset: Int?, limit: Int?): MeasurementList {

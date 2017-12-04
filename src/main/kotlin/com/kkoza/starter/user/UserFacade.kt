@@ -7,11 +7,11 @@ class UserFacade(
         private val userOperation: UserOperation,
         private val userRepository: UserRepository) {
 
-    fun register(userDocument: UserDocument): UserDocument {
+    fun save(userDocument: UserDocument): UserDocument {
         return userOperation.save(userDocument)
     }
 
-    fun updateUser(userDocument: UserDocument) {
+    fun update(userDocument: UserDocument) {
         userOperation.update(userDocument)
     }
 

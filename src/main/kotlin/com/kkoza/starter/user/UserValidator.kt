@@ -8,13 +8,11 @@ class UserValidator {
     private val emailValidator: EmailValidator = EmailValidator.getInstance()
 
     companion object {
-        private const val REQUIRED_LENGTH = 6
+        private const val REQUIRED_PASSWORD_LENGTH = 6
+        private const val REQUIRED_PHONE_NUMBER_LENGTH = 9
 
         const val EMAIL_FIELD = "email"
-        const val LOGIN_FIELD = "email"
         const val PASSWORD_FIELD = "password"
-        const val NAME_FIELD = "name"
-        const val SURNAME_FIELD = "surname"
         const val PHONE_NUMBER_FIELD = "phoneNumber"
     }
 
@@ -26,21 +24,25 @@ class UserValidator {
                 errors.put(EMAIL_FIELD, "invalid email")
             }
 
-            if (!isLengthValid(it.password)) {
+            if (!isPasswordLengthValid(it.password)) {
                 errors.put(PASSWORD_FIELD, "password length < 6")
             }
 
-            if (it.phoneNumber.length != 9) {
+            if (!isPhoneNumberLengthValid(it.phoneNumber)) {
                 errors.put(PHONE_NUMBER_FIELD, "phone number length must be 9")
             }
         }
 
-        if (!errors.isEmpty()) {
+        if (errorsPresent(errors)) {
             throw InvalidUserDataException(ValidationResult(errors))
         }
     }
 
-    private fun isLengthValid(password: String): Boolean = password.length >= REQUIRED_LENGTH
+    private fun errorsPresent(errors: MutableMap<String, String>) = !errors.isEmpty()
+
+    private fun isPasswordLengthValid(password: String): Boolean = password.length >= REQUIRED_PASSWORD_LENGTH
+
+    private fun isPhoneNumberLengthValid(phoneNumber: String) = phoneNumber.length == REQUIRED_PHONE_NUMBER_LENGTH
 }
 
 data class ValidationResult(val errors: Map<String, String>)

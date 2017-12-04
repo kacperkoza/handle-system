@@ -1,7 +1,7 @@
 package com.kkoza.starter.measurements.api
 
 import com.kkoza.starter.BaseIntegrationTest
-import com.kkoza.starter.measurements.Measurement
+import com.kkoza.starter.measurements.MeasurementDocument
 import com.kkoza.starter.session.Session
 import com.kkoza.starter.testutil.MeasurementBuilder
 import org.joda.time.DateTime
@@ -30,7 +30,7 @@ class DeleteMeasurementEndpointTest extends BaseIntegrationTest {
 
         then:
         response.statusCode == HttpStatus.OK
-        mongoTemplate.findAll(Measurement).size() == 0
+        mongoTemplate.findAll(MeasurementDocument).size() == 0
     }
 
     private ResponseEntity<Void> executePost(String id) {

@@ -21,13 +21,13 @@ class MeasurementOperation(
         private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
     }
 
-    fun add(measurement: Measurement): String {
-        val user: UserDocument? = userRepository.findUserWithHandle(measurement.handleId)
-        logger.info("Add new $measurement")
+    fun add(measurementDocument: MeasurementDocument): String {
+        val user: UserDocument? = userRepository.findUserWithHandle(measurementDocument.handleId)
+        logger.info("Add new $measurementDocument")
         if (user != null) {
-            dangerEventNotifier.notify(measurement, user.phoneNumber)
+            dangerEventNotifier.notify(measurementDocument, user.phoneNumber)
         }
-        return measurementRepository.add(measurement)
+        return measurementRepository.add(measurementDocument)
     }
 
     fun get(userId: String, sort: String?, offset: Int?, limit: Int?): MeasurementList {
@@ -46,18 +46,18 @@ class MeasurementOperation(
 
     private fun getSortOrder(sortType: MeasurementSortType): Sort {
         return when (sortType) {
-            MeasurementSortType.DATE_LATEST -> Sort(Sort.Direction.DESC, Measurement.DATE)
-            MeasurementSortType.DATE_OLDEST -> Sort(Sort.Direction.ASC, Measurement.DATE)
-            MeasurementSortType.TEMP_ASC -> Sort(Sort.Direction.ASC, Measurement.TEMPERATURE)
-            MeasurementSortType.TEMP_DESC -> Sort(Sort.Direction.DESC, Measurement.TEMPERATURE)
-            MeasurementSortType.SOUND_ASC -> Sort(Sort.Direction.ASC, Measurement.SOUND_LEVEL)
-            MeasurementSortType.SOUND_DESC -> Sort(Sort.Direction.DESC, Measurement.SOUND_LEVEL)
+            MeasurementSortType.DATE_LATEST -> Sort(Sort.Direction.DESC, MeasurementDocument.DATE)
+            MeasurementSortType.DATE_OLDEST -> Sort(Sort.Direction.ASC, MeasurementDocument.DATE)
+            MeasurementSortType.TEMP_ASC -> Sort(Sort.Direction.ASC, MeasurementDocument.TEMPERATURE)
+            MeasurementSortType.TEMP_DESC -> Sort(Sort.Direction.DESC, MeasurementDocument.TEMPERATURE)
+            MeasurementSortType.SOUND_ASC -> Sort(Sort.Direction.ASC, MeasurementDocument.SOUND_LEVEL)
+            MeasurementSortType.SOUND_DESC -> Sort(Sort.Direction.DESC, MeasurementDocument.SOUND_LEVEL)
         }
     }
 
     fun deleteById(id: String) {
         logger.info("delete measurement id = $id")
-        measurementRepository.deleteById(id)
+        measurementRepository.delete(id)
     }
 
 

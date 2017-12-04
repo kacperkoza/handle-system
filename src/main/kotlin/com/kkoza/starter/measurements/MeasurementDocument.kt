@@ -1,16 +1,18 @@
 package com.kkoza.starter.measurements
 
 import org.joda.time.DateTime
+import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 
-@Document(collection = Measurement.COLLECTION_NAME)
-data class Measurement(
+@Document(collection = MeasurementDocument.COLLECTION_NAME)
+data class MeasurementDocument(
         @Id
         @Field(ID)
         val id: String? = null,
 
+        @CreatedDate
         @Field(DATE)
         val date: DateTime,
 

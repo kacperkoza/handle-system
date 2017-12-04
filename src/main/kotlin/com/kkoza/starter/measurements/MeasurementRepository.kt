@@ -1,29 +1,38 @@
 package com.kkoza.starter.measurements
 
+import org.apache.log4j.Logger
 import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Repository
+import java.lang.invoke.MethodHandles
 
 @Repository
 class MeasurementRepository(private val mongoTemplate: MongoTemplate) {
 
-    fun add(measurement: Measurement): String {
-        mongoTemplate.save(measurement)
-        return measurement.id!!
+    companion object {
+        private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
     }
 
-    fun get(handles: List<String>, sort: Sort): List<Measurement> {
+    fun add(measurementDocument: MeasurementDocument): String {
+        logger.info("Save new measurementDocument $measurementDocument")
+        mongoTemplate.save(measurementDocument)
+        return measurementDocument.id!!
+    }
+
+    fun get(handles: List<String>, sort: Sort): List<MeasurementDocument> {
+        logger.info("Get measurement list for $handles and $sort")
         return mongoTemplate.find(
-                Query(Criteria(Measurement.HANDLE_ID).`in`(handles)).with(sort),
-                Measurement::class.java)
+                Query(Criteria(MeasurementDocument.HANDLE_ID).`in`(handles)).with(sort),
+                MeasurementDocument::class.java)
     }
 
-    fun deleteById(id: String) {
+    fun delete(id: String) {
+        logger.info("Delete measurement id = $id")
         mongoTemplate.remove(
-                Query(Criteria(Measurement.ID).`is`(id)),
-                Measurement::class.java)
+                Query(Criteria(MeasurementDocument.ID).`is`(id)),
+                MeasurementDocument::class.java)
     }
 
 }

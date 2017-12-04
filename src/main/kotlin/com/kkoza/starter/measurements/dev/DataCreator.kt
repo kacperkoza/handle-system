@@ -21,7 +21,7 @@ class DataCreator(
 
     init {
 //        val random = Random()
-//        measurementFacade.add(Measurement(
+//        measurementFacade.add(MeasurementDocument(
 //                null,
 //                DateTime.now(),
 //                "handle-id",
@@ -31,7 +31,7 @@ class DataCreator(
 //                SoundLevel(random.nextDouble() * (-50)),
 //                random.nextInt(300)
 //        ))
-//        measurementFacade.add(Measurement(
+//        measurementFacade.add(MeasurementDocument(
 //                null,
 //                DateTime.now().minusMinutes(15),
 //                "handle-id",
@@ -41,7 +41,7 @@ class DataCreator(
 //                SoundLevel(random.nextDouble() * (-50)),
 //                random.nextInt(300)
 //        ))
-//        measurementFacade.add(Measurement(
+//        measurementFacade.add(MeasurementDocument(
 //                null,
 //                DateTime.now().minusMinutes(30),
 //                "handle-id",
@@ -52,7 +52,7 @@ class DataCreator(
 //                random.nextInt(300)
 //        ))
 //
-//        measurementFacade.add(Measurement(
+//        measurementFacade.add(MeasurementDocument(
 //                null,
 //                DateTime.now().minusMinutes(45),
 //                "handle-id",

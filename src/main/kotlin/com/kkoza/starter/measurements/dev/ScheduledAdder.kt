@@ -6,7 +6,6 @@ import org.joda.time.DateTime
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.lang.invoke.MethodHandles
 import java.util.*
@@ -24,7 +23,7 @@ class ScheduledAdder(val measurementFacade: MeasurementFacade) {
 //    @Scheduled(fixedDelay = 3000)
     fun add() {
         logger.info("Scheduler added new measurement")
-        val measurement = Measurement(
+        val measurement = MeasurementDocument(
                 null,
                 DateTime.now().minusMinutes(30),
                 "handle-id",

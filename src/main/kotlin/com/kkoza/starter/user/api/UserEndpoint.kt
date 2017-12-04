@@ -37,7 +37,7 @@ class UserEndpoint(private val userFacade: UserFacade, private val SessionServic
             ApiResponse(code = 422, message = "Email already exists or provided user data are not correct"))
     @PostMapping("/users")
     fun createNewUser(@RequestBody userDto: UserDto): ResponseEntity<Void> {
-        val userDocument: UserDocument = userFacade.register(UserDocument(
+        val userDocument: UserDocument = userFacade.save(UserDocument(
                 null,
                 userDto.email,
                 userDto.password,
@@ -62,7 +62,7 @@ class UserEndpoint(private val userFacade: UserFacade, private val SessionServic
     @PutMapping("/users/{userId}")
     fun updateExistingUser(@PathVariable("userId") userId: String,
                            @RequestBody userDto: UserDto): ResponseEntity<Void> {
-        userFacade.updateUser(UserDocument(
+        userFacade.update(UserDocument(
                 userId,
                 userDto.email,
                 userDto.password,
