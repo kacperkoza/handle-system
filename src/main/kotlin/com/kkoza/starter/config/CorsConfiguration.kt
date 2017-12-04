@@ -27,11 +27,14 @@ class CorsConfiguration(
     }
 
     override fun addViewControllers(registry: ViewControllerRegistry) {
+        logger.info("add redirect for /")
         registry.addRedirectViewController("/", "/swagger-ui.html")
     }
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        logger.info("Add swagger resources")
         registry.addResourceHandler("/swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/swagger-ui.html")
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/")
     }
+
 }

@@ -1,7 +1,7 @@
 package com.kkoza.starter.measurements
 
 import com.kkoza.starter.measurements.api.MeasurementList
-import com.kkoza.starter.measurements.api.SortType
+import com.kkoza.starter.measurements.api.MeasurementSortType
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
 import com.kkoza.starter.user.UserDocument
 import com.kkoza.starter.user.UserRepository
@@ -34,7 +34,7 @@ class MeasurementOperation(
         logger.info("get list with sort = $sort, offset = $offset, limit = $limit for userId = $userId")
         if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
         if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
-        val sortType = SortType.from(sort)
+        val sortType = MeasurementSortType.from(sort)
         val handles = userRepository.findByUserId(userId)!!.handles
         val list = measurementRepository.get(handles, getSortOrder(sortType))
         return MeasurementList(
@@ -44,14 +44,14 @@ class MeasurementOperation(
                 list.dropIfNotNull(offset).takeIfNotNull(limit))
     }
 
-    private fun getSortOrder(sortType: SortType): Sort {
+    private fun getSortOrder(sortType: MeasurementSortType): Sort {
         return when (sortType) {
-            SortType.DATE_LATEST -> Sort(Sort.Direction.DESC, Measurement.DATE)
-            SortType.DATE_OLDEST -> Sort(Sort.Direction.ASC, Measurement.DATE)
-            SortType.TEMPERATURE_ASCENDING -> TODO()
-            SortType.TEMPERATURE_DESCENDING -> TODO()
-            SortType.SOUND_LEVEL_ASCENDING -> TODO()
-            SortType.SOUND_LEVEL_DESCENDING -> TODO()
+            MeasurementSortType.DATE_LATEST -> Sort(Sort.Direction.DESC, Measurement.DATE)
+            MeasurementSortType.DATE_OLDEST -> Sort(Sort.Direction.ASC, Measurement.DATE)
+            MeasurementSortType.TEMP_ASC -> Sort(Sort.Direction.ASC, Measurement.TEMPERATURE)
+            MeasurementSortType.TEMP_DESC -> Sort(Sort.Direction.DESC, Measurement.TEMPERATURE)
+            MeasurementSortType.SOUND_ASC -> Sort(Sort.Direction.ASC, Measurement.SOUND_LEVEL)
+            MeasurementSortType.SOUND_DESC -> Sort(Sort.Direction.DESC, Measurement.SOUND_LEVEL)
         }
     }
 

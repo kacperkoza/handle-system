@@ -18,6 +18,8 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     def first = MeasurementBuilder.create()
             .setId('1')
             .setHandleId('handle')
+            .setTemperature(10.0d)
+            .setSound(10.0d)
             .setDate(DateTime.now().minusHours(1))
             .build()
 
@@ -25,6 +27,8 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     def second = MeasurementBuilder.create()
             .setId('2')
             .setHandleId('handle')
+            .setTemperature(15.0d)
+            .setSound(15.0d)
             .setDate(DateTime.now().minusDays(1))
             .build()
 
@@ -32,6 +36,8 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     def third = MeasurementBuilder.create()
             .setId('3')
             .setHandleId('handle')
+            .setTemperature(5.0d)
+            .setSound(5.0d)
             .setDate(DateTime.now().minusDays(6))
             .build()
 
@@ -109,10 +115,37 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         0           | 100        || ['4', '5', '6', '1', '2', '3'] | 6
     }
 
+    @Unroll
+    def "[GET] should sort by temperature #sort"() {
+        when:
+        def response = executeGet("/users/measurements?sort=$sort")
+
+        then:
+        response.body.measurements.collect({ it.id }) == expectedOrder
+
+        where:
+        sort        || expectedOrder
+        'temp_asc'  || ['3', '1', '2']
+        'temp_desc' || ['2', '1', '3']
+    }
+
+    @Unroll
+    def "[GET] should sort by sound level #sort"() {
+        when:
+        def response = executeGet("/users/measurements?sort=$sort")
+
+        then:
+        response.body.measurements.collect({ it.id }) == expectedOrder
+
+        where:
+        sort         || expectedOrder
+        'sound_asc'  || ['3', '1', '2']
+        'sound_desc' || ['2', '1', '3']
+    }
+
     def "[GET] should return BAD_REQUEST [400] when limit or offset is lower than 0"() {
         when:
         executeGet("users/measurements?limit=$limit&offset=$offset")
-
         then:
         def ex = thrown(HttpClientErrorException)
         ex.statusCode.value() == 400

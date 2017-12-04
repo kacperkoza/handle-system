@@ -50,7 +50,7 @@ class MeasurementsEndpoint(
     fun getMeasurements(
             @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue(name = "SESSIONID", required = true) sessionId: String,
-            @ApiParam(value = "Sort data by any of value (case insensitive)", allowableValues = "date_latest, date_oldest")
+            @ApiParam(value = "Sort data by any of value (case insensitive)", allowableValues = "date_latest, date_oldest, temp_asc, temp_desc, sound_asc, sound_desc")
             @RequestParam(value = "sort", required = false) sort: String?,
             @RequestParam(value = "offset", required = false) offset: Int?,
             @RequestParam(value = "limit", required = false) limit: Int?
@@ -86,19 +86,19 @@ class MeasurementsEndpoint(
 
 }
 
-enum class SortType {
+enum class MeasurementSortType {
     DATE_LATEST,
     DATE_OLDEST,
-    TEMPERATURE_ASCENDING,
-    TEMPERATURE_DESCENDING,
-    SOUND_LEVEL_ASCENDING,
-    SOUND_LEVEL_DESCENDING;
+    TEMP_ASC,
+    TEMP_DESC,
+    SOUND_ASC,
+    SOUND_DESC;
 
     companion object {
-        fun from(source: String?): SortType {
-            source ?: return SortType.DATE_LATEST
+        fun from(source: String?): MeasurementSortType {
+            source ?: return MeasurementSortType.DATE_LATEST
             return try {
-                SortType.valueOf(source.toUpperCase())
+                MeasurementSortType.valueOf(source.toUpperCase())
             } catch (ex: IllegalArgumentException) {
                 throw InvalidSortTypeException(source)
             }
