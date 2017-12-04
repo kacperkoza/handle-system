@@ -3,10 +3,7 @@ package com.kkoza.starter.config
 import org.apache.log4j.Logger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.servlet.config.annotation.CorsRegistry
-import org.springframework.web.servlet.config.annotation.EnableWebMvc
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
+import org.springframework.web.servlet.config.annotation.*
 import java.lang.invoke.MethodHandles
 
 
@@ -27,6 +24,10 @@ class CorsConfiguration(
         registry.addMapping("/**")
                 .allowedOrigins(github, localhost)
                 .allowedMethods("PUT", "GET", "DELETE", "POST")
+    }
+
+    override fun addViewControllers(registry: ViewControllerRegistry) {
+        registry.addRedirectViewController("/", "/swagger-ui.html")
     }
 
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
