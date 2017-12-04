@@ -45,7 +45,6 @@ dependencies {
 	compile("org.jetbrains.kotlin:kotlin-reflect")
 	compile('org.springframework.boot:spring-boot-starter-data-mongodb')
 	compile('org.springframework.boot:spring-boot-starter-web')
-	compile 'org.springframework.security:spring-security-web:5.0.1.BUILD-SNAPSHOT'
 
 	compile group: 'joda-time', name: 'joda-time', version: '2.3'
 	compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
