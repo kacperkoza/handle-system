@@ -39,7 +39,7 @@ class DeleteMeasurementEndpointTest extends BaseIntegrationTest {
         restTemplate.exchange(
                 localUrl("users/measurements/$id"),
                 HttpMethod.DELETE,
-                new HttpEntity<Object>(),
+                new HttpEntity<Object>(headers),
                 Void)
     }
 }
