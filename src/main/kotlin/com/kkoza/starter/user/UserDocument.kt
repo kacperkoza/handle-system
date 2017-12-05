@@ -19,10 +19,8 @@ class UserDocument(
         val password: String,
 
         @Field(PHONE_NUMBER)
-        val phoneNumber: String,
+        val phoneNumber: String
 
-        @Field(HANDLE_IDS)
-        val handles: List<String> = emptyList()
 ) {
     companion object {
         const val USER_ID = "_id"
@@ -30,7 +28,6 @@ class UserDocument(
         const val PASSWORD = "password"
         const val EMAIL = "email"
         const val PHONE_NUMBER = "phone_number"
-        const val HANDLE_IDS = "handles"
     }
 
 }

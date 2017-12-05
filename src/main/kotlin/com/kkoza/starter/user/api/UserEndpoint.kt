@@ -41,8 +41,7 @@ class UserEndpoint(private val userFacade: UserFacade, private val SessionServic
                 null,
                 userDto.email,
                 userDto.password,
-                userDto.phoneNumber,
-                emptyList()
+                userDto.phoneNumber
         ))
         return ResponseEntity.created(URI("/users/${userDocument.userId}")).build()
     }
@@ -66,8 +65,7 @@ class UserEndpoint(private val userFacade: UserFacade, private val SessionServic
                 userId,
                 userDto.email,
                 userDto.password,
-                userDto.phoneNumber,
-                userDto.handles))
+                userDto.phoneNumber))
         return ResponseEntity.ok(null)
     }
 

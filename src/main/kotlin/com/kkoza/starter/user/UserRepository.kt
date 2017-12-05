@@ -38,7 +38,7 @@ class UserRepository(val mongoTemplate: MongoTemplate) {
     fun findUserWithHandle(handleId: String): UserDocument? {
         logger.info("Find user with handle $handleId")
         return mongoTemplate.findOne(
-                Query(Criteria.where(UserDocument.HANDLE_IDS).`is`(handleId)),
+                Query(Criteria.where("ee").`is`(handleId)),
                 UserDocument::class.java
         )
     }
