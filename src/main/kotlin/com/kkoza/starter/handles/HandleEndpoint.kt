@@ -2,6 +2,7 @@ package com.kkoza.starter.handles
 
 import com.kkoza.starter.session.SessionService
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -83,6 +84,7 @@ data class HandleList(
         val handles: List<HandleDto>
 )
 
+@Document(collection = HandleDocument.HANDLES_COLLECTION)
 data class HandleDocument(
 
         @Id
@@ -97,6 +99,7 @@ data class HandleDocument(
 
 ) {
     companion object {
+        const val HANDLES_COLLECTION = "handles"
         const val USER_ID = "user_id"
         const val HANDLE_NAME = "handle_name"
         const val ID = "_id"

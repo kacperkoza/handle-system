@@ -2,13 +2,14 @@ package com.kkoza.starter.user
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
+import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 
+@Document(collection = UserDocument.USERS_COLLECTION)
 class UserDocument(
 
         @Id
         @Field(USER_ID)
-        @Indexed(unique = true)
         val userId: String? = null,
 
         @Field(EMAIL)
@@ -23,6 +24,7 @@ class UserDocument(
 
 ) {
     companion object {
+        const val USERS_COLLECTION = "users"
         const val USER_ID = "_id"
         const val LOGIN = "email"
         const val PASSWORD = "password"

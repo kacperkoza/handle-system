@@ -24,7 +24,7 @@ class DataCreator(
         measurementFacade.add(MeasurementDocument(
                 null,
                 DateTime.now(),
-                "handle-id",
+                "klamka1",
                 HandlePosition.CLOSED,
                 Temperature(random.nextDouble() * 30),
                 Alarm(false, false, false),
