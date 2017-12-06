@@ -6,6 +6,5 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 data class UserDto(
         val email: String,
         val password: String,
-        val phoneNumber: String,
-        val handles: List<String>
+        val phoneNumber: String
 )

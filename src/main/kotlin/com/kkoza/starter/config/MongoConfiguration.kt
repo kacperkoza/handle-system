@@ -35,6 +35,7 @@ class MongoConfiguration(
     private fun getMongoClientOptions(): MongoClientOptions {
         return MongoClientOptions.builder()
                 .applicationName(applicationName)
+                .writeConcern(WriteConcern.ACKNOWLEDGED)
                 .socketTimeout(mongoProperties.socketTimeout)
                 .build()
     }

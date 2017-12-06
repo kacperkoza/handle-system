@@ -41,8 +41,7 @@ class UserBuilder {
         return new UserDto(
                 email,
                 password,
-                phoneNumber,
-                handles
+                phoneNumber
         )
     }
 
@@ -51,8 +50,7 @@ class UserBuilder {
                 id,
                 email,
                 password,
-                phoneNumber,
-                handles)
+                phoneNumber)
     }
 
 }

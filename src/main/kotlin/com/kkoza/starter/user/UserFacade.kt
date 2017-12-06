@@ -2,8 +2,7 @@ package com.kkoza.starter.user
 
 import org.springframework.stereotype.Component
 
-@Component
-class UserFacade(
+open class UserFacade(
         private val userOperation: UserOperation,
         private val userRepository: UserRepository) {
 

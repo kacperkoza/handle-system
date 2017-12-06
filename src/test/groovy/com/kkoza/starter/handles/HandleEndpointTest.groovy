@@ -9,50 +9,54 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.client.HttpClientErrorException
+
+import static org.springframework.http.HttpMethod.DELETE
+import static org.springframework.http.HttpMethod.GET
+import static org.springframework.http.HttpMethod.POST
+import static org.springframework.http.HttpMethod.PUT
 
 class HandleEndpointTest extends BaseIntegrationTest {
 
-    def sessionId = 'sess-id'
+    String sessionId = 'session-id'
 
     def setup() {
         save(new SessionDocument(sessionId, 'user-id', DateTime.now()))
     }
 
-
     def '[POST] should return CREATED (201) after successful adding new handle'() {
         given:
-        def dto = HandleBuilder.create().setHandleId('handle-id').setHandleName('handle-name').buildDto()
+        HandleDto dto = HandleBuilder.create().setHandleId('handle-id').setHandleName('handle-name').buildDto()
 
         when:
-        def location = restTemplate.postForLocation(localUrl('/users/handles'), dto, getHeadersWithSessionCookie()).toASCIIString()
-        def handle = mongoTemplate.findOne(new Query(), HandleDocument)
+        String location = execute('/users/handles', POST, dto, Void).headers.getFirst("Location")
+        HandleDocument handle = mongoTemplate.findOne(new Query(), HandleDocument)
 
         then:
-        location == "/users/handles/${handle.id}"
-        handle.userId == dto.id
+        location == "/users/handles/handle-id"
         handle.name == dto.name
     }
 
     def '[POST] should return UNPROCESSABLE_ENTITY (422) when handle-id already exists'() {
         given:
         saveHandle('handle-id', 'handle-name')
-        def dto = HandleBuilder.create().setHandleId('handle-id').setHandleName('another').buildDto()
+        HandleDto dto = HandleBuilder.create().setHandleId('handle-id').setHandleName('another').buildDto()
 
         when:
-        restTemplate.postForLocation(localUrl('/users/handles'), dto, getHeadersWithSessionCookie())
+        execute('/users/handles', POST, dto, Void)
 
         then:
         def ex = thrown(HttpClientErrorException)
         ex.statusCode == HttpStatus.UNPROCESSABLE_ENTITY
     }
 
-    def '[POST] should return UNPROCESSABLE_ENTTITY (422) when name is empty'() {
+    def '[POST] should return UNPROCESSABLE_ENTTITY (422) when name is blank'() {
         given:
         def dto = HandleBuilder.create().setHandleId('another').setHandleName('').buildDto()
 
         when:
-        restTemplate.postForLocation(localUrl('/users/handles'), dto,)
+        execute('/users/handles', POST, dto, Void)
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -67,11 +71,7 @@ class HandleEndpointTest extends BaseIntegrationTest {
         save(handle2.buildDocument())
 
         when:
-        def response = restTemplate.exchange(
-                localUrl("/users/handles"),
-                HttpMethod.GET,
-                new HttpEntity<Object>(getHeadersWithSessionCookie()),
-                HandleList.class)
+        ResponseEntity<HandleList> response = execute('/users/handles', GET, null, HandleList)
 
         then:
         response.body.handles == [handle1.buildDto(), handle2.buildDto()]
@@ -82,10 +82,7 @@ class HandleEndpointTest extends BaseIntegrationTest {
         save(HandleBuilder.create().setHandleId('id').setHandleName('name').setUserId('user-id').buildDocument())
 
         when:
-        def response = restTemplate.exchange(localUrl("/users/handles/id"),
-                HttpMethod.GET,
-                new HttpEntity<Object>(getHeadersWithSessionCookie()),
-                HandleDto)
+        ResponseEntity<HandleDto> response = execute('/users/handles/id', GET, null, HandleDto)
 
         then:
         with(response.body) {
@@ -96,7 +93,7 @@ class HandleEndpointTest extends BaseIntegrationTest {
 
     def '[GET] should return NOT_FOUND [404] when handle-id was not found'() {
         when:
-        restTemplate.getForEntity(localUrl("/users/handles/id"), HandleDto)
+        execute('/users/handles/id', GET, null, HandleDto)
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -108,7 +105,7 @@ class HandleEndpointTest extends BaseIntegrationTest {
         save(new HandleDocument('handle-id', 'handle-name', 'user-id'))
 
         when:
-        restTemplate.put(localUrl("users/handles/handle-id"), '{"name":"new-name"}')
+        execute('/users/handles/handle-id', PUT, 'new-name', Void)
         HandleDocument handleDocument = mongoTemplate.findOne(new Query(), HandleDocument.class)
 
         then:
@@ -119,9 +116,9 @@ class HandleEndpointTest extends BaseIntegrationTest {
         }
     }
 
-    def '[PUT] should return UNPROCESSABLE_ENTITY [422] for empty name'() {
+    def '[PUT] should return UNPROCESSABLE_ENTITY [422] for blank name'() {
         when:
-        restTemplate.put(localUrl("users/handles/handle-id"), '{"name":""}')
+        execute('/users/handles/handle-id', PUT, ' ', Void)
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -133,10 +130,7 @@ class HandleEndpointTest extends BaseIntegrationTest {
         save(HandleBuilder.create().setHandleId('handle-id').buildDocument())
 
         when:
-        restTemplate.exchange(localUrl("/users/handles/handle-id"),
-                HttpMethod.DELETE,
-                new HttpEntity<Object>(getHeadersWithSessionCookie()),
-                Void)
+        execute('/users/handles/handle-id', DELETE, null, Void)
 
         then:
         mongoTemplate.count(new Query(), HandleDocument.class) == 0
@@ -146,11 +140,14 @@ class HandleEndpointTest extends BaseIntegrationTest {
         save(HandleBuilder.create().setHandleId(handleId).setHandleName(handleName).buildDocument())
     }
 
-    def getHeadersWithSessionCookie() {
+    private def generateEntityWithValidSession(def body) {
         def headers = new HttpHeaders()
         headers.set("Cookie", "SESSIONID=$sessionId")
-        return headers
+        return new HttpEntity<>(body, headers)
     }
 
+    private <T> ResponseEntity<T> execute(String endpoint, HttpMethod httpMethod, Object body, Class<T> responseType) {
+        return restTemplate.exchange(localUrl(endpoint), httpMethod, generateEntityWithValidSession(body), responseType)
+    }
 
 }

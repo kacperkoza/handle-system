@@ -1,7 +1,9 @@
 package com.kkoza.starter.measurements.api
 
 import com.kkoza.starter.BaseIntegrationTest
+import com.kkoza.starter.handles.HandleDocument
 import com.kkoza.starter.session.SessionDocument
+import com.kkoza.starter.testutil.HandleBuilder
 import com.kkoza.starter.testutil.MeasurementBuilder
 import com.kkoza.starter.testutil.UserBuilder
 import org.joda.time.DateTime
@@ -45,6 +47,12 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     def user = UserBuilder.create('user-id').setHandles(['handle']).buildDocument()
 
     @Shared
+    def handle = HandleBuilder.create().setHandleId('handle').setHandleName('handle-name').setUserId('user-id').buildDocument()
+
+    @Shared
+    def handle2 = HandleBuilder.create().setHandleId('handle2').setHandleName('handle-name').setUserId('user-id').buildDocument()
+
+    @Shared
     def session = new SessionDocument('session-id', 'user-id', DateTime.now())
 
     def setup() {
@@ -52,6 +60,8 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         save(first)
         save(third)
         save(user)
+        save(handle)
+        save(handle2)
         save(session)
     }
 
@@ -146,6 +156,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     def "[GET] should return BAD_REQUEST [400] when limit or offset is lower than 0"() {
         when:
         executeGet("users/measurements?limit=$limit&offset=$offset")
+
         then:
         def ex = thrown(HttpClientErrorException)
         ex.statusCode.value() == 400
@@ -156,6 +167,16 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         -1    | 5
         5     | -1
         5     | -100
+    }
+
+    def "[GET] should return all handles of user"() {
+        when:
+        def response = executeGet('users/measurements')
+
+        then:
+        with(response.body) {
+            handles == [handle.toDto(), handle2.toDto()]
+        }
     }
 
     def executeGet(String endpoint) {

@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Field
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.net.URI
 
 @RestController
 @RequestMapping("/users/handles")
@@ -17,10 +18,11 @@ class HandleEndpoint(
     fun addNewHandle(
             @CookieValue("SESSIONID", required = true) sessionId: String,
             @RequestBody(required = true) handleDto: HandleDto
-    ) {
+    ): ResponseEntity<Void> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
+        val handle = handleFacade.insert(HandleDocument(handleDto.id, handleDto.name, userId))
+        return ResponseEntity.created(URI("/users/handles/${handle.id}")).body(null)
     }
-
 
     @GetMapping
     fun getAllHandles(
@@ -37,8 +39,12 @@ class HandleEndpoint(
             @PathVariable("handleId", required = true) handleId: String
     ): ResponseEntity<HandleDto> {
         sessionService.findUserIdAndUpdateSession(sessionId)
-        val handle = handleFacade.findById(handleId)
-        return ResponseEntity.ok(handle)
+        val handle: HandleDocument? = handleFacade.findById(handleId)
+        return if (handle != null) {
+            ResponseEntity.ok(HandleDto(handle.id, handle.name))
+        } else {
+            ResponseEntity.notFound().build()
+        }
     }
 
     @PutMapping("/{handleId}")
@@ -47,7 +53,8 @@ class HandleEndpoint(
             @PathVariable(name = "handleId", required = true) handleId: String,
             @RequestBody(required = true) name: String
     ): ResponseEntity<Void> {
-
+        val userId = sessionService.findUserIdAndUpdateSession(sessionId)
+        handleFacade.save(HandleDocument(handleId, name, userId))
         return ResponseEntity.ok().body(null)
     }
 
@@ -58,6 +65,13 @@ class HandleEndpoint(
         handleFacade.deleteById(handleId)
         return ResponseEntity.ok().body(null)
     }
+
+    @ExceptionHandler(ExistingHandleException::class)
+    fun handle(ex: ExistingHandleException) = ResponseEntity.unprocessableEntity().body(ex.message)!!
+
+    @ExceptionHandler(EmptyHandleNameException::class)
+    fun handle(ex: EmptyHandleNameException) = ResponseEntity.unprocessableEntity().body(ex.message)!!
+
 }
 
 data class HandleDto(
@@ -69,8 +83,7 @@ data class HandleList(
         val handles: List<HandleDto>
 )
 
-
-class HandleDocument(
+data class HandleDocument(
 
         @Id
         @Field(ID)
@@ -88,4 +101,6 @@ class HandleDocument(
         const val HANDLE_NAME = "handle_name"
         const val ID = "_id"
     }
+
+    fun toDto(): HandleDto = HandleDto(id, name)
 }

@@ -1,5 +1,6 @@
 package com.kkoza.starter.measurements.api
 
+import com.kkoza.starter.handles.HandleDto
 import com.kkoza.starter.measurements.*
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
 import com.kkoza.starter.measurements.exception.InvalidSortTypeException
@@ -122,4 +123,16 @@ data class MeasurementList(
         val count: Int,
         val limit: Int?,
         val offset: Int?,
-        val measurements: List<MeasurementDocument>)
+        val measurements: List<Measurement>,
+        val handles: List<HandleDto>)
+
+data class Measurement(
+        val id: String? = null,
+        val date: DateTime,
+        val handleName: String,
+        val handlePosition: HandlePosition,
+        val temperature: Temperature,
+        val alarm: Alarm,
+        val soundLevel: SoundLevel,
+        val handleTime: Int //wtf?
+)

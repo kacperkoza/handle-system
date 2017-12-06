@@ -30,6 +30,7 @@ class BaseIntegrationTest extends Specification {
         restTemplate = new RestTemplate()
         mongoTemplate.dropCollection(MeasurementDocument.class)
         mongoTemplate.dropCollection(UserDocument.class)
+        mongoTemplate.dropCollection(HandleDocument.class)
     }
 
     String localUrl(String endpoint) {

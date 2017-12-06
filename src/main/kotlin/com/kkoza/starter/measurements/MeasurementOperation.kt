@@ -1,10 +1,14 @@
 package com.kkoza.starter.measurements
 
+import com.kkoza.starter.handles.HandleDocument
+import com.kkoza.starter.handles.HandleDto
+import com.kkoza.starter.handles.HandleFacade
+import com.kkoza.starter.measurements.api.Measurement
 import com.kkoza.starter.measurements.api.MeasurementList
 import com.kkoza.starter.measurements.api.MeasurementSortType
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
 import com.kkoza.starter.user.UserDocument
-import com.kkoza.starter.user.UserRepository
+import com.kkoza.starter.user.UserFacade
 import com.kkoza.starter.util.dropIfNotNull
 import com.kkoza.starter.util.takeIfNotNull
 import org.apache.log4j.Logger
@@ -14,7 +18,8 @@ import java.lang.invoke.MethodHandles
 class MeasurementOperation(
         private val measurementRepository: MeasurementRepository,
         private val dangerEventNotifier: DangerEventNotifier,
-        private val userRepository: UserRepository
+        private val handleFacade: HandleFacade,
+        private val userFacade: UserFacade
 ) {
 
     companion object {
@@ -22,10 +27,11 @@ class MeasurementOperation(
     }
 
     fun add(measurementDocument: MeasurementDocument): String {
-        val user: UserDocument? = userRepository.findUserWithHandle(measurementDocument.handleId)
+        val handle: HandleDocument? = handleFacade.findById(measurementDocument.handleId)
+        val handleOwner: UserDocument? = userFacade.findUserById(handle!!.userId)
         logger.info("Add new $measurementDocument")
-        if (user != null) {
-            dangerEventNotifier.notify(measurementDocument, user.phoneNumber)
+        if (handleOwner != null) {
+            dangerEventNotifier.notify(measurementDocument, handleOwner.phoneNumber)
         }
         return measurementRepository.add(measurementDocument)
     }
@@ -35,15 +41,27 @@ class MeasurementOperation(
         if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
         if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
         val sortType = MeasurementSortType.from(sort)
-//        val handles = userRepository.findByUserId(userId)!!.handles
-        //TODO: switch to handleFacade
-        val handles = listOf("yolo")
-        val list = measurementRepository.get(handles, getSortOrder(sortType))
+        val handles = handleFacade.findByUserId(userId)
+        val list = measurementRepository.get(handles.map { it.id }, getSortOrder(sortType))
         return MeasurementList(
                 list.size,
                 limit,
                 offset,
-                list.dropIfNotNull(offset).takeIfNotNull(limit))
+                mapToMeasurement(list, handles).dropIfNotNull(offset).takeIfNotNull(limit),
+                handles)
+    }
+
+    private fun mapToMeasurement(list: List<MeasurementDocument>, handles: List<HandleDto>): List<Measurement> {
+        return list.map {
+            Measurement(it.id,
+                    it.date,
+                    handles.find { handle -> handle.id == it.handleId }?.name ?: "Brak nazwy",
+                    it.handlePosition,
+                    it.temperature,
+                    it.alarm,
+                    it.soundLevel,
+                    it.handleTime)
+        }
     }
 
     private fun getSortOrder(sortType: MeasurementSortType): Sort {

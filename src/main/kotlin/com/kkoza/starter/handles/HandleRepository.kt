@@ -1,13 +1,12 @@
 package com.kkoza.starter.handles
 
 import org.apache.log4j.Logger
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
-import org.springframework.stereotype.Repository
 import java.lang.invoke.MethodHandles
 
-@Repository
 class HandleRepository(private val mongoTemplate: MongoTemplate) {
 
     companion object {
@@ -21,11 +20,10 @@ class HandleRepository(private val mongoTemplate: MongoTemplate) {
                 HandleDocument::class.java).map { HandleDto(it.id, it.name) }
     }
 
-    fun findById(handleId: String): HandleDto {
+    fun findById(handleId: String): HandleDocument? {
         logger.info("Find handle by id = $handleId")
-        val handleDocument = mongoTemplate.findOne(Query(Criteria.where(HandleDocument.ID).`is`(handleId)),
+        return mongoTemplate.findOne(Query(Criteria.where(HandleDocument.ID).`is`(handleId)),
                 HandleDocument::class.java)
-        return HandleDto(handleDocument.id, handleDocument.name)
     }
 
     fun deleteById(handleId: String) {
@@ -33,6 +31,21 @@ class HandleRepository(private val mongoTemplate: MongoTemplate) {
         mongoTemplate.remove(
                 Query(Criteria.where(HandleDocument.ID).`is`(handleId)),
                 HandleDocument::class.java)
+    }
+
+    fun insert(handleDocument: HandleDocument): HandleDocument {
+        logger.info("Insert new handle $handleDocument")
+        try {
+            mongoTemplate.insert(handleDocument)
+        } catch (ex: DuplicateKeyException) {
+            throw ExistingHandleException(handleDocument.id)
+        }
+        return handleDocument
+    }
+
+    fun save(handleDocument: HandleDocument) {
+        logger.info("Put new handle $handleDocument")
+        mongoTemplate.save(handleDocument)
     }
 
 }
