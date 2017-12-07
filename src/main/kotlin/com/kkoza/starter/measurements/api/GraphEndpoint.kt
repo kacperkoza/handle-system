@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/graphs")
-@Api(value = "Data for graphs", description = "Get data to create graphs with sound level / temperature")
+@Api(value = "Data for graphs", description = "Get data for creating graphs")
 class GraphEndpoint(
         private val sessionService: SessionService,
         private val measurementFacade: MeasurementFacade
@@ -29,16 +29,16 @@ class GraphEndpoint(
             @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue("SESSIONID", required = true) sessionId: String,
 
-            @ApiParam(value = "Starting date in yyyy-MM-dd HH:mm pattern (can't be after 'endDate')", required = true)
+            @ApiParam(value = "Starting date in yyyy-MM-dd HH:mm pattern (can't be after 'endDate')", required = false)
             @RequestParam("startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") startDate: DateTime?,
 
-            @ApiParam(value = "Ending date in yyyy-MM-dd HH:mm pattern", required = true)
+            @ApiParam(value = "Ending date in yyyy-MM-dd HH:mm pattern", required = false)
             @RequestParam("endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") endDate: DateTime?,
 
-            @ApiParam(value = "Query for given field in measurement (case insensitive)", allowableValues = "temperature, sound_level")
+            @ApiParam(value = "Query for given field in measurement (case insensitive)", allowableValues = "temperature, sound_level", required = true)
             @RequestParam("fieldName", required = true) fieldName: String,
 
-            @ApiParam(value = "Handle which data you want to get")
+            @ApiParam(value = "Handle which data you want to get", required = true)
             @RequestParam("handleId", required = true) handleId: String
     ): ResponseEntity<ItemsDto> {
         sessionService.findUserIdAndUpdateSession(sessionId)
@@ -51,7 +51,7 @@ class GraphEndpoint(
     fun handle(ex: UnknownFilterException) = ResponseEntity.badRequest().body(ex.message)!!
 
     @ExceptionHandler(InvalidSessionException::class)
-    fun handle(ex: InvalidSessionException): ResponseEntity<Void> = ResponseEntity(null, HttpStatus.UNAUTHORIZED)!!
+    fun handle(ex: InvalidSessionException): ResponseEntity<Void> = ResponseEntity(null, HttpStatus.UNAUTHORIZED)
 
     @ExceptionHandler(IllegalQueryDateException::class)
     fun handle(ex: IllegalQueryDateException) = ResponseEntity.unprocessableEntity().body(ex.message)!!

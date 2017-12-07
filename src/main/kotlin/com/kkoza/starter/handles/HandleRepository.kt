@@ -1,5 +1,6 @@
 package com.kkoza.starter.handles
 
+import com.kkoza.starter.handles.api.HandleDto
 import org.apache.log4j.Logger
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.data.mongodb.core.MongoTemplate

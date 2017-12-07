@@ -1,5 +1,6 @@
 package com.kkoza.starter.handles
 
+
 class HandleOperation(private val handleRepository: HandleRepository) {
 
     fun insert(handleDocument: HandleDocument): HandleDocument {

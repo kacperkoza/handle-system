@@ -1,7 +1,7 @@
 package com.kkoza.starter.measurements
 
 import com.kkoza.starter.handles.HandleDocument
-import com.kkoza.starter.handles.HandleDto
+import com.kkoza.starter.handles.api.HandleDto
 import com.kkoza.starter.handles.HandleFacade
 import com.kkoza.starter.measurements.api.Measurement
 import com.kkoza.starter.measurements.api.MeasurementList

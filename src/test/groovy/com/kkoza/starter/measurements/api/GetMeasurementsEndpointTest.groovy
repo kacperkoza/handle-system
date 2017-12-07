@@ -1,7 +1,6 @@
 package com.kkoza.starter.measurements.api
 
 import com.kkoza.starter.BaseIntegrationTest
-import com.kkoza.starter.handles.HandleDocument
 import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.testutil.HandleBuilder
 import com.kkoza.starter.testutil.MeasurementBuilder

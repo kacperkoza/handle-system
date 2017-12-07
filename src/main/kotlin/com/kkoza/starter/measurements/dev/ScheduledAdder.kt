@@ -10,7 +10,6 @@ import org.joda.time.DateTime
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.EnableScheduling
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.lang.invoke.MethodHandles
 import java.util.*

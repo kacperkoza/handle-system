@@ -1,7 +1,7 @@
 package com.kkoza.starter.testutil
 
 import com.kkoza.starter.handles.HandleDocument
-import com.kkoza.starter.handles.HandleDto
+import com.kkoza.starter.handles.api.HandleDto
 
 class HandleBuilder {
 

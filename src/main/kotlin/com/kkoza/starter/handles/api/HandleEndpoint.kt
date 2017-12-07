@@ -1,22 +1,34 @@
-package com.kkoza.starter.handles
+package com.kkoza.starter.handles.api
 
+import com.kkoza.starter.handles.EmptyHandleNameException
+import com.kkoza.starter.handles.ExistingHandleException
+import com.kkoza.starter.handles.HandleDocument
+import com.kkoza.starter.handles.HandleFacade
 import com.kkoza.starter.session.SessionService
+import io.swagger.annotations.*
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
 @RequestMapping("/users/handles")
+@Api(value = "Information about user's handles", description = "Add, get, delete, update user's handles")
+
 class HandleEndpoint(
         private val handleFacade: HandleFacade,
         private val sessionService: SessionService
 ) {
-
+    @ApiOperation(value = "Used to add new handle")
+    @ApiResponses(ApiResponse(code = 201, message = "Successfully added new handle. See 'Location' in headers"),
+            ApiResponse(code = 401, message = "Expired or invalid cookie session"),
+            ApiResponse(code = 422, message = "Handle with given ID already exists or handle name is empty"))
     @PostMapping
     fun addNewHandle(
+            @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue("SESSIONID", required = true) sessionId: String,
             @RequestBody(required = true) handleDto: HandleDto
     ): ResponseEntity<Void> {
@@ -25,6 +37,8 @@ class HandleEndpoint(
         return ResponseEntity.created(URI("/users/handles/${handle.id}")).body(null)
     }
 
+    @ApiOperation(value = "Get all user's handles")
+    @ApiResponses(ApiResponse(code = 200, message = "Return list of user's handles"))
     @GetMapping
     fun getAllHandles(
             @CookieValue("SESSIONID", required = true) sessionId: String
@@ -34,6 +48,9 @@ class HandleEndpoint(
         return ResponseEntity.ok(HandleList(list))
     }
 
+    @ApiOperation(value = "Get handle by id")
+    @ApiResponses(ApiResponse(code = 200, message = "Returns handle with given id"),
+            ApiResponse(code = 404, message = "Requested resource does not exists"))
     @GetMapping("/{handleId}")
     fun getByHandleId(
             @CookieValue("SESSIONID", required = true) sessionId: String,
@@ -48,6 +65,10 @@ class HandleEndpoint(
         }
     }
 
+    @ApiOperation(value = "Override handle if does not exists")
+    @ApiResponses(ApiResponse(code = 204, message = "Resource was successfully overridden. Nothing to return"),
+            ApiResponse(code = 404, message = "Requested resource does not exists"),
+            ApiResponse(code = 422, message = "Handle name was empty"))
     @PutMapping("/{handleId}")
     fun updateHandle(
             @CookieValue("SESSIONID", required = true) sessionId: String,
@@ -56,15 +77,17 @@ class HandleEndpoint(
     ): ResponseEntity<Void> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
         handleFacade.save(HandleDocument(handleId, name, userId))
-        return ResponseEntity.ok().body(null)
+        return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
+    @ApiOperation(value = "Override handle if does not exists")
+    @ApiResponses(ApiResponse(code = 204, message = "Resource was successfully deleted. Nothing to return"))
     @DeleteMapping("/{handleId}")
     fun deleteHandle(
             @CookieValue("SESSIONID", required = true) sessionId: String,
             @PathVariable("handleId") handleId: String): ResponseEntity<Void> {
         handleFacade.deleteById(handleId)
-        return ResponseEntity.ok().body(null)
+        return ResponseEntity.noContent().build()
     }
 
     @ExceptionHandler(ExistingHandleException::class)
@@ -84,26 +107,3 @@ data class HandleList(
         val handles: List<HandleDto>
 )
 
-@Document(collection = HandleDocument.HANDLES_COLLECTION)
-data class HandleDocument(
-
-        @Id
-        @Field(ID)
-        val id: String,
-
-        @Field(HANDLE_NAME)
-        val name: String,
-
-        @Field(USER_ID)
-        val userId: String
-
-) {
-    companion object {
-        const val HANDLES_COLLECTION = "handles"
-        const val USER_ID = "user_id"
-        const val HANDLE_NAME = "handle_name"
-        const val ID = "_id"
-    }
-
-    fun toDto(): HandleDto = HandleDto(id, name)
-}

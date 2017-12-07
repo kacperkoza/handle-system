@@ -1,6 +1,8 @@
 package com.kkoza.starter.handles
 
 import com.kkoza.starter.BaseIntegrationTest
+import com.kkoza.starter.handles.api.HandleDto
+import com.kkoza.starter.handles.api.HandleList
 import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.testutil.HandleBuilder
 import org.joda.time.DateTime

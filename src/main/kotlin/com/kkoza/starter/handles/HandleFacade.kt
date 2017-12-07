@@ -1,5 +1,7 @@
 package com.kkoza.starter.handles
 
+import com.kkoza.starter.handles.api.HandleDto
+
 open class HandleFacade(
         private val handleRepository: HandleRepository,
         private val handleOperation: HandleOperation) {

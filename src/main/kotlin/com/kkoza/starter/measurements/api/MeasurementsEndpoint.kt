@@ -1,6 +1,6 @@
 package com.kkoza.starter.measurements.api
 
-import com.kkoza.starter.handles.HandleDto
+import com.kkoza.starter.handles.api.HandleDto
 import com.kkoza.starter.measurements.*
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
 import com.kkoza.starter.measurements.exception.InvalidSortTypeException
@@ -55,7 +55,7 @@ class MeasurementsEndpoint(
             @RequestParam(value = "sort", required = false) sort: String?,
             @RequestParam(value = "offset", required = false) offset: Int?,
             @RequestParam(value = "limit", required = false) limit: Int?
-    ): ResponseEntity<MeasgsurementList> {
+    ): ResponseEntity<MeasurementList> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
         val list = measurementFacade.get(userId, sort, offset, limit)
         return ResponseEntity.ok(list)
