@@ -55,7 +55,7 @@ class MeasurementsEndpoint(
             @RequestParam(value = "sort", required = false) sort: String?,
             @RequestParam(value = "offset", required = false) offset: Int?,
             @RequestParam(value = "limit", required = false) limit: Int?
-    ): ResponseEntity<MeasurementList> {
+    ): ResponseEntity<MeasgsurementList> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
         val list = measurementFacade.get(userId, sort, offset, limit)
         return ResponseEntity.ok(list)

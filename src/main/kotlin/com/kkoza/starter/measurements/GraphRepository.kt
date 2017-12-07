@@ -20,9 +20,9 @@ class GraphRepository(
 
     }
 
-    private fun whereEndDateCriteria(endDate: DateTime) = Criteria.where(MeasurementDocument.HANDLE_ID).lt(endDate)
+    private fun whereEndDateCriteria(endDate: DateTime) = Criteria.where(MeasurementDocument.DATE).lt(endDate)
 
-    private fun whereStartDateCriteria(startDate: DateTime) =  Criteria.where(MeasurementDocument.HANDLE_ID).gt(startDate)
+    private fun whereStartDateCriteria(startDate: DateTime) =  Criteria.where(MeasurementDocument.DATE).gt(startDate)
 
     private fun whereHandleIdCriteria(handleId: String) = Criteria.where(MeasurementDocument.HANDLE_ID).`is`(handleId)
 }
