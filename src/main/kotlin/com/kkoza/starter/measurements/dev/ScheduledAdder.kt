@@ -16,12 +16,17 @@ import java.lang.invoke.MethodHandles
 import java.util.*
 
 @Component
-@Profile("local", "prod")
+@Profile("prod")
 class ScheduledAdder(
         val measurementFacade: MeasurementFacade,
         userFacade: UserFacade,
         handleFacade: HandleFacade
 ) {
+
+    companion object {
+        val list = HandlePosition.values()
+        private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
+    }
 
     init {
         if (userFacade.findUserById("kacper") == null) {
@@ -31,7 +36,7 @@ class ScheduledAdder(
             userFacade.save(UserDocument("kamil", "kamil@gmail.com", "kamil1", "123456789"))
         }
 
-        if (handleFacade.findById("klamka1") == null) {
+        if (handleFacade.findById("klamka1") != null) {
             logger.info("Add all handles init")
             handleFacade.save(HandleDocument("klamka1", "pokoj", "kacper"))
             handleFacade.save(HandleDocument("klamka2", "pokoj", "jeremi"))
@@ -41,17 +46,13 @@ class ScheduledAdder(
 
     private val random = Random()
 
-    companion object {
-        private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
-    }
-
-    @Scheduled(fixedDelay = 5000)
+//    @Scheduled(fixedDelay = 5000)
     fun add() {
         val measurement = MeasurementDocument(
                 null,
                 DateTime.now(),
                 "klamka1",
-                DataCreator.list[random.nextInt(3)],
+                list[random.nextInt(3)],
                 Temperature(random.nextDouble() * 30),
                 Alarm(random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean()),
                 SoundLevel(random.nextDouble() * (-50)),
@@ -60,7 +61,7 @@ class ScheduledAdder(
                 null,
                 DateTime.now(),
                 "klamka2",
-                DataCreator.list[random.nextInt(3)],
+                list[random.nextInt(3)],
                 Temperature(random.nextDouble() * 30),
                 Alarm(random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean()),
                 SoundLevel(random.nextDouble() * (-50)),
@@ -69,7 +70,7 @@ class ScheduledAdder(
                 null,
                 DateTime.now(),
                 "klamka3",
-                DataCreator.list[random.nextInt(3)],
+                list[random.nextInt(3)],
                 Temperature(random.nextDouble() * 30),
                 Alarm(random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean()),
                 SoundLevel(random.nextDouble() * (-50)),

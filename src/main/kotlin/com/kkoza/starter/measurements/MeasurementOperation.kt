@@ -28,12 +28,17 @@ class MeasurementOperation(
 
     fun add(measurementDocument: MeasurementDocument): String {
         val handle: HandleDocument? = handleFacade.findById(measurementDocument.handleId)
-        val handleOwner: UserDocument? = userFacade.findUserById(handle!!.userId)
-        logger.info("Add new $measurementDocument")
+        if (handle != null) {
+            notifyIfNecessaryAboutEvent(handle, measurementDocument)
+        }
+        return measurementRepository.add(measurementDocument)
+    }
+
+    private fun notifyIfNecessaryAboutEvent(handle: HandleDocument, measurementDocument: MeasurementDocument) {
+        val handleOwner: UserDocument? = userFacade.findUserById(handle.userId)
         if (handleOwner != null) {
             dangerEventNotifier.notify(measurementDocument, handleOwner.phoneNumber)
         }
-        return measurementRepository.add(measurementDocument)
     }
 
     fun get(userId: String, sort: String?, offset: Int?, limit: Int?): MeasurementList {
