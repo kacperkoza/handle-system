@@ -6,6 +6,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration
+import org.springframework.data.mongodb.core.convert.DbRefResolver
+import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver
+import org.springframework.data.mongodb.core.convert.DefaultMongoTypeMapper
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext
 import org.springframework.stereotype.Component
 
 
@@ -41,6 +46,13 @@ class MongoConfiguration(
     }
 
     override fun getDatabaseName(): String = mongoProperties.database
+
+    override fun mappingMongoConverter(): MappingMongoConverter {
+        val converter = MappingMongoConverter(DefaultDbRefResolver(mongoDbFactory()), MongoMappingContext())
+        converter.typeMapper = DefaultMongoTypeMapper(null)
+        return converter
+    }
+
 }
 
 @Component
