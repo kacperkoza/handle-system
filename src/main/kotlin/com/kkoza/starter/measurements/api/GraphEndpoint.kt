@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/graphs")
+@RequestMapping("/users/graphs")
 @Api(value = "Data for graphs", description = "Get data for creating graphs")
 class GraphEndpoint(
         private val sessionService: SessionService,

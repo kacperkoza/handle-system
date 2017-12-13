@@ -102,7 +102,7 @@ class GraphEndpointTest extends BaseIntegrationTest {
         def headers = new HttpHeaders()
         headers.add("Cookie", "SESSIONID=session-id")
         def entity = new HttpEntity(headers)
-        return restTemplate.exchange(localUrl("/graphs/measurements?$queryParams"),
+        return restTemplate.exchange(localUrl("users/graphs/measurements?$queryParams"),
                 HttpMethod.GET,
                 entity,
                 ItemsDto)
