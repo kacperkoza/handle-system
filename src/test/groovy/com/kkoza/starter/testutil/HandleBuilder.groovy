@@ -5,8 +5,8 @@ import com.kkoza.starter.handles.api.HandleDto
 
 class HandleBuilder {
 
-    String handleId = 'handle-id'
-    String handleName = 'handle-name'
+    String handleId = 'handleAlarmFilterEx-id'
+    String handleName = 'handleAlarmFilterEx-name'
     String userId = 'userId'
 
     static HandleBuilder create() {

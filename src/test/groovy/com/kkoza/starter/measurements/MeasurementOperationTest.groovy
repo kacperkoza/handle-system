@@ -31,10 +31,10 @@ class MeasurementOperationTest extends Specification {
     def 'should notify about danger when new measurement come with any of alarm set to true'() {
         given:
         mongoTemplate.save(new UserDocument('user-id', 'any', 'any', '123456789'))
-        mongoTemplate.save(new HandleDocument('handle-id', 'name', 'user-id'))
+        mongoTemplate.save(new HandleDocument('handleAlarmFilterEx-id', 'name', 'user-id'))
         def measurement = MeasurementBuilder.create()
                 .setAlarm(fire, burglar, frost)
-                .setHandleId('handle-id')
+                .setHandleId('handleAlarmFilterEx-id')
                 .build()
 
         when:

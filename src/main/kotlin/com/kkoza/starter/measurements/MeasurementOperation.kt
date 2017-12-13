@@ -3,6 +3,7 @@ package com.kkoza.starter.measurements
 import com.kkoza.starter.handles.HandleDocument
 import com.kkoza.starter.handles.api.HandleDto
 import com.kkoza.starter.handles.HandleFacade
+import com.kkoza.starter.measurements.api.AlarmFilter
 import com.kkoza.starter.measurements.api.Measurement
 import com.kkoza.starter.measurements.api.MeasurementList
 import com.kkoza.starter.measurements.api.MeasurementSortType
@@ -41,26 +42,29 @@ class MeasurementOperation(
         }
     }
 
-    fun get(userId: String, sort: String?, offset: Int?, limit: Int?): MeasurementList {
-        logger.info("get list with sort = $sort, offset = $offset, limit = $limit for userId = $userId")
+    fun get(userId: String, sort: MeasurementSortType, offset: Int?, limit: Int?, alarms: List<AlarmFilter>?, handles: List<String>?): MeasurementList {
+        logger.info("get list with sort = $sort, offset = $offset, limit = $limit, alarms = $alarms, handles = $handles for userId = $userId")
         if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
         if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
-        val sortType = MeasurementSortType.from(sort)
-        val handles = handleFacade.findByUserId(userId)
-        val list = measurementRepository.get(handles.map { it.id }, getSortOrder(sortType))
+        val userHandles = handleFacade.findByUserId(userId)
+        val userHandlesIds = userHandles.map { it.id }
+        val filteredHandles = handles?.filter { it in userHandlesIds } ?: userHandlesIds
+        val list = measurementRepository.get(filteredHandles, getSortOrder(sort), alarms)
         return MeasurementList(
                 list.size,
                 limit,
                 offset,
-                mapToMeasurement(list, handles).dropIfNotNull(offset).takeIfNotNull(limit),
-                handles)
+                mapToMeasurement(list, userHandles).dropIfNotNull(offset).takeIfNotNull(limit),
+                userHandles)
     }
 
+
     private fun mapToMeasurement(list: List<MeasurementDocument>, handles: List<HandleDto>): List<Measurement> {
+        val handleIdToName = handles.associateBy({ it.id }, { it.name })
         return list.map {
             Measurement(it.id,
                     it.date,
-                    handles.find { handle -> handle.id == it.handleId }?.name ?: "Brak nazwy",
+                    handleIdToName[it.handleId] ?: "Brak nazwy",
                     it.handlePosition,
                     it.temperature,
                     it.alarm,
@@ -87,4 +91,6 @@ class MeasurementOperation(
 
 
 }
+
+class InvalidHandleException(userId: String, handleId: String) : RuntimeException("User = $userId doesn't have handleAlarmFilterEx with $handleId")
 

@@ -46,6 +46,7 @@ class MeasurementsEndpoint(
 
     @ApiOperation(value = "Get list of user measurements")
     @ApiResponses(ApiResponse(code = 200, message = "Return list with measurement prepared for pagination"),
+            ApiResponse(code = 400, message = "Provided query parameters are invalid. See message in response body"),
             ApiResponse(code = 401, message = "User is not authorized"))
     @GetMapping("users/measurements")
     fun getMeasurements(
@@ -54,10 +55,16 @@ class MeasurementsEndpoint(
             @ApiParam(value = "Sort data by any of value (case insensitive)", allowableValues = "date_latest, date_oldest, temp_asc, temp_desc, sound_asc, sound_desc")
             @RequestParam(value = "sort", required = false) sort: String?,
             @RequestParam(value = "offset", required = false) offset: Int?,
-            @RequestParam(value = "limit", required = false) limit: Int?
+            @RequestParam(value = "limit", required = false) limit: Int?,
+            @ApiParam(value = "Ids of handles to filter (you can select multiple)")
+            @RequestParam(value = "alarms", required = false) alarms: List<String>?,
+            @ApiParam(value = "Alarms to filter (you can select multiple", allowableValues = "fire, alarm, frost")
+            @RequestParam(value = "handles", required = false) handles: List<String>?
     ): ResponseEntity<MeasurementList> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
-        val list = measurementFacade.get(userId, sort, offset, limit)
+        val sortType = MeasurementSortType.from(sort)
+        val alarmFilters = alarms?.map { AlarmFilter.from(it) }
+        val list = measurementFacade.get(userId, sortType, offset, limit, alarmFilters, handles)
         return ResponseEntity.ok(list)
     }
 
@@ -76,14 +83,15 @@ class MeasurementsEndpoint(
 
 
     @ExceptionHandler(InvalidSortTypeException::class)
-    fun handleInvalidSortTypeException(ex: InvalidSortTypeException): ResponseEntity<String> {
-        return ResponseEntity.badRequest().body(ex.message)
-    }
+    fun handleSortEx(ex: InvalidSortTypeException) = ResponseEntity.badRequest().body(ex.message)
+
 
     @ExceptionHandler(InvalidPagingParameterException::class)
-    fun handleInvalidPagingParameterException(ex: InvalidPagingParameterException): ResponseEntity<String> {
-        return ResponseEntity.badRequest().body(ex.message)
-    }
+    fun handlePagingEx(ex: InvalidPagingParameterException) = ResponseEntity.badRequest().body(ex.message)
+
+
+    @ExceptionHandler(InvalidAlarmFilterException::class)
+    fun handleAlarmFilterEx(ex: InvalidAlarmFilterException) = ResponseEntity.badRequest().body(ex.message)
 
 }
 
@@ -105,7 +113,31 @@ enum class MeasurementSortType {
             }
         }
     }
+
 }
+
+data class AlarmFilter private constructor(
+        val fieldName: String,
+        val value: Boolean
+) {
+
+    companion object {
+        private val FIRE = AlarmFilter("alarm.fire", true)
+        private val FROST = AlarmFilter("alarm.frost", true)
+        private val BURGLARY = AlarmFilter("alarm.burglary", true)
+
+        val alarmNames = mapOf(
+                "fire" to FIRE,
+                "frost" to FROST,
+                "burglary" to BURGLARY)
+
+        fun from(source: String): AlarmFilter = alarmNames[source] ?: throw InvalidAlarmFilterException(source)
+    }
+}
+
+class InvalidAlarmFilterException(source: String) : RuntimeException("Wrong alarm filter value - $source." +
+        " filter must be in values (case insensitive) ${AlarmFilter.alarmNames.keys.joinToString(", ", "[", "]")}")
+
 
 data class MeasurementDto(
         val handleId: String,

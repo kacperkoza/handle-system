@@ -11,7 +11,7 @@ class MeasurementBuilder {
 
     String id = 'any'
     DateTime date = DateTime.now()
-    String handleId = 'handle-id'
+    String handleId = 'handleAlarmFilterEx-id'
     HandlePosition handlePosition = HandlePosition.CLOSED
     Double temperature = 20.3d
     boolean fire = false

@@ -9,7 +9,7 @@ class UserBuilder {
     String email = 'email@email.com'
     String password = 'any-existingPassword'
     String phoneNumber = '123456789'
-    List<String> handles = ['handle-id']
+    List<String> handles = ['handleAlarmFilterEx-id']
 
     static UserBuilder create(String id) {
         def builder = new UserBuilder()

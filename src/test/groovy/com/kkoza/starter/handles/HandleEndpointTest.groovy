@@ -29,21 +29,21 @@ class HandleEndpointTest extends BaseIntegrationTest {
 
     def '[POST] should return CREATED (201) after successful adding new handle'() {
         given:
-        HandleDto dto = HandleBuilder.create().setHandleId('handle-id').setHandleName('handle-name').buildDto()
+        HandleDto dto = HandleBuilder.create().setHandleId('handleAlarmFilterEx-id').setHandleName('handleAlarmFilterEx-name').buildDto()
 
         when:
         String location = execute('/users/handles', POST, dto, Void).headers.getFirst("Location")
         HandleDocument handle = mongoTemplate.findOne(new Query(), HandleDocument)
 
         then:
-        location == "/users/handles/handle-id"
+        location == "/users/handles/handleAlarmFilterEx-id"
         handle.name == dto.name
     }
 
     def '[POST] should return UNPROCESSABLE_ENTITY (422) when handle-id already exists'() {
         given:
-        saveHandle('handle-id', 'handle-name')
-        HandleDto dto = HandleBuilder.create().setHandleId('handle-id').setHandleName('another').buildDto()
+        saveHandle('handleAlarmFilterEx-id', 'handleAlarmFilterEx-name')
+        HandleDto dto = HandleBuilder.create().setHandleId('handleAlarmFilterEx-id').setHandleName('another').buildDto()
 
         when:
         execute('/users/handles', POST, dto, Void)
@@ -104,15 +104,15 @@ class HandleEndpointTest extends BaseIntegrationTest {
 
     def '[PUT] should override existing handle name with OK (200)'() {
         given:
-        save(new HandleDocument('handle-id', 'handle-name', 'user-id'))
+        save(new HandleDocument('handleAlarmFilterEx-id', 'handleAlarmFilterEx-name', 'user-id'))
 
         when:
-        execute('/users/handles/handle-id', PUT, 'new-name', Void)
+        execute('/users/handles/handleAlarmFilterEx-id', PUT, 'new-name', Void)
         HandleDocument handleDocument = mongoTemplate.findOne(new Query(), HandleDocument.class)
 
         then:
         with(handleDocument) {
-            id == 'handle-id'
+            id == 'handleAlarmFilterEx-id'
             userId == 'user-id'
             name == 'new-name'
         }
@@ -120,7 +120,7 @@ class HandleEndpointTest extends BaseIntegrationTest {
 
     def '[PUT] should return UNPROCESSABLE_ENTITY [422] for blank name'() {
         when:
-        execute('/users/handles/handle-id', PUT, ' ', Void)
+        execute('/users/handles/handleAlarmFilterEx-id', PUT, ' ', Void)
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -129,10 +129,10 @@ class HandleEndpointTest extends BaseIntegrationTest {
 
     def '[DELETE] should delete existing handle by id with status OK (200)'() {
         given:
-        save(HandleBuilder.create().setHandleId('handle-id').buildDocument())
+        save(HandleBuilder.create().setHandleId('handleAlarmFilterEx-id').buildDocument())
 
         when:
-        execute('/users/handles/handle-id', DELETE, null, Void)
+        execute('/users/handles/handleAlarmFilterEx-id', DELETE, null, Void)
 
         then:
         mongoTemplate.count(new Query(), HandleDocument.class) == 0

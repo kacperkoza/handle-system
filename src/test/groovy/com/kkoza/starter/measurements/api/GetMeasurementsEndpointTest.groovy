@@ -18,7 +18,8 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     @Shared
     def first = MeasurementBuilder.create()
             .setId('1')
-            .setHandleId('handle')
+            .setHandleId('handle1')
+            .setAlarm(true, true, false)
             .setTemperature(10.0d)
             .setSound(10.0d)
             .setDate(DateTime.now().minusHours(1))
@@ -27,7 +28,8 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     @Shared
     def second = MeasurementBuilder.create()
             .setId('2')
-            .setHandleId('handle')
+            .setHandleId('handle1')
+            .setAlarm(true, false, true)
             .setTemperature(15.0d)
             .setSound(15.0d)
             .setDate(DateTime.now().minusDays(1))
@@ -36,20 +38,21 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     @Shared
     def third = MeasurementBuilder.create()
             .setId('3')
-            .setHandleId('handle')
+            .setHandleId('handle1')
+            .setAlarm(false, false, true)
             .setTemperature(5.0d)
             .setSound(5.0d)
             .setDate(DateTime.now().minusDays(6))
             .build()
 
     @Shared
-    def user = UserBuilder.create('user-id').setHandles(['handle']).buildDocument()
+    def user = UserBuilder.create('user-id').setHandles(['handle1']).buildDocument()
 
     @Shared
-    def handle = HandleBuilder.create().setHandleId('handle').setHandleName('handle-name').setUserId('user-id').buildDocument()
+    def handle = HandleBuilder.create().setHandleId('handle1').setHandleName('handle-name').setUserId('user-id').buildDocument()
 
     @Shared
-    def handle2 = HandleBuilder.create().setHandleId('handle2').setHandleName('handle-name').setUserId('user-id').buildDocument()
+    def handle2 = HandleBuilder.create().setHandleId('handle2').setHandleName('handle-name2').setUserId('user-id').buildDocument()
 
     @Shared
     def session = new SessionDocument('session-id', 'user-id', DateTime.now())
@@ -102,9 +105,9 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     @Unroll
     def "[GET] should use offset #inputOffset and limit #inputLimit properly"() {
         given:
-        save(MeasurementBuilder.create().setHandleId('handle').setId('4').setDate(DateTime.now()).build())
-        save(MeasurementBuilder.create().setHandleId('handle').setId('5').setDate(DateTime.now().minusMillis(100)).build())
-        save(MeasurementBuilder.create().setHandleId('handle').setId('6').setDate(DateTime.now().minusMillis(200)).build())
+        save(MeasurementBuilder.create().setHandleId('handle1').setId('4').setDate(DateTime.now()).build())
+        save(MeasurementBuilder.create().setHandleId('handle1').setId('5').setDate(DateTime.now().minusMillis(100)).build())
+        save(MeasurementBuilder.create().setHandleId('handle1').setId('6').setDate(DateTime.now().minusMillis(200)).build())
 
         when:
         def response = executeGet("/users/measurements?limit=$inputLimit&offset=$inputOffset")
@@ -176,6 +179,57 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         with(response.body) {
             handles == [handle.toDto(), handle2.toDto()]
         }
+    }
+
+
+    def "[GET] should return measurements filtered by handle-id"() {
+        given:
+
+        when:
+        def response = executeGet("users/measurements?handles=$handles")
+
+        then:
+        with(response.body) {
+            measurements.every({ it.handleName in expectedHandleId })
+
+        }
+
+        where:
+        handles             || expectedHandleId
+        'handle-id'         || ['handle-id-name']
+        'handle2'           || ['handle-id-name2']
+        'handle-id,handle2' || ['handle-id-name', 'handle-id-name2']
+    }
+
+    def "[GET] should return all measurements when handle filter is not specified"() {
+        given:
+        def expectedHandleName = ['handle-name', 'handle-name-2']
+
+        when:
+        def response = executeGet("users/measurements")
+
+        then:
+        with(response.body) {
+            measurements.every({ it.handleName in expectedHandleName })
+        }
+    }
+
+    @Unroll
+    def "[GET] should return measurements filtered by true alarms"() {
+        when:
+        def response = executeGet("users/measurements?alarms=$alarmFilters")
+
+        then:
+        with(response.body) {
+            measurements.every({ it.id in measurementsIds })
+            measurements.size() == size
+        }
+
+        where:
+        alarmFilters     || measurementsIds | size
+        'fire'           || ['1', '2']      | 2
+        'burglary,frost' || []              | 0
+        'frost,fire'     || ['2']           | 1
     }
 
     def executeGet(String endpoint) {

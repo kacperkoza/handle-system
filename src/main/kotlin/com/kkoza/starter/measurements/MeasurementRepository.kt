@@ -1,5 +1,6 @@
 package com.kkoza.starter.measurements
 
+import com.kkoza.starter.measurements.api.AlarmFilter
 import org.apache.log4j.Logger
 import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -21,12 +22,20 @@ class MeasurementRepository(private val mongoTemplate: MongoTemplate) {
         return measurementDocument.id!!
     }
 
-    fun get(handles: List<String>, sort: Sort): List<MeasurementDocument> {
+    fun get(handles: List<String>, sort: Sort, alarms: List<AlarmFilter>?): List<MeasurementDocument> {
         logger.info("Get measurement list for $handles and $sort")
+        var criteria = whereHandleIdCriteria(handles)
+        alarms?.forEach { criteria = whereAlarmCriteria(criteria, it) }
         return mongoTemplate.find(
-                Query(Criteria(MeasurementDocument.HANDLE_ID).`in`(handles)).with(sort),
+                Query(criteria).with(sort),
                 MeasurementDocument::class.java)
     }
+
+    private fun whereAlarmCriteria(criteria: Criteria, it: AlarmFilter) = criteria.and(it.fieldName).`is`(it.value)
+
+
+    private fun whereHandleIdCriteria(handles: List<String>): Criteria = Criteria.where(MeasurementDocument.HANDLE_ID).`in`(handles)
+
 
     fun delete(id: String) {
         logger.info("Delete measurement id = $id")

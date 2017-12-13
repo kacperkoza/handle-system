@@ -1,8 +1,6 @@
 package com.kkoza.starter.measurements
 
-import com.kkoza.starter.measurements.api.FieldFilter
-import com.kkoza.starter.measurements.api.ItemsDto
-import com.kkoza.starter.measurements.api.MeasurementList
+import com.kkoza.starter.measurements.api.*
 import org.joda.time.DateTime
 
 class MeasurementFacade(
@@ -14,8 +12,8 @@ class MeasurementFacade(
         return measurementOperation.add(measurementDocument)
     }
 
-    fun get(userId: String, sort: String?, offset: Int?, limit: Int?): MeasurementList {
-        return measurementOperation.get(userId, sort, offset, limit)
+    fun get(userId: String, sort: MeasurementSortType, offset: Int?, limit: Int?, alarms: List<AlarmFilter>?, handles: List<String>?): MeasurementList {
+        return measurementOperation.get(userId, sort, offset, limit, alarms, handles)
     }
 
     fun deleteById(id: String) {

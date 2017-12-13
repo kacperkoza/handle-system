@@ -22,20 +22,20 @@ class HandleRepository(private val mongoTemplate: MongoTemplate) {
     }
 
     fun findById(handleId: String): HandleDocument? {
-        logger.info("Find handle by id = $handleId")
+        logger.info("Find handleAlarmFilterEx by id = $handleId")
         return mongoTemplate.findOne(Query(Criteria.where(HandleDocument.ID).`is`(handleId)),
                 HandleDocument::class.java)
     }
 
     fun deleteById(handleId: String) {
-        logger.info("Delete handle id = $handleId")
+        logger.info("Delete handleAlarmFilterEx id = $handleId")
         mongoTemplate.remove(
                 Query(Criteria.where(HandleDocument.ID).`is`(handleId)),
                 HandleDocument::class.java)
     }
 
     fun insert(handleDocument: HandleDocument): HandleDocument {
-        logger.info("Insert new handle $handleDocument")
+        logger.info("Insert new handleAlarmFilterEx $handleDocument")
         try {
             mongoTemplate.insert(handleDocument)
         } catch (ex: DuplicateKeyException) {
@@ -45,7 +45,7 @@ class HandleRepository(private val mongoTemplate: MongoTemplate) {
     }
 
     fun save(handleDocument: HandleDocument) {
-        logger.info("Put new handle $handleDocument")
+        logger.info("Put new handleAlarmFilterEx $handleDocument")
         mongoTemplate.save(handleDocument)
     }
 

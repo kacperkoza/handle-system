@@ -22,10 +22,10 @@ class HandleEndpoint(
         private val handleFacade: HandleFacade,
         private val sessionService: SessionService
 ) {
-    @ApiOperation(value = "Used to add new handle")
-    @ApiResponses(ApiResponse(code = 201, message = "Successfully added new handle. See 'Location' in headers"),
+    @ApiOperation(value = "Used to add new handleAlarmFilterEx")
+    @ApiResponses(ApiResponse(code = 201, message = "Successfully added new handleAlarmFilterEx. See 'Location' in headers"),
             ApiResponse(code = 401, message = "Expired or invalid cookie session"),
-            ApiResponse(code = 422, message = "Handle with given ID already exists or handle name is empty"))
+            ApiResponse(code = 422, message = "Handle with given ID already exists or handleAlarmFilterEx name is empty"))
     @PostMapping
     fun addNewHandle(
             @ApiParam(value = "Valid user's session cookie", required = true)
@@ -48,8 +48,8 @@ class HandleEndpoint(
         return ResponseEntity.ok(HandleList(list))
     }
 
-    @ApiOperation(value = "Get handle by id")
-    @ApiResponses(ApiResponse(code = 200, message = "Returns handle with given id"),
+    @ApiOperation(value = "Get handleAlarmFilterEx by id")
+    @ApiResponses(ApiResponse(code = 200, message = "Returns handleAlarmFilterEx with given id"),
             ApiResponse(code = 404, message = "Requested resource does not exists"))
     @GetMapping("/{handleId}")
     fun getByHandleId(
@@ -65,7 +65,7 @@ class HandleEndpoint(
         }
     }
 
-    @ApiOperation(value = "Override handle if does not exists")
+    @ApiOperation(value = "Override handleAlarmFilterEx if does not exists")
     @ApiResponses(ApiResponse(code = 204, message = "Resource was successfully overridden. Nothing to return"),
             ApiResponse(code = 404, message = "Requested resource does not exists"),
             ApiResponse(code = 422, message = "Handle name was empty"))
@@ -80,7 +80,7 @@ class HandleEndpoint(
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
-    @ApiOperation(value = "Override handle if does not exists")
+    @ApiOperation(value = "Override handleAlarmFilterEx if does not exists")
     @ApiResponses(ApiResponse(code = 204, message = "Resource was successfully deleted. Nothing to return"))
     @DeleteMapping("/{handleId}")
     fun deleteHandle(
