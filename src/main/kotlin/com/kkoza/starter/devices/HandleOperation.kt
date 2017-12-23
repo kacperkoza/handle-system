@@ -1,4 +1,4 @@
-package com.kkoza.starter.handles
+package com.kkoza.starter.devices
 
 
 class HandleOperation(private val handleRepository: HandleRepository) {

@@ -1,8 +1,8 @@
-package com.kkoza.starter.handles
+package com.kkoza.starter.devices
 
 import com.kkoza.starter.BaseIntegrationTest
-import com.kkoza.starter.handles.api.HandleDto
-import com.kkoza.starter.handles.api.HandleList
+import com.kkoza.starter.devices.api.NodeDto
+import com.kkoza.starter.devices.api.HandleList
 import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.testutil.HandleBuilder
 import org.joda.time.DateTime
@@ -29,24 +29,24 @@ class HandleEndpointTest extends BaseIntegrationTest {
 
     def '[POST] should return CREATED (201) after successful adding new handle'() {
         given:
-        HandleDto dto = HandleBuilder.create().setHandleId('handleAlarmFilterEx-id').setHandleName('handleAlarmFilterEx-name').buildDto()
+        NodeDto dto = HandleBuilder.create().setHandleId('handle-id').setHandleName('handle-name').buildDto()
 
         when:
-        String location = execute('/users/handles', POST, dto, Void).headers.getFirst("Location")
+        String location = execute('/users/devices/handles', POST, dto, Void).headers.getFirst("Location")
         HandleDocument handle = mongoTemplate.findOne(new Query(), HandleDocument)
 
         then:
-        location == "/users/handles/handleAlarmFilterEx-id"
+        location == "/users/devices/handles/handle-id"
         handle.name == dto.name
     }
 
     def '[POST] should return UNPROCESSABLE_ENTITY (422) when handle-id already exists'() {
         given:
         saveHandle('handleAlarmFilterEx-id', 'handleAlarmFilterEx-name')
-        HandleDto dto = HandleBuilder.create().setHandleId('handleAlarmFilterEx-id').setHandleName('another').buildDto()
+        NodeDto dto = HandleBuilder.create().setHandleId('handleAlarmFilterEx-id').setHandleName('another').buildDto()
 
         when:
-        execute('/users/handles', POST, dto, Void)
+        execute('/users/devices/handles', POST, dto, Void)
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -58,7 +58,7 @@ class HandleEndpointTest extends BaseIntegrationTest {
         def dto = HandleBuilder.create().setHandleId('another').setHandleName('').buildDto()
 
         when:
-        execute('/users/handles', POST, dto, Void)
+        execute('/users/devices/handles', POST, dto, Void)
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -73,7 +73,7 @@ class HandleEndpointTest extends BaseIntegrationTest {
         save(handle2.buildDocument())
 
         when:
-        ResponseEntity<HandleList> response = execute('/users/handles', GET, null, HandleList)
+        ResponseEntity<HandleList> response = execute('/users/devices/handles', GET, null, HandleList)
 
         then:
         response.body.handles == [handle1.buildDto(), handle2.buildDto()]
@@ -84,7 +84,7 @@ class HandleEndpointTest extends BaseIntegrationTest {
         save(HandleBuilder.create().setHandleId('id').setHandleName('name').setUserId('user-id').buildDocument())
 
         when:
-        ResponseEntity<HandleDto> response = execute('/users/handles/id', GET, null, HandleDto)
+        ResponseEntity<NodeDto> response = execute('/users/devices/handles/id', GET, null, NodeDto)
 
         then:
         with(response.body) {
@@ -95,7 +95,7 @@ class HandleEndpointTest extends BaseIntegrationTest {
 
     def '[GET] should return NOT_FOUND [404] when handle-id was not found'() {
         when:
-        execute('/users/handles/id', GET, null, HandleDto)
+        execute('/users/devices/handles/id', GET, null, NodeDto)
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -104,15 +104,15 @@ class HandleEndpointTest extends BaseIntegrationTest {
 
     def '[PUT] should override existing handle name with OK (200)'() {
         given:
-        save(new HandleDocument('handleAlarmFilterEx-id', 'handleAlarmFilterEx-name', 'user-id'))
+        save(new HandleDocument('handle-id', 'handle-name', 'user-id'))
 
         when:
-        execute('/users/handles/handleAlarmFilterEx-id', PUT, 'new-name', Void)
+        execute('/users/devices/handles/handle-id', PUT, 'new-name', Void)
         HandleDocument handleDocument = mongoTemplate.findOne(new Query(), HandleDocument.class)
 
         then:
         with(handleDocument) {
-            id == 'handleAlarmFilterEx-id'
+            id == 'handle-id'
             userId == 'user-id'
             name == 'new-name'
         }
@@ -120,7 +120,7 @@ class HandleEndpointTest extends BaseIntegrationTest {
 
     def '[PUT] should return UNPROCESSABLE_ENTITY [422] for blank name'() {
         when:
-        execute('/users/handles/handleAlarmFilterEx-id', PUT, ' ', Void)
+        execute('/users/devices/handles/handle-id', PUT, ' ', Void)
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -129,10 +129,10 @@ class HandleEndpointTest extends BaseIntegrationTest {
 
     def '[DELETE] should delete existing handle by id with status OK (200)'() {
         given:
-        save(HandleBuilder.create().setHandleId('handleAlarmFilterEx-id').buildDocument())
+        save(HandleBuilder.create().setHandleId('handle-id').buildDocument())
 
         when:
-        execute('/users/handles/handleAlarmFilterEx-id', DELETE, null, Void)
+        execute('/users/devices/handles/handle-id', DELETE, null, Void)
 
         then:
         mongoTemplate.count(new Query(), HandleDocument.class) == 0

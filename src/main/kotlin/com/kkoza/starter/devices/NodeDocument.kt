@@ -1,12 +1,13 @@
-package com.kkoza.starter.handles
+package com.kkoza.starter.devices
 
-import com.kkoza.starter.handles.api.HandleDto
+import com.kkoza.starter.devices.NodeDocument.Companion.NODES_COLLECTION
+import com.kkoza.starter.devices.api.NodeDto
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 
-@Document(collection = HandleDocument.HANDLES_COLLECTION)
-data class HandleDocument(
+@Document(collection = NODES_COLLECTION)
+data class NodeDocument(
 
         @Id
         @Field(ID)
@@ -20,11 +21,11 @@ data class HandleDocument(
 
 ) {
     companion object {
-        const val HANDLES_COLLECTION = "handles"
+        const val NODES_COLLECTION = "nodes"
         const val USER_ID = "user_id"
-        const val HANDLE_NAME = "handle_name"
+        const val HANDLE_NAME = "node_name"
         const val ID = "_id"
     }
 
-    fun toDto(): HandleDto = HandleDto(id, name)
+    fun toDto(): NodeDto = NodeDto(id, name)
 }

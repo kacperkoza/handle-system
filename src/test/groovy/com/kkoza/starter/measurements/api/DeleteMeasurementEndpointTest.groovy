@@ -37,7 +37,7 @@ class DeleteMeasurementEndpointTest extends BaseIntegrationTest {
         def headers = new HttpHeaders()
         headers.set("Cookie", "SESSIONID=sess")
         restTemplate.exchange(
-                localUrl("users/measurements/$id"),
+                localUrl("users/measurements/handles/$id"),
                 HttpMethod.DELETE,
                 new HttpEntity<Object>(headers),
                 Void)

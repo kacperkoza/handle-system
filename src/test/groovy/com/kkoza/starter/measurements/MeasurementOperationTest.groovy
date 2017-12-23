@@ -1,9 +1,9 @@
 package com.kkoza.starter.measurements
 
 import com.github.fakemongo.Fongo
-import com.kkoza.starter.handles.HandleConfiguration
-import com.kkoza.starter.handles.HandleDocument
-import com.kkoza.starter.handles.HandleFacade
+import com.kkoza.starter.devices.HandleConfiguration
+import com.kkoza.starter.devices.HandleDocument
+import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.infrastructure.smsclient.SmsClient
 import com.kkoza.starter.testutil.MeasurementBuilder
 import com.kkoza.starter.user.UserDocument
@@ -23,7 +23,7 @@ class MeasurementOperationTest extends Specification {
     def setup() {
         MeasurementRepository measurementRepository = new MeasurementRepository(mongoTemplate)
         DangerEventNotifier dangerEventNotifier = new DangerEventNotifier(smsClient)
-        HandleFacade handleFacade = new HandleConfiguration().handleFacade(mongoTemplate)
+        DeviceFacade handleFacade = new HandleConfiguration().handleFacade(mongoTemplate)
         UserFacade userFacade = new UserFacadeConfiguration().userFacade(mongoTemplate)
         measurementOperation = new MeasurementOperation(measurementRepository, dangerEventNotifier, handleFacade, userFacade)
     }

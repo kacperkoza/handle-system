@@ -1,25 +1,22 @@
-package com.kkoza.starter.handles.api
+package com.kkoza.starter.devices.api
 
-import com.kkoza.starter.handles.EmptyHandleNameException
-import com.kkoza.starter.handles.ExistingHandleException
-import com.kkoza.starter.handles.HandleDocument
-import com.kkoza.starter.handles.HandleFacade
+import com.kkoza.starter.devices.EmptyHandleNameException
+import com.kkoza.starter.devices.ExistingHandleException
+import com.kkoza.starter.devices.HandleDocument
+import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.session.SessionService
 import io.swagger.annotations.*
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.core.mapping.Field
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
-@RequestMapping("/users/handles")
+@RequestMapping("/users/devices/handles")
 @Api(value = "Information about user's handles", description = "Add, get, delete, update user's handles")
 
 class HandleEndpoint(
-        private val handleFacade: HandleFacade,
+        private val deviceFacade: DeviceFacade,
         private val sessionService: SessionService
 ) {
     @ApiOperation(value = "Used to add new handleAlarmFilterEx")
@@ -30,11 +27,11 @@ class HandleEndpoint(
     fun addNewHandle(
             @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue("SESSIONID", required = true) sessionId: String,
-            @RequestBody(required = true) handleDto: HandleDto
+            @RequestBody(required = true) handleDto: NodeDto
     ): ResponseEntity<Void> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
-        val handle = handleFacade.insert(HandleDocument(handleDto.id, handleDto.name, userId))
-        return ResponseEntity.created(URI("/users/handles/${handle.id}")).body(null)
+        val handle = deviceFacade.insertHandle(HandleDocument(handleDto.id, handleDto.name, userId))
+        return ResponseEntity.created(URI("/users/devices/handles/${handle.id}")).body(null)
     }
 
     @ApiOperation(value = "Get all user's handles")
@@ -44,7 +41,7 @@ class HandleEndpoint(
             @CookieValue("SESSIONID", required = true) sessionId: String
     ): ResponseEntity<HandleList> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
-        val list = handleFacade.findByUserId(userId)
+        val list = deviceFacade.findHandleByUserId(userId)
         return ResponseEntity.ok(HandleList(list))
     }
 
@@ -55,11 +52,11 @@ class HandleEndpoint(
     fun getByHandleId(
             @CookieValue("SESSIONID", required = true) sessionId: String,
             @PathVariable("handleId", required = true) handleId: String
-    ): ResponseEntity<HandleDto> {
+    ): ResponseEntity<NodeDto> {
         sessionService.findUserIdAndUpdateSession(sessionId)
-        val handle: HandleDocument? = handleFacade.findById(handleId)
+        val handle: HandleDocument? = deviceFacade.findHandleById(handleId)
         return if (handle != null) {
-            ResponseEntity.ok(HandleDto(handle.id, handle.name))
+            ResponseEntity.ok(NodeDto(handle.id, handle.name))
         } else {
             ResponseEntity.notFound().build()
         }
@@ -76,7 +73,7 @@ class HandleEndpoint(
             @RequestBody(required = true) name: String
     ): ResponseEntity<Void> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
-        handleFacade.save(HandleDocument(handleId, name, userId))
+        deviceFacade.saveHandle(HandleDocument(handleId, name, userId))
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
@@ -86,7 +83,7 @@ class HandleEndpoint(
     fun deleteHandle(
             @CookieValue("SESSIONID", required = true) sessionId: String,
             @PathVariable("handleId") handleId: String): ResponseEntity<Void> {
-        handleFacade.deleteById(handleId)
+        deviceFacade.deleteHandleById(handleId)
         return ResponseEntity.noContent().build()
     }
 
@@ -104,6 +101,6 @@ data class HandleDto(
 )
 
 data class HandleList(
-        val handles: List<HandleDto>
+        val handles: List<NodeDto>
 )
 

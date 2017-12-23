@@ -1,6 +1,6 @@
 package com.kkoza.starter
 
-import com.kkoza.starter.handles.HandleDocument
+import com.kkoza.starter.devices.HandleDocument
 import com.kkoza.starter.measurements.MeasurementDocument
 import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.user.UserDocument

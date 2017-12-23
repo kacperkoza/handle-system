@@ -70,7 +70,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     @Unroll
     def "[GET] should sort all measurements by #sortType"() {
         when:
-        def response = executeGet("/users/measurements?sort=$sortType")
+        def response = executeGet("/users/measurements/handles?sort=$sortType")
 
         then:
         response.body.measurements.collect({ it.id }) == expectedOrder
@@ -84,7 +84,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
     def "[GET] should return BAD REQUEST [400] for invalid sortType"() {
         when:
-        executeGet("/users/measurements?sort=$invalidSortType")
+        executeGet("/users/measurements/handles?sort=$invalidSortType")
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -96,7 +96,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
     def "[GET] should sort by 'date_latest' when sort type is not specified"() {
         when:
-        def response = executeGet("/users/measurements")
+        def response = executeGet("/users/measurements/handles")
 
         then:
         response.body.measurements.collect({ it.id }) == ['1', '2', '3']
@@ -110,7 +110,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         save(MeasurementBuilder.create().setHandleId('handle1').setId('6').setDate(DateTime.now().minusMillis(200)).build())
 
         when:
-        def response = executeGet("/users/measurements?limit=$inputLimit&offset=$inputOffset")
+        def response = executeGet("/users/measurements/handles?limit=$inputLimit&offset=$inputOffset")
 
         then:
         with(response.body) {
@@ -130,7 +130,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     @Unroll
     def "[GET] should sort by temperature #sort"() {
         when:
-        def response = executeGet("/users/measurements?sort=$sort")
+        def response = executeGet("/users/measurements/handles?sort=$sort")
 
         then:
         response.body.measurements.collect({ it.id }) == expectedOrder
@@ -144,7 +144,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     @Unroll
     def "[GET] should sort by sound level #sort"() {
         when:
-        def response = executeGet("/users/measurements?sort=$sort")
+        def response = executeGet("/users/measurements/handles?sort=$sort")
 
         then:
         response.body.measurements.collect({ it.id }) == expectedOrder
@@ -157,7 +157,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
     def "[GET] should return BAD_REQUEST [400] when limit or offset is lower than 0"() {
         when:
-        executeGet("users/measurements?limit=$limit&offset=$offset")
+        executeGet("users/measurements/handles?limit=$limit&offset=$offset")
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -173,7 +173,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
     def "[GET] should return all handles of user"() {
         when:
-        def response = executeGet('users/measurements')
+        def response = executeGet('users/measurements/handles')
 
         then:
         with(response.body) {
@@ -186,7 +186,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         given:
 
         when:
-        def response = executeGet("users/measurements?handles=$handles")
+        def response = executeGet("users/measurements/handles?handles=$handles")
 
         then:
         with(response.body) {
@@ -206,7 +206,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         def expectedHandleName = ['handle-name', 'handle-name-2']
 
         when:
-        def response = executeGet("users/measurements")
+        def response = executeGet("users/measurements/handles")
 
         then:
         with(response.body) {
@@ -217,7 +217,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     @Unroll
     def "[GET] should return measurements filtered by true alarms"() {
         when:
-        def response = executeGet("users/measurements?alarms=$alarmFilters")
+        def response = executeGet("users/measurements/handles?alarms=$alarmFilters")
 
         then:
         with(response.body) {

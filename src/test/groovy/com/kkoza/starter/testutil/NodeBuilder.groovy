@@ -3,23 +3,23 @@ package com.kkoza.starter.testutil
 import com.kkoza.starter.devices.HandleDocument
 import com.kkoza.starter.devices.api.NodeDto
 
-class HandleBuilder {
+class NodeBuilder {
 
-    String handleId = 'handleAlarmFilterEx-id'
-    String handleName = 'handleAlarmFilterEx-name'
+    String nodeId = 'node-id'
+    String nodeName = 'node-name'
     String userId = 'userId'
 
     static HandleBuilder create() {
         return new HandleBuilder()
     }
 
-    HandleBuilder setHandleId(String handleId) {
-        this.handleId = handleId
+    HandleBuilder setNodeId(String handleId) {
+        this.nodeId = handleId
         return this
     }
 
-    HandleBuilder setHandleName(String handleName) {
-        this.handleName = handleName
+    HandleBuilder setNodeName(String handleName) {
+        this.nodeName = handleName
         return this
     }
 
@@ -29,11 +29,11 @@ class HandleBuilder {
     }
 
     NodeDto buildDto() {
-        return new NodeDto(handleId, handleName)
+        return new NodeDto(nodeId, nodeName)
     }
 
     HandleDocument buildDocument() {
-        return new HandleDocument(handleId, handleName, userId)
+        return new HandleDocument(nodeId, nodeName, userId)
     }
 
 }

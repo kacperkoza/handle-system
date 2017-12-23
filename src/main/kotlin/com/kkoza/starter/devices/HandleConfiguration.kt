@@ -1,4 +1,4 @@
-package com.kkoza.starter.handles
+package com.kkoza.starter.devices
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -8,9 +8,11 @@ import org.springframework.data.mongodb.core.MongoTemplate
 class HandleConfiguration {
 
     @Bean
-    fun handleFacade(mongoTemplate: MongoTemplate): HandleFacade {
+    fun handleFacade(mongoTemplate: MongoTemplate): DeviceFacade {
         val handleRepository = HandleRepository(mongoTemplate)
         val handleOperation = HandleOperation(handleRepository)
-        return HandleFacade(handleRepository, handleOperation)
+        val nodeRepository = NodeRepository(mongoTemplate)
+        val nodeOperation = NodeOperation(nodeRepository)
+        return DeviceFacade(handleRepository, handleOperation, nodeOperation, nodeRepository)
     }
 }

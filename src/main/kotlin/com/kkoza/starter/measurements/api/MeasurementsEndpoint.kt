@@ -1,6 +1,6 @@
 package com.kkoza.starter.measurements.api
 
-import com.kkoza.starter.handles.api.HandleDto
+import com.kkoza.starter.devices.api.NodeDto
 import com.kkoza.starter.measurements.*
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
 import com.kkoza.starter.measurements.exception.InvalidSortTypeException
@@ -20,7 +20,7 @@ class MeasurementsEndpoint(
 
     @ApiOperation(value = "Used to create new measurement")
     @ApiResponse(code = 201, message = "Successfully created new measurement. See 'Location' in headers")
-    @PostMapping("/measurements")
+    @PostMapping("/measurements/handles")
     fun addMeasurements(
             @RequestBody(required = true) measurementDto: MeasurementDto): ResponseEntity<Void> {
         val handlePosition = when (measurementDto.handlePosition) {
@@ -41,14 +41,14 @@ class MeasurementsEndpoint(
                     SoundLevel(it.soundLevel),
                     it.handleTime)
         })
-        return ResponseEntity.created(URI("/measurements/$id")).build()
+        return ResponseEntity.created(URI("/measurements/handles/$id")).build()
     }
 
     @ApiOperation(value = "Get list of user measurements")
     @ApiResponses(ApiResponse(code = 200, message = "Return list with measurement prepared for pagination"),
             ApiResponse(code = 400, message = "Provided query parameters are invalid. See message in response body"),
             ApiResponse(code = 401, message = "User is not authorized"))
-    @GetMapping("users/measurements")
+    @GetMapping("users/measurements/handles")
     fun getMeasurements(
             @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue(name = "SESSIONID", required = true) sessionId: String,
@@ -71,7 +71,7 @@ class MeasurementsEndpoint(
     @ApiOperation(value = "Delete measurement by ID")
     @ApiResponses(ApiResponse(code = 200, message = "MeasurementDocument was deleted if existed"),
             ApiResponse(code = 401, message = "User is not authorized"))
-    @DeleteMapping("users/measurements/{id}")
+    @DeleteMapping("users/measurements/handles/{id}")
     fun deleteMeasurement(
             @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue(name = "SESSIONID", required = true) sessionId: String,
@@ -80,7 +80,6 @@ class MeasurementsEndpoint(
         measurementFacade.deleteById(id)
         return ResponseEntity.ok(null)
     }
-
 
     @ExceptionHandler(InvalidSortTypeException::class)
     fun handleSortEx(ex: InvalidSortTypeException) = ResponseEntity.badRequest().body(ex.message)
@@ -156,7 +155,7 @@ data class MeasurementList(
         val limit: Int?,
         val offset: Int?,
         val measurements: List<Measurement>,
-        val handles: List<HandleDto>)
+        val handles: List<NodeDto>)
 
 data class Measurement(
         val id: String? = null,

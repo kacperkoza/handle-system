@@ -1,7 +1,7 @@
 package com.kkoza.starter.measurements.dev
 
-import com.kkoza.starter.handles.HandleDocument
-import com.kkoza.starter.handles.HandleFacade
+import com.kkoza.starter.devices.HandleDocument
+import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.measurements.*
 import com.kkoza.starter.user.UserDocument
 import com.kkoza.starter.user.UserFacade
@@ -19,7 +19,7 @@ import java.util.*
 class ScheduledAdder(
         val measurementFacade: MeasurementFacade,
         userFacade: UserFacade,
-        handleFacade: HandleFacade
+        deviceFacade: DeviceFacade
 ) {
 
     companion object {
@@ -35,11 +35,11 @@ class ScheduledAdder(
             userFacade.save(UserDocument("kamil", "kamil@gmail.com", "kamil1", "123456789"))
         }
 
-        if (handleFacade.findById("klamka1") != null) {
+        if (deviceFacade.findHandleById("klamka1") != null) {
             logger.info("Add all handles init")
-            handleFacade.save(HandleDocument("klamka1", "pokoj", "kacper"))
-            handleFacade.save(HandleDocument("klamka2", "pokoj", "jeremi"))
-            handleFacade.save(HandleDocument("klamka3", "pokoj", "kamil"))
+            deviceFacade.saveHandle(HandleDocument("klamka1", "pokoj", "kacper"))
+            deviceFacade.saveHandle(HandleDocument("klamka2", "pokoj", "jeremi"))
+            deviceFacade.saveHandle(HandleDocument("klamka3", "pokoj", "kamil"))
         }
     }
 

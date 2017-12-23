@@ -15,12 +15,12 @@ class PostMeasurementsEndpointTest extends BaseIntegrationTest {
 
         when:
         def location = restTemplate.postForLocation(
-                localUrl("/measurements"),
+                localUrl("/measurements/handles"),
                 measurement
         ).toASCIIString()
 
         then:
-        location.contains("/measurements/")
+        location.contains("/measurements/handles")
         location.substring(location.lastIndexOf("/")).size() > 0
     }
 }

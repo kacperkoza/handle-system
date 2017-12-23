@@ -1,8 +1,8 @@
 package com.kkoza.starter.measurements
 
-import com.kkoza.starter.handles.HandleDocument
-import com.kkoza.starter.handles.api.HandleDto
-import com.kkoza.starter.handles.HandleFacade
+import com.kkoza.starter.devices.HandleDocument
+import com.kkoza.starter.devices.api.NodeDto
+import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.measurements.api.AlarmFilter
 import com.kkoza.starter.measurements.api.Measurement
 import com.kkoza.starter.measurements.api.MeasurementList
@@ -19,7 +19,7 @@ import java.lang.invoke.MethodHandles
 class MeasurementOperation(
         private val measurementRepository: MeasurementRepository,
         private val dangerEventNotifier: DangerEventNotifier,
-        private val handleFacade: HandleFacade,
+        private val deviceFacade: DeviceFacade,
         private val userFacade: UserFacade
 ) {
 
@@ -28,7 +28,7 @@ class MeasurementOperation(
     }
 
     fun add(measurementDocument: MeasurementDocument): String {
-        val handle: HandleDocument? = handleFacade.findById(measurementDocument.handleId)
+        val handle: HandleDocument? = deviceFacade.findHandleById(measurementDocument.handleId)
         if (handle != null) {
             notifyIfNecessaryAboutEvent(handle, measurementDocument)
         }
@@ -46,7 +46,7 @@ class MeasurementOperation(
         logger.info("get list with sort = $sort, offset = $offset, limit = $limit, alarms = $alarms, handles = $handles for userId = $userId")
         if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
         if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
-        val userHandles = handleFacade.findByUserId(userId)
+        val userHandles = deviceFacade.findHandleByUserId(userId)
         val userHandlesIds = userHandles.map { it.id }
         val filteredHandles = handles?.filter { it in userHandlesIds } ?: userHandlesIds
         val list = measurementRepository.get(filteredHandles, getSortOrder(sort), alarms)
@@ -59,7 +59,7 @@ class MeasurementOperation(
     }
 
 
-    private fun mapToMeasurement(list: List<MeasurementDocument>, handles: List<HandleDto>): List<Measurement> {
+    private fun mapToMeasurement(list: List<MeasurementDocument>, handles: List<NodeDto>): List<Measurement> {
         val handleIdToName = handles.associateBy({ it.id }, { it.name })
         return list.map {
             Measurement(it.id,

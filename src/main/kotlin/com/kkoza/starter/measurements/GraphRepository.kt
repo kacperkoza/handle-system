@@ -16,8 +16,6 @@ class GraphRepository(
                         whereStartDateCriteria(startDate),
                         whereEndDateCriteria(endDate))),
                 MeasurementDocument::class.java)
-
-
     }
 
     private fun whereEndDateCriteria(endDate: DateTime) = Criteria.where(MeasurementDocument.DATE).lt(endDate)
