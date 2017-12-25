@@ -24,7 +24,7 @@ class GraphEndpoint(
             ApiResponse(code = 400, message = "Invalid fieldName for filtering"),
             ApiResponse(code = 401, message = "Invalid or expired cookie session"),
             ApiResponse(code = 422, message = "Starting date is after ending date"))
-    @GetMapping("/handles")
+    @GetMapping("/devices")
     fun getGraphData(
             @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue("SESSIONID", required = true) sessionId: String,
@@ -39,7 +39,7 @@ class GraphEndpoint(
             @RequestParam("fieldName", required = true) fieldName: String,
 
             @ApiParam(value = "Handle which data you want to get", required = true)
-            @RequestParam("handleId", required = true) handleId: String
+            @RequestParam("deviceId", required = true) handleId: String
     ): ResponseEntity<ItemsDto> {
         sessionService.findUserIdAndUpdateSession(sessionId)
         val fieldFilter = FieldFilter.fromString(fieldName)

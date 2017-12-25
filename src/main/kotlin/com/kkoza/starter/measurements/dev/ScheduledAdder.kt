@@ -1,7 +1,8 @@
 package com.kkoza.starter.measurements.dev
 
-import com.kkoza.starter.devices.HandleDocument
+import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.devices.DeviceFacade
+import com.kkoza.starter.devices.DeviceType
 import com.kkoza.starter.measurements.*
 import com.kkoza.starter.user.UserDocument
 import com.kkoza.starter.user.UserFacade
@@ -36,16 +37,16 @@ class ScheduledAdder(
         }
 
         if (deviceFacade.findHandleById("klamka1") != null) {
-            logger.info("Add all handles init")
-            deviceFacade.saveHandle(HandleDocument("klamka1", "pokoj", "kacper"))
-            deviceFacade.saveHandle(HandleDocument("klamka2", "pokoj", "jeremi"))
-            deviceFacade.saveHandle(HandleDocument("klamka3", "pokoj", "kamil"))
+            logger.info("Add all devices init")
+            deviceFacade.saveHandle(DeviceDocument("klamka1", "pokoj", "kacper", DeviceType.HANDLE))
+            deviceFacade.saveHandle(DeviceDocument("klamka2", "pokoj", "jeremi", DeviceType.HANDLE))
+            deviceFacade.saveHandle(DeviceDocument("klamka3", "pokoj", "kamil", DeviceType.HANDLE))
         }
     }
 
     private val random = Random()
 
-//    @Scheduled(fixedDelay = 5000)
+    //    @Scheduled(fixedDelay = 5000)
     fun add() {
         val measurement = MeasurementDocument(
                 null,

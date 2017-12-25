@@ -2,7 +2,7 @@ package com.kkoza.starter.measurements.api
 
 import com.kkoza.starter.BaseIntegrationTest
 import com.kkoza.starter.session.SessionDocument
-import com.kkoza.starter.testutil.HandleBuilder
+import com.kkoza.starter.testutil.DeviceBuilder
 import com.kkoza.starter.testutil.MeasurementBuilder
 import com.kkoza.starter.testutil.UserBuilder
 import org.joda.time.DateTime
@@ -49,10 +49,10 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     def user = UserBuilder.create('user-id').setHandles(['handle1']).buildDocument()
 
     @Shared
-    def handle = HandleBuilder.create().setHandleId('handle1').setHandleName('handle-name').setUserId('user-id').buildDocument()
+    def handle = DeviceBuilder.create().setId('handle1').setDeviceName('handle-name').setUserId('user-id').buildDocument()
 
     @Shared
-    def handle2 = HandleBuilder.create().setHandleId('handle2').setHandleName('handle-name2').setUserId('user-id').buildDocument()
+    def handle2 = DeviceBuilder.create().setId('handle2').setDeviceName('handle-name2').setUserId('user-id').buildDocument()
 
     @Shared
     def session = new SessionDocument('session-id', 'user-id', DateTime.now())
@@ -181,9 +181,10 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         }
     }
 
-
+    @Unroll
     def "[GET] should return measurements filtered by handle-id"() {
         given:
+//        save(MeasurementBuilder.create().setHandleId('handle-2').build())
 
         when:
         def response = executeGet("users/measurements/handles?handles=$handles")
@@ -195,10 +196,10 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         }
 
         where:
-        handles             || expectedHandleId
-        'handle-id'         || ['handle-id-name']
-        'handle2'           || ['handle-id-name2']
-        'handle-id,handle2' || ['handle-id-name', 'handle-id-name2']
+        handles           || expectedHandleId
+        'handle1'         || ['handle-name']
+        'handle2'         || ['handle-name2']
+        'handle1,handle2' || ['handle-name', 'handle-name2']
     }
 
     def "[GET] should return all measurements when handle filter is not specified"() {

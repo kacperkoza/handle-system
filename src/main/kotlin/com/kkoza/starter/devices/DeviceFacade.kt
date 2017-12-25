@@ -1,31 +1,19 @@
 package com.kkoza.starter.devices
 
-import com.kkoza.starter.devices.api.NodeDto
+import com.kkoza.starter.devices.api.DeviceDto
 
 open class DeviceFacade(
-        private val handleRepository: HandleRepository,
-        private val handleOperation: HandleOperation,
-        private val nodeOperation: NodeOperation,
-        private val nodeRepository: NodeRepository) {
+        private val deviceRepository: DeviceRepository,
+        private val handleOperation: HandleOperation) {
 
-    fun findHandleByUserId(userId: String): List<NodeDto> = handleRepository.findByUserId(userId)
+    fun findHandleByUserId(userId: String): List<DeviceDto> = deviceRepository.findByUserId(userId)
 
-    fun findHandleById(handleId: String): HandleDocument? = handleRepository.findById(handleId)
+    fun findHandleById(handleId: String): DeviceDocument? = deviceRepository.findById(handleId)
 
-    fun deleteHandleById(handleId: String) = handleRepository.deleteById(handleId)
+    fun deleteHandleById(handleId: String) = deviceRepository.deleteById(handleId)
 
-    fun insertHandle(handleDocument: HandleDocument): HandleDocument = handleOperation.insert(handleDocument)
+    fun insertHandle(deviceDocument: DeviceDocument): DeviceDocument = handleOperation.insert(deviceDocument)
 
-    fun saveHandle(handleDocument: HandleDocument) = handleOperation.save(handleDocument)
-
-    fun insertNode(nodeDocument: NodeDocument): NodeDocument = nodeOperation.insert(nodeDocument)
-
-    fun findNodeByUserId(userId: String): List<NodeDto> = nodeRepository.findByUserId(userId)
-
-    fun findNodeById(nodeId: String): NodeDocument? = nodeRepository.findById(nodeId)
-
-    fun saveNode(nodeDocument: NodeDocument) = nodeOperation.save(nodeDocument)
-
-    fun deleteNodeById(nodeId: String) = nodeRepository.deleteById(nodeId)
+    fun saveHandle(deviceDocument: DeviceDocument) = handleOperation.save(deviceDocument)
 
 }

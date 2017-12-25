@@ -19,11 +19,11 @@ class GraphEndpointTest extends BaseIntegrationTest {
     @Shared
     String dateQueryParamPattern = 'yyyy-MM-dd HH:mm'
 
-    def measurement = MeasurementBuilder.create().setId('1').setDate(dateTimeNow).setHandleId('handleId-1').setTemperature(1.0).setSound(10.0).build()
-    def measurement2 = MeasurementBuilder.create().setId('2').setDate(dateTimeNow.minusMinutes(5)).setHandleId('handleId-1').setTemperature(2.0).setSound(11.0).build()
-    def measurement3 = MeasurementBuilder.create().setId('3').setDate(dateTimeNow.minusMinutes(10)).setHandleId('handleId-1').setTemperature(3.0).setSound(12.0).build()
-    def measurement4 = MeasurementBuilder.create().setId('4').setDate(dateTimeNow.minusMinutes(15)).setHandleId('handleId-1').setTemperature(4.0).setSound(13.0).build()
-    def measurement5 = MeasurementBuilder.create().setId('5').setDate(dateTimeNow.minusMinutes(20)).setHandleId('handleId-1').setTemperature(5.0).setSound(14.0).build()
+    def measurement = MeasurementBuilder.create().setId('1').setDate(dateTimeNow).setHandleId('deviceId-1').setTemperature(1.0).setSound(10.0).build()
+    def measurement2 = MeasurementBuilder.create().setId('2').setDate(dateTimeNow.minusMinutes(5)).setHandleId('deviceId-1').setTemperature(2.0).setSound(11.0).build()
+    def measurement3 = MeasurementBuilder.create().setId('3').setDate(dateTimeNow.minusMinutes(10)).setHandleId('deviceId-1').setTemperature(3.0).setSound(12.0).build()
+    def measurement4 = MeasurementBuilder.create().setId('4').setDate(dateTimeNow.minusMinutes(15)).setHandleId('deviceId-1').setTemperature(4.0).setSound(13.0).build()
+    def measurement5 = MeasurementBuilder.create().setId('5').setDate(dateTimeNow.minusMinutes(20)).setHandleId('deviceId-1').setTemperature(5.0).setSound(14.0).build()
 
     def setup() {
         save(new SessionDocument('session-id', 'any', DateTime.now().plusDays(1)))
@@ -40,7 +40,7 @@ class GraphEndpointTest extends BaseIntegrationTest {
         def endDate = end.toString(dateQueryParamPattern)
 
         when:
-        def response = executeGet("fieldName=temperature&handleId=handleId-1&startDate=$startDate&endDate=$endDate")
+        def response = executeGet("fieldName=temperature&deviceId=deviceId-1&startDate=$startDate&endDate=$endDate")
 
         then:
         response.body.data.collect({ it.value }) == expectedValues
@@ -54,7 +54,7 @@ class GraphEndpointTest extends BaseIntegrationTest {
 
     def '[GET] should get data based on queried field'() {
         when:
-        def response = executeGet("fieldName=$fieldName&handleId=handleId-1")
+        def response = executeGet("fieldName=$fieldName&deviceId=deviceId-1")
 
         then:
         response.body.data.collect({ it.value })
@@ -71,7 +71,7 @@ class GraphEndpointTest extends BaseIntegrationTest {
         def field = unknownFieldName
 
         when:
-        executeGet("fieldName=$field&handleId=any")
+        executeGet("fieldName=$field&deviceId=any")
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -87,7 +87,7 @@ class GraphEndpointTest extends BaseIntegrationTest {
         def endDate = '2017-10-10 10:40'
 
         when:
-        executeGet("fieldName=temperature&handleId=any&startDate=$startDate&endDate=$endDate")
+        executeGet("fieldName=temperature&deviceId=any&startDate=$startDate&endDate=$endDate")
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -101,7 +101,7 @@ class GraphEndpointTest extends BaseIntegrationTest {
         def headers = new HttpHeaders()
         headers.add("Cookie", "SESSIONID=session-id")
         def entity = new HttpEntity(headers)
-        return restTemplate.exchange(localUrl("users/graphs/handles?$queryParams"),
+        return restTemplate.exchange(localUrl("users/graphs/devices?$queryParams"),
                 HttpMethod.GET,
                 entity,
                 ItemsDto)

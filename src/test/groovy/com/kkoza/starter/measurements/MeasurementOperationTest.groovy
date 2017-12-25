@@ -1,9 +1,10 @@
 package com.kkoza.starter.measurements
 
 import com.github.fakemongo.Fongo
-import com.kkoza.starter.devices.HandleConfiguration
-import com.kkoza.starter.devices.HandleDocument
+import com.kkoza.starter.devices.DeviceConfiguration
+import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.devices.DeviceFacade
+import com.kkoza.starter.devices.DeviceType
 import com.kkoza.starter.infrastructure.smsclient.SmsClient
 import com.kkoza.starter.testutil.MeasurementBuilder
 import com.kkoza.starter.user.UserDocument
@@ -23,7 +24,7 @@ class MeasurementOperationTest extends Specification {
     def setup() {
         MeasurementRepository measurementRepository = new MeasurementRepository(mongoTemplate)
         DangerEventNotifier dangerEventNotifier = new DangerEventNotifier(smsClient)
-        DeviceFacade handleFacade = new HandleConfiguration().handleFacade(mongoTemplate)
+        DeviceFacade handleFacade = new DeviceConfiguration().handleFacade(mongoTemplate)
         UserFacade userFacade = new UserFacadeConfiguration().userFacade(mongoTemplate)
         measurementOperation = new MeasurementOperation(measurementRepository, dangerEventNotifier, handleFacade, userFacade)
     }
@@ -31,10 +32,10 @@ class MeasurementOperationTest extends Specification {
     def 'should notify about danger when new measurement come with any of alarm set to true'() {
         given:
         mongoTemplate.save(new UserDocument('user-id', 'any', 'any', '123456789'))
-        mongoTemplate.save(new HandleDocument('handleAlarmFilterEx-id', 'name', 'user-id'))
+        mongoTemplate.save(new DeviceDocument('handle-id', 'name', 'user-id', DeviceType.HANDLE))
         def measurement = MeasurementBuilder.create()
                 .setAlarm(fire, burglar, frost)
-                .setHandleId('handleAlarmFilterEx-id')
+                .setHandleId('handle-id')
                 .build()
 
         when:

@@ -1,9 +1,6 @@
 package com.kkoza.starter.devices.api
 
-import com.kkoza.starter.devices.EmptyHandleNameException
-import com.kkoza.starter.devices.ExistingHandleException
-import com.kkoza.starter.devices.HandleDocument
-import com.kkoza.starter.devices.DeviceFacade
+import com.kkoza.starter.devices.*
 import com.kkoza.starter.session.SessionService
 import io.swagger.annotations.*
 import org.springframework.http.HttpStatus
@@ -12,14 +9,14 @@ import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
-@RequestMapping("/users/devices/handles")
-@Api(value = "Information about user's handles", description = "Add, get, delete, update user's handles")
+@RequestMapping("/users/devices")
+@Api(value = "Information about user's devices", description = "Add, get, delete, update user's devices")
 
 class HandleEndpoint(
         private val deviceFacade: DeviceFacade,
         private val sessionService: SessionService
 ) {
-    @ApiOperation(value = "Used to add new handleAlarmFilterEx")
+    @ApiOperation(value = "Used to add new device")
     @ApiResponses(ApiResponse(code = 201, message = "Successfully added new handleAlarmFilterEx. See 'Location' in headers"),
             ApiResponse(code = 401, message = "Expired or invalid cookie session"),
             ApiResponse(code = 422, message = "Handle with given ID already exists or handleAlarmFilterEx name is empty"))
@@ -27,15 +24,15 @@ class HandleEndpoint(
     fun addNewHandle(
             @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue("SESSIONID", required = true) sessionId: String,
-            @RequestBody(required = true) handleDto: NodeDto
+            @RequestBody(required = true) deviceDto: DeviceDto
     ): ResponseEntity<Void> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
-        val handle = deviceFacade.insertHandle(HandleDocument(handleDto.id, handleDto.name, userId))
-        return ResponseEntity.created(URI("/users/devices/handles/${handle.id}")).body(null)
+        val handle = deviceFacade.insertHandle(DeviceDocument(deviceDto.id, deviceDto.name, userId, deviceDto.deviceType))
+        return ResponseEntity.created(URI("/users/devices/${handle.id}")).body(null)
     }
 
-    @ApiOperation(value = "Get all user's handles")
-    @ApiResponses(ApiResponse(code = 200, message = "Return list of user's handles"))
+    @ApiOperation(value = "Get all user's devices")
+    @ApiResponses(ApiResponse(code = 200, message = "Return list of user's devices"))
     @GetMapping
     fun getAllHandles(
             @CookieValue("SESSIONID", required = true) sessionId: String
@@ -45,44 +42,44 @@ class HandleEndpoint(
         return ResponseEntity.ok(HandleList(list))
     }
 
-    @ApiOperation(value = "Get handleAlarmFilterEx by id")
+    @ApiOperation(value = "Get devices by id")
     @ApiResponses(ApiResponse(code = 200, message = "Returns handleAlarmFilterEx with given id"),
             ApiResponse(code = 404, message = "Requested resource does not exists"))
-    @GetMapping("/{handleId}")
+    @GetMapping("/{deviceId}")
     fun getByHandleId(
             @CookieValue("SESSIONID", required = true) sessionId: String,
-            @PathVariable("handleId", required = true) handleId: String
-    ): ResponseEntity<NodeDto> {
+            @PathVariable("deviceId", required = true) handleId: String
+    ): ResponseEntity<DeviceDto> {
         sessionService.findUserIdAndUpdateSession(sessionId)
-        val handle: HandleDocument? = deviceFacade.findHandleById(handleId)
-        return if (handle != null) {
-            ResponseEntity.ok(NodeDto(handle.id, handle.name))
+        val device: DeviceDocument? = deviceFacade.findHandleById(handleId)
+        return if (device != null) {
+            ResponseEntity.ok(DeviceDto(device.id, device.name, device.deviceType))
         } else {
             ResponseEntity.notFound().build()
         }
     }
 
-    @ApiOperation(value = "Override handleAlarmFilterEx if does not exists")
+    @ApiOperation(value = "Override device if does not exists")
     @ApiResponses(ApiResponse(code = 204, message = "Resource was successfully overridden. Nothing to return"),
             ApiResponse(code = 404, message = "Requested resource does not exists"),
             ApiResponse(code = 422, message = "Handle name was empty"))
-    @PutMapping("/{handleId}")
+    @PutMapping("/{deviceId}")
     fun updateHandle(
             @CookieValue("SESSIONID", required = true) sessionId: String,
-            @PathVariable(name = "handleId", required = true) handleId: String,
-            @RequestBody(required = true) name: String
+            @PathVariable(name = "deviceId", required = true) handleId: String,
+            @RequestBody(required = true) deviceDto: DeviceDto
     ): ResponseEntity<Void> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
-        deviceFacade.saveHandle(HandleDocument(handleId, name, userId))
+        deviceFacade.saveHandle(DeviceDocument(handleId, deviceDto.name, userId, deviceDto.deviceType))
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
-    @ApiOperation(value = "Override handleAlarmFilterEx if does not exists")
+    @ApiOperation(value = "Override device if does not exists")
     @ApiResponses(ApiResponse(code = 204, message = "Resource was successfully deleted. Nothing to return"))
-    @DeleteMapping("/{handleId}")
+    @DeleteMapping("/{deviceId}")
     fun deleteHandle(
             @CookieValue("SESSIONID", required = true) sessionId: String,
-            @PathVariable("handleId") handleId: String): ResponseEntity<Void> {
+            @PathVariable("deviceId") handleId: String): ResponseEntity<Void> {
         deviceFacade.deleteHandleById(handleId)
         return ResponseEntity.noContent().build()
     }
@@ -95,12 +92,13 @@ class HandleEndpoint(
 
 }
 
-data class HandleDto(
+data class DeviceDto(
         val id: String,
-        val name: String
+        val name: String,
+        val deviceType: DeviceType
 )
 
 data class HandleList(
-        val handles: List<NodeDto>
+        val devices: List<DeviceDto>
 )
 

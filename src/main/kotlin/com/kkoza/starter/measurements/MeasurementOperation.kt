@@ -1,8 +1,8 @@
 package com.kkoza.starter.measurements
 
-import com.kkoza.starter.devices.HandleDocument
-import com.kkoza.starter.devices.api.NodeDto
+import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.devices.DeviceFacade
+import com.kkoza.starter.devices.api.DeviceDto
 import com.kkoza.starter.measurements.api.AlarmFilter
 import com.kkoza.starter.measurements.api.Measurement
 import com.kkoza.starter.measurements.api.MeasurementList
@@ -28,22 +28,22 @@ class MeasurementOperation(
     }
 
     fun add(measurementDocument: MeasurementDocument): String {
-        val handle: HandleDocument? = deviceFacade.findHandleById(measurementDocument.handleId)
-        if (handle != null) {
-            notifyIfNecessaryAboutEvent(handle, measurementDocument)
+        val device: DeviceDocument? = deviceFacade.findHandleById(measurementDocument.handleId)
+        if (device != null) {
+            notifyIfNecessaryAboutEvent(device, measurementDocument)
         }
         return measurementRepository.add(measurementDocument)
     }
 
-    private fun notifyIfNecessaryAboutEvent(handle: HandleDocument, measurementDocument: MeasurementDocument) {
-        val handleOwner: UserDocument? = userFacade.findUserById(handle.userId)
+    private fun notifyIfNecessaryAboutEvent(device: DeviceDocument, measurementDocument: MeasurementDocument) {
+        val handleOwner: UserDocument? = userFacade.findUserById(device.userId)
         if (handleOwner != null) {
             dangerEventNotifier.notify(measurementDocument, handleOwner.phoneNumber)
         }
     }
 
     fun get(userId: String, sort: MeasurementSortType, offset: Int?, limit: Int?, alarms: List<AlarmFilter>?, handles: List<String>?): MeasurementList {
-        logger.info("get list with sort = $sort, offset = $offset, limit = $limit, alarms = $alarms, handles = $handles for userId = $userId")
+        logger.info("get list with sort = $sort, offset = $offset, limit = $limit, alarms = $alarms, devices = $handles for userId = $userId")
         if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
         if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
         val userHandles = deviceFacade.findHandleByUserId(userId)
@@ -59,7 +59,7 @@ class MeasurementOperation(
     }
 
 
-    private fun mapToMeasurement(list: List<MeasurementDocument>, handles: List<NodeDto>): List<Measurement> {
+    private fun mapToMeasurement(list: List<MeasurementDocument>, handles: List<DeviceDto>): List<Measurement> {
         val handleIdToName = handles.associateBy({ it.id }, { it.name })
         return list.map {
             Measurement(it.id,

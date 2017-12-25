@@ -5,14 +5,12 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.core.MongoTemplate
 
 @Configuration
-class HandleConfiguration {
+class DeviceConfiguration {
 
     @Bean
     fun handleFacade(mongoTemplate: MongoTemplate): DeviceFacade {
-        val handleRepository = HandleRepository(mongoTemplate)
+        val handleRepository = DeviceRepository(mongoTemplate)
         val handleOperation = HandleOperation(handleRepository)
-        val nodeRepository = NodeRepository(mongoTemplate)
-        val nodeOperation = NodeOperation(nodeRepository)
-        return DeviceFacade(handleRepository, handleOperation, nodeOperation, nodeRepository)
+        return DeviceFacade(handleRepository, handleOperation)
     }
 }

@@ -1,6 +1,6 @@
 package com.kkoza.starter.measurements.api
 
-import com.kkoza.starter.devices.api.NodeDto
+import com.kkoza.starter.devices.api.DeviceDto
 import com.kkoza.starter.measurements.*
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
 import com.kkoza.starter.measurements.exception.InvalidSortTypeException
@@ -33,7 +33,7 @@ class MeasurementsEndpoint(
             MeasurementDocument(
                     null,
                     DateTime.now(),
-                    it.handleId,
+                    it.deviceId,
                     handlePosition,
                     Temperature(it.temperature),
                     Alarm(it.fire, it.burglary, it.frost),
@@ -56,7 +56,7 @@ class MeasurementsEndpoint(
             @RequestParam(value = "sort", required = false) sort: String?,
             @RequestParam(value = "offset", required = false) offset: Int?,
             @RequestParam(value = "limit", required = false) limit: Int?,
-            @ApiParam(value = "Ids of handles to filter (you can select multiple)")
+            @ApiParam(value = "Ids of devices to filter (you can select multiple)")
             @RequestParam(value = "alarms", required = false) alarms: List<String>?,
             @ApiParam(value = "Alarms to filter (you can select multiple", allowableValues = "fire, alarm, frost")
             @RequestParam(value = "handles", required = false) handles: List<String>?
@@ -139,7 +139,7 @@ class InvalidAlarmFilterException(source: String) : RuntimeException("Wrong alar
 
 
 data class MeasurementDto(
-        val handleId: String,
+        val deviceId: String,
         val handlePosition: Int,
         val temperature: Double,
         val fire: Boolean,
@@ -155,7 +155,7 @@ data class MeasurementList(
         val limit: Int?,
         val offset: Int?,
         val measurements: List<Measurement>,
-        val handles: List<NodeDto>)
+        val handles: List<DeviceDto>)
 
 data class Measurement(
         val id: String? = null,
