@@ -1,4 +1,4 @@
-package com.kkoza.starter.measurements.filter
+package com.kkoza.starter.measurements.fieldmapper
 
 import com.kkoza.starter.measurements.HandleMeasurementDocument
 import com.kkoza.starter.measurements.api.FieldFilter

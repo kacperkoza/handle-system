@@ -3,7 +3,7 @@ package com.kkoza.starter.measurements
 import com.kkoza.starter.measurements.api.FieldFilter
 import com.kkoza.starter.measurements.api.ItemsDto
 import com.kkoza.starter.measurements.exception.IllegalQueryDateException
-import com.kkoza.starter.measurements.filter.GraphFieldMapper
+import com.kkoza.starter.measurements.fieldmapper.GraphFieldMapper
 import org.apache.log4j.Logger
 import org.joda.time.DateTime
 import java.lang.invoke.MethodHandles

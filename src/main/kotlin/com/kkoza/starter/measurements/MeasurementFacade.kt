@@ -24,6 +24,6 @@ class MeasurementFacade(
         return graphDataProvider.getGraphDataList(startDate, endDate, fieldName, handleId)
     }
 
-    
+    //todo: start here with nodes
 
 }
