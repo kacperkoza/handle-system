@@ -2,7 +2,7 @@ package com.kkoza.starter.testutil
 
 import com.kkoza.starter.measurements.Alarm
 import com.kkoza.starter.measurements.HandlePosition
-import com.kkoza.starter.measurements.MeasurementDocument
+import com.kkoza.starter.measurements.HandleMeasurementDocument
 import com.kkoza.starter.measurements.SoundLevel
 import com.kkoza.starter.measurements.Temperature
 import org.joda.time.DateTime
@@ -66,8 +66,8 @@ class MeasurementBuilder {
         return this
     }
 
-    MeasurementDocument build() {
-        return new MeasurementDocument(
+    HandleMeasurementDocument build() {
+        return new HandleMeasurementDocument(
                 id,
                 date,
                 handleId,

@@ -1,7 +1,7 @@
 package com.kkoza.starter
 
 import com.kkoza.starter.devices.DeviceDocument
-import com.kkoza.starter.measurements.MeasurementDocument
+import com.kkoza.starter.measurements.HandleMeasurementDocument
 import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.user.UserDocument
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,7 +28,7 @@ class BaseIntegrationTest extends Specification {
 
     def setup() {
         restTemplate = new RestTemplate()
-        mongoTemplate.dropCollection(MeasurementDocument.class)
+        mongoTemplate.dropCollection(HandleMeasurementDocument.class)
         mongoTemplate.dropCollection(UserDocument.class)
         mongoTemplate.dropCollection(DeviceDocument.class)
     }
@@ -37,7 +37,7 @@ class BaseIntegrationTest extends Specification {
         return "http://localhost:${port}/${endpoint}"
     }
 
-    def save(MeasurementDocument measurement) {
+    def save(HandleMeasurementDocument measurement) {
         mongoTemplate.save(measurement)
     }
 

@@ -27,18 +27,18 @@ class MeasurementOperation(
         private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
     }
 
-    fun add(measurementDocument: MeasurementDocument): String {
-        val device: DeviceDocument? = deviceFacade.findHandleById(measurementDocument.handleId)
+    fun add(handleMeasurementDocument: HandleMeasurementDocument): String {
+        val device: DeviceDocument? = deviceFacade.findHandleById(handleMeasurementDocument.handleId)
         if (device != null) {
-            notifyIfNecessaryAboutEvent(device, measurementDocument)
+            notifyIfNecessaryAboutEvent(device, handleMeasurementDocument)
         }
-        return measurementRepository.add(measurementDocument)
+        return measurementRepository.add(handleMeasurementDocument)
     }
 
-    private fun notifyIfNecessaryAboutEvent(device: DeviceDocument, measurementDocument: MeasurementDocument) {
+    private fun notifyIfNecessaryAboutEvent(device: DeviceDocument, handleMeasurementDocument: HandleMeasurementDocument) {
         val handleOwner: UserDocument? = userFacade.findUserById(device.userId)
         if (handleOwner != null) {
-            dangerEventNotifier.notify(measurementDocument, handleOwner.phoneNumber)
+            dangerEventNotifier.notify(handleMeasurementDocument, handleOwner.phoneNumber)
         }
     }
 
@@ -59,7 +59,7 @@ class MeasurementOperation(
     }
 
 
-    private fun mapToMeasurement(list: List<MeasurementDocument>, handles: List<DeviceDto>): List<Measurement> {
+    private fun mapToMeasurement(list: List<HandleMeasurementDocument>, handles: List<DeviceDto>): List<Measurement> {
         val handleIdToName = handles.associateBy({ it.id }, { it.name })
         return list.map {
             Measurement(it.id,
@@ -75,12 +75,12 @@ class MeasurementOperation(
 
     private fun getSortOrder(sortType: MeasurementSortType): Sort {
         return when (sortType) {
-            MeasurementSortType.DATE_LATEST -> Sort(Sort.Direction.DESC, MeasurementDocument.DATE)
-            MeasurementSortType.DATE_OLDEST -> Sort(Sort.Direction.ASC, MeasurementDocument.DATE)
-            MeasurementSortType.TEMP_ASC -> Sort(Sort.Direction.ASC, MeasurementDocument.TEMPERATURE)
-            MeasurementSortType.TEMP_DESC -> Sort(Sort.Direction.DESC, MeasurementDocument.TEMPERATURE)
-            MeasurementSortType.SOUND_ASC -> Sort(Sort.Direction.ASC, MeasurementDocument.SOUND_LEVEL)
-            MeasurementSortType.SOUND_DESC -> Sort(Sort.Direction.DESC, MeasurementDocument.SOUND_LEVEL)
+            MeasurementSortType.DATE_LATEST -> Sort(Sort.Direction.DESC, HandleMeasurementDocument.DATE)
+            MeasurementSortType.DATE_OLDEST -> Sort(Sort.Direction.ASC, HandleMeasurementDocument.DATE)
+            MeasurementSortType.TEMP_ASC -> Sort(Sort.Direction.ASC, HandleMeasurementDocument.TEMPERATURE)
+            MeasurementSortType.TEMP_DESC -> Sort(Sort.Direction.DESC, HandleMeasurementDocument.TEMPERATURE)
+            MeasurementSortType.SOUND_ASC -> Sort(Sort.Direction.ASC, HandleMeasurementDocument.SOUND_LEVEL)
+            MeasurementSortType.SOUND_DESC -> Sort(Sort.Direction.DESC, HandleMeasurementDocument.SOUND_LEVEL)
         }
     }
 

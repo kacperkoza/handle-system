@@ -19,7 +19,7 @@ import static org.springframework.http.HttpMethod.GET
 import static org.springframework.http.HttpMethod.POST
 import static org.springframework.http.HttpMethod.PUT
 
-class HandleEndpointTest extends BaseIntegrationTest {
+class DeviceEndpointTest extends BaseIntegrationTest {
 
     String sessionId = 'session-id'
 

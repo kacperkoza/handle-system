@@ -6,16 +6,16 @@ class DangerEventNotifier(private val smsClient: SmsClient) {
 
     private val smsMessageFactory = NotifierMessageFactory()
 
-    fun notify(measurementDocument: MeasurementDocument, phoneNumber: String) {
-        measurementDocument.alarm.let {
+    fun notify(handleMeasurementDocument: HandleMeasurementDocument, phoneNumber: String) {
+        handleMeasurementDocument.alarm.let {
             if (it.fire) {
-                smsClient.sendSMS(phoneNumber, smsMessageFactory.fire(measurementDocument.date))
+                smsClient.sendSMS(phoneNumber, smsMessageFactory.fire(handleMeasurementDocument.date))
             }
             if (it.burglary) {
-                smsClient.sendSMS(phoneNumber, smsMessageFactory.burglar(measurementDocument.date))
+                smsClient.sendSMS(phoneNumber, smsMessageFactory.burglar(handleMeasurementDocument.date))
             }
             if (it.frost) {
-                smsClient.sendSMS(phoneNumber, smsMessageFactory.frost(measurementDocument.date, measurementDocument.temperature))
+                smsClient.sendSMS(phoneNumber, smsMessageFactory.frost(handleMeasurementDocument.date, handleMeasurementDocument.temperature))
             }
         }
     }

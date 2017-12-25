@@ -12,14 +12,14 @@ import java.net.URI
 @RequestMapping("/users/devices")
 @Api(value = "Information about user's devices", description = "Add, get, delete, update user's devices")
 
-class HandleEndpoint(
+class DeviceEndpoint(
         private val deviceFacade: DeviceFacade,
         private val sessionService: SessionService
 ) {
     @ApiOperation(value = "Used to add new device")
-    @ApiResponses(ApiResponse(code = 201, message = "Successfully added new handleAlarmFilterEx. See 'Location' in headers"),
+    @ApiResponses(ApiResponse(code = 201, message = "Successfully added new device. See 'Location' in headers"),
             ApiResponse(code = 401, message = "Expired or invalid cookie session"),
-            ApiResponse(code = 422, message = "Handle with given ID already exists or handleAlarmFilterEx name is empty"))
+            ApiResponse(code = 422, message = "Handle with given ID already exists or device name is empty"))
     @PostMapping
     fun addNewHandle(
             @ApiParam(value = "Valid user's session cookie", required = true)
@@ -43,7 +43,7 @@ class HandleEndpoint(
     }
 
     @ApiOperation(value = "Get devices by id")
-    @ApiResponses(ApiResponse(code = 200, message = "Returns handleAlarmFilterEx with given id"),
+    @ApiResponses(ApiResponse(code = 200, message = "Returns device with given id"),
             ApiResponse(code = 404, message = "Requested resource does not exists"))
     @GetMapping("/{deviceId}")
     fun getByHandleId(

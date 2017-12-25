@@ -48,7 +48,7 @@ class ScheduledAdder(
 
     //    @Scheduled(fixedDelay = 5000)
     fun add() {
-        val measurement = MeasurementDocument(
+        val measurement = HandleMeasurementDocument(
                 null,
                 DateTime.now(),
                 "klamka1",
@@ -57,7 +57,7 @@ class ScheduledAdder(
                 Alarm(random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean()),
                 SoundLevel(random.nextDouble() * (-50)),
                 random.nextInt(300))
-        val measurement2 = MeasurementDocument(
+        val measurement2 = HandleMeasurementDocument(
                 null,
                 DateTime.now(),
                 "klamka2",
@@ -66,7 +66,7 @@ class ScheduledAdder(
                 Alarm(random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean()),
                 SoundLevel(random.nextDouble() * (-50)),
                 random.nextInt(300))
-        val measurement3 = MeasurementDocument(
+        val measurement3 = HandleMeasurementDocument(
                 null,
                 DateTime.now(),
                 "klamka3",

@@ -30,7 +30,7 @@ class MeasurementsEndpoint(
             else -> throw RuntimeException("elo")
         }
         val id = measurementFacade.add(measurementDto.let {
-            MeasurementDocument(
+            HandleMeasurementDocument(
                     null,
                     DateTime.now(),
                     it.deviceId,
@@ -69,7 +69,7 @@ class MeasurementsEndpoint(
     }
 
     @ApiOperation(value = "Delete measurement by ID")
-    @ApiResponses(ApiResponse(code = 200, message = "MeasurementDocument was deleted if existed"),
+    @ApiResponses(ApiResponse(code = 200, message = "HandleMeasurementDocument was deleted if existed"),
             ApiResponse(code = 401, message = "User is not authorized"))
     @DeleteMapping("users/measurements/handles/{id}")
     fun deleteMeasurement(

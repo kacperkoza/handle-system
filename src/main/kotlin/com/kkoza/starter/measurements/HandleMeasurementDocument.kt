@@ -6,8 +6,8 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 
-@Document(collection = MeasurementDocument.COLLECTION_NAME)
-data class MeasurementDocument(
+@Document(collection = HandleMeasurementDocument.COLLECTION_NAME)
+data class HandleMeasurementDocument(
         @Id
         @Field(ID)
         val id: String? = null,
@@ -35,7 +35,7 @@ data class MeasurementDocument(
         val handleTime: Int //wtf?
 ) {
     companion object {
-        const val COLLECTION_NAME = "measurements"
+        const val COLLECTION_NAME = "handle_measurements"
 
         const val ID = "_id"
         const val DATE = "date"

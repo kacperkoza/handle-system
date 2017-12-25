@@ -8,8 +8,8 @@ class MeasurementFacade(
         private val graphDataProvider: GraphDataProvider
 ) {
 
-    fun add(measurementDocument: MeasurementDocument): String {
-        return measurementOperation.add(measurementDocument)
+    fun add(handleMeasurementDocument: HandleMeasurementDocument): String {
+        return measurementOperation.add(handleMeasurementDocument)
     }
 
     fun get(userId: String, sort: MeasurementSortType, offset: Int?, limit: Int?, alarms: List<AlarmFilter>?, handles: List<String>?): MeasurementList {
@@ -23,4 +23,7 @@ class MeasurementFacade(
     fun getGraphDataList(startDate: DateTime?, endDate: DateTime?, fieldName: FieldFilter, handleId: String): ItemsDto {
         return graphDataProvider.getGraphDataList(startDate, endDate, fieldName, handleId)
     }
+
+    
+
 }
