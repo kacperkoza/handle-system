@@ -14,15 +14,14 @@ class SettingsEndpoint(private val settingsService: SettingsService, private val
         val settings = settingsService.findByUserId(userId)
         return ResponseEntity.ok(
                 SettingsResponse(
-                        SettingsDto(settings.userId, settings.minTemperature, settings.alarmEnabled)))
+                        SettingsDto(settings.minTemperature, settings.alarmEnabled)))
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping
     fun getSettings(@CookieValue("SESSIONID") sessionId: String,
-                    @PathVariable("userId") userId: String,
                     @RequestBody settings: SettingsDto): ResponseEntity<Void> {
-        sessionService.findUserIdAndUpdateSession(sessionId)
-        settingsService.updateSettings(SettingsDocument(settings.userId, settings.minTemperature, settings.alarmEnabled))
+        val userId = sessionService.findUserIdAndUpdateSession(sessionId)
+        settingsService.updateSettings(SettingsDocument(userId, settings.minTemperature, settings.alarmEnabled))
         return ResponseEntity.ok(null)
     }
 
@@ -38,7 +37,6 @@ class SettingsEndpoint(private val settingsService: SettingsService, private val
 
 
 data class SettingsDto(
-        val userId: String,
         val minTemperature: Double,
         val alarmEnabled: Boolean
 )

@@ -4,7 +4,7 @@ import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.devices.api.DeviceDto
 import com.kkoza.starter.measurements.api.AlarmFilter
-import com.kkoza.starter.measurements.api.Measurement
+import com.kkoza.starter.measurements.api.HandleMeasurement
 import com.kkoza.starter.measurements.api.MeasurementList
 import com.kkoza.starter.measurements.api.MeasurementSortType
 import com.kkoza.starter.measurements.exception.InvalidPagingParameterException
@@ -59,10 +59,10 @@ class MeasurementOperation(
     }
 
 
-    private fun mapToMeasurement(list: List<HandleMeasurementDocument>, handles: List<DeviceDto>): List<Measurement> {
+    private fun mapToMeasurement(list: List<HandleMeasurementDocument>, handles: List<DeviceDto>): List<HandleMeasurement> {
         val handleIdToName = handles.associateBy({ it.id }, { it.name })
         return list.map {
-            Measurement(it.id,
+            HandleMeasurement(it.id,
                     it.date,
                     handleIdToName[it.handleId] ?: "Brak nazwy",
                     it.handlePosition,
@@ -89,8 +89,9 @@ class MeasurementOperation(
         measurementRepository.delete(id)
     }
 
+    fun findOneFromEveryHandle(userId: String): List<HandleMeasurement> {
+        val handles = deviceFacade.findHandleByUserId(userId)
+        return handles.map { measurementRepository.findMostRecent(userId, it.id).toHandleMeasurement(it.name) }
+    }
 
 }
-
-class InvalidHandleException(userId: String, handleId: String) : RuntimeException("User = $userId doesn't have handleAlarmFilterEx with $handleId")
-

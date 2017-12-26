@@ -1,5 +1,6 @@
 package com.kkoza.starter.measurements
 
+import com.kkoza.starter.devices.api.DeviceDto
 import com.kkoza.starter.measurements.api.AlarmFilter
 import org.apache.log4j.Logger
 import org.springframework.data.domain.Sort
@@ -36,12 +37,20 @@ class MeasurementRepository(private val mongoTemplate: MongoTemplate) {
 
     private fun whereHandleIdCriteria(handles: List<String>): Criteria = Criteria.where(HandleMeasurementDocument.HANDLE_ID).`in`(handles)
 
-
     fun delete(id: String) {
         logger.info("Delete measurement id = $id")
         mongoTemplate.remove(
                 Query(Criteria(HandleMeasurementDocument.ID).`is`(id)),
                 HandleMeasurementDocument::class.java)
     }
+
+    fun findMostRecent(userId: String, handleId: String): HandleMeasurementDocument {
+        logger.info("Find most recent for userId = $userId and handleId = $handleId")
+        return mongoTemplate.findOne(Query(
+                whereHandleId(handleId)),
+                HandleMeasurementDocument::class.java)
+    }
+
+    private fun whereHandleId(handleId: String) = Criteria(HandleMeasurementDocument.HANDLE_ID).`is`(handleId)
 
 }

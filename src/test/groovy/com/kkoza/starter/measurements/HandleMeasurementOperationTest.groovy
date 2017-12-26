@@ -13,7 +13,7 @@ import com.kkoza.starter.user.UserFacadeConfiguration
 import org.springframework.data.mongodb.core.MongoTemplate
 import spock.lang.Specification
 
-class MeasurementOperationTest extends Specification {
+class HandleMeasurementOperationTest extends Specification {
 
     MongoTemplate mongoTemplate = new MongoTemplate(new Fongo('test').getMongo(), 'test')
 

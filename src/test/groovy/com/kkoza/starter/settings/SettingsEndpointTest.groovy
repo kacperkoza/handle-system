@@ -25,16 +25,15 @@ class SettingsEndpointTest extends BaseIntegrationTest {
         with(response.body.settings) {
             minTemperature == 10.0d
             alarmEnabled == false
-            userId == 'user-id'
         }
     }
 
     def '[PUT] should override users settings'() {
         given:
-        SettingsDto settingsDto = new SettingsDto('user-id', 20.0d, true)
+        SettingsDto settingsDto = new SettingsDto( 20.0d, true)
 
         when:
-        restTemplate.exchange(localUrl('/users/settings/user-id'), HttpMethod.PUT, new HttpEntity<Object>(settingsDto, getHeaders()), String)
+        restTemplate.exchange(localUrl('/users/settings'), HttpMethod.PUT, new HttpEntity<Object>(settingsDto, getHeaders()), String)
         def settings = findOne()
 
         then:

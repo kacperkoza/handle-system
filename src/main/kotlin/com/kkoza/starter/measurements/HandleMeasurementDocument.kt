@@ -1,5 +1,6 @@
 package com.kkoza.starter.measurements
 
+import com.kkoza.starter.measurements.api.HandleMeasurement
 import org.joda.time.DateTime
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
@@ -46,6 +47,8 @@ data class HandleMeasurementDocument(
         const val SOUND_LEVEL = "sound_level"
         const val HANDLE_TIME = "handle_time"
     }
+
+    fun toHandleMeasurement(handleName: String = ""): HandleMeasurement = HandleMeasurement(id, date, handleName, handlePosition, temperature, alarm, soundLevel, handleTime)
 }
 
 data class Alarm(

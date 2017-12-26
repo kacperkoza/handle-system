@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
-@Api(value = "Information about user's measurements", description = "Add, get, delete user's measurements")
+@Api(value = "Information about user's handles", description = "Add, get, delete user's handles")
 class MeasurementsEndpoint(
         private val measurementFacade: MeasurementFacade,
         private val sessionService: SessionService
@@ -22,7 +22,7 @@ class MeasurementsEndpoint(
     @ApiResponse(code = 201, message = "Successfully created new measurement. See 'Location' in headers")
     @PostMapping("/measurements/handles")
     fun addMeasurements(
-            @RequestBody(required = true) measurementDto: MeasurementDto): ResponseEntity<Void> {
+            @RequestBody(required = true) measurementDto: HandleMeasurementDto): ResponseEntity<Void> {
         val handlePosition = when (measurementDto.handlePosition) {
             0 -> HandlePosition.CLOSED
             1 -> HandlePosition.OPEN
@@ -44,7 +44,7 @@ class MeasurementsEndpoint(
         return ResponseEntity.created(URI("/measurements/handles/$id")).build()
     }
 
-    @ApiOperation(value = "Get list of user measurements")
+    @ApiOperation(value = "Get list of user handles")
     @ApiResponses(ApiResponse(code = 200, message = "Return list with measurement prepared for pagination"),
             ApiResponse(code = 400, message = "Provided query parameters are invalid. See message in response body"),
             ApiResponse(code = 401, message = "User is not authorized"))
@@ -138,7 +138,7 @@ class InvalidAlarmFilterException(source: String) : RuntimeException("Wrong alar
         " filter must be in values (case insensitive) ${AlarmFilter.alarmNames.keys.joinToString(", ", "[", "]")}")
 
 
-data class MeasurementDto(
+data class HandleMeasurementDto(
         val deviceId: String,
         val handlePosition: Int,
         val temperature: Double,
@@ -154,10 +154,10 @@ data class MeasurementList(
         val count: Int,
         val limit: Int?,
         val offset: Int?,
-        val measurements: List<Measurement>,
+        val handleMeasurements: List<HandleMeasurement>,
         val handles: List<DeviceDto>)
 
-data class Measurement(
+data class HandleMeasurement(
         val id: String? = null,
         val date: DateTime,
         val handleName: String,

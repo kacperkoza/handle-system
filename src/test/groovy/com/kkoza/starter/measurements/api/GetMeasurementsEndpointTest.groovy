@@ -73,7 +73,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         def response = executeGet("/users/measurements/handles?sort=$sortType")
 
         then:
-        response.body.measurements.collect({ it.id }) == expectedOrder
+        response.body.handleMeasurements.collect({ it.id }) == expectedOrder
 
 
         where:
@@ -99,7 +99,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         def response = executeGet("/users/measurements/handles")
 
         then:
-        response.body.measurements.collect({ it.id }) == ['1', '2', '3']
+        response.body.handleMeasurements.collect({ it.id }) == ['1', '2', '3']
     }
 
     @Unroll
@@ -116,7 +116,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         with(response.body) {
             limit == inputLimit
             offset == inputOffset
-            measurements.id == expectedIds
+            handleMeasurements.id == expectedIds
             count == size
         }
 
@@ -133,7 +133,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         def response = executeGet("/users/measurements/handles?sort=$sort")
 
         then:
-        response.body.measurements.collect({ it.id }) == expectedOrder
+        response.body.handleMeasurements.collect({ it.id }) == expectedOrder
 
         where:
         sort        || expectedOrder
@@ -147,7 +147,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         def response = executeGet("/users/measurements/handles?sort=$sort")
 
         then:
-        response.body.measurements.collect({ it.id }) == expectedOrder
+        response.body.handleMeasurements.collect({ it.id }) == expectedOrder
 
         where:
         sort         || expectedOrder
@@ -183,15 +183,12 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
     @Unroll
     def "[GET] should return measurements filtered by handle-id"() {
-        given:
-//        save(MeasurementBuilder.create().setHandleId('handle-2').build())
-
         when:
         def response = executeGet("users/measurements/handles?handles=$handles")
 
         then:
         with(response.body) {
-            measurements.every({ it.handleName in expectedHandleId })
+            handleMeasurements.every({ it.handleName in expectedHandleId })
 
         }
 
@@ -211,7 +208,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
         then:
         with(response.body) {
-            measurements.every({ it.handleName in expectedHandleName })
+            handleMeasurements.every({ it.handleName in expectedHandleName })
         }
     }
 
@@ -222,8 +219,8 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
         then:
         with(response.body) {
-            measurements.every({ it.id in measurementsIds })
-            measurements.size() == size
+            handleMeasurements.every({ it.id in measurementsIds })
+            handleMeasurements.size() == size
         }
 
         where:

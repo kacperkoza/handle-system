@@ -10,7 +10,7 @@ class PostMeasurementsEndpointTest extends BaseIntegrationTest {
         given:
         save(DeviceBuilder.create().setId('device-id').setUserId('user-id').buildDocument())
         save(UserBuilder.create('user-id').buildDocument())
-        def measurement = new MeasurementDto('device-id', 0, 0, false, true, false, 10.0, 15)
+        def measurement = new HandleMeasurementDto('device-id', 0, 0, false, true, false, 10.0, 15)
 
         when:
         def location = restTemplate.postForLocation(

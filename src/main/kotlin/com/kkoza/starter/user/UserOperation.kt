@@ -1,16 +1,20 @@
 package com.kkoza.starter.user
 
+import com.kkoza.starter.settings.SettingsService
 import com.kkoza.starter.user.exception.ExistingEmailException
 import com.kkoza.starter.user.exception.ExistingLoginException
 
 
 class UserOperation(private val userRepository: UserRepository,
-                    private val userValidator: UserValidator) {
+                    private val userValidator: UserValidator,
+                    private val settingsService: SettingsService) {
 
     fun save(userDocument: UserDocument): UserDocument {
         userValidator.validate(userDocument)
         validateUserDocument(userDocument)
-        return userRepository.save(userDocument)
+        val user =userRepository.save(userDocument)
+        settingsService.createDefaultSettings(user.userId!!)
+        return user
     }
 
     fun update(userDocument: UserDocument) {

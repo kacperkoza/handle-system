@@ -16,10 +16,6 @@ open class UserFacade(
         return userOperation.findUserById(userId)
     }
 
-    fun findUserWithHandle(handleId: String): UserDocument? {
-        return userOperation.findUserWithHandle(handleId)
-    }
-
     fun findUserByCredentials(login: String, password: String): UserDocument? {
         return userRepository.findUserByCredentials(login, password)
     }

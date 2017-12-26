@@ -24,6 +24,10 @@ class MeasurementFacade(
         return graphDataProvider.getGraphDataList(startDate, endDate, fieldName, handleId)
     }
 
+    fun findOneFromAllHandles(userId: String): List<HandleMeasurement> {
+        return measurementOperation.findOneFromEveryHandle(userId)
+    }
+
     //todo: start here with nodes
 
 }

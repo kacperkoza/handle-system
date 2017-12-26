@@ -24,7 +24,7 @@ class GraphEndpoint(
             ApiResponse(code = 400, message = "Invalid fieldName for filtering"),
             ApiResponse(code = 401, message = "Invalid or expired cookie session"),
             ApiResponse(code = 422, message = "Starting date is after ending date"))
-    @GetMapping("/devices")
+    @GetMapping("/handleMeasurements")
     fun getGraphData(
             @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue("SESSIONID", required = true) sessionId: String,

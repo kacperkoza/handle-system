@@ -11,7 +11,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
-class DeleteMeasurementEndpointTest extends BaseIntegrationTest {
+class DeleteHandleMeasurementEndpointTest extends BaseIntegrationTest {
 
     def setup() {
         save(new SessionDocument(
