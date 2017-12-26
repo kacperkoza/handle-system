@@ -3,6 +3,7 @@ package com.kkoza.starter
 import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.measurements.HandleMeasurementDocument
 import com.kkoza.starter.session.SessionDocument
+import com.kkoza.starter.settings.SettingsDocument
 import com.kkoza.starter.user.UserDocument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.embedded.LocalServerPort
@@ -52,4 +53,9 @@ class BaseIntegrationTest extends Specification {
     def save(DeviceDocument document) {
         mongoTemplate.save(document)
     }
+
+    def save(SettingsDocument settingsDocument) {
+        mongoTemplate.save(settingsDocument)
+    }
+
 }
