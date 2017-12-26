@@ -48,4 +48,15 @@ class SessionServiceTest extends Specification {
         createdSession.valid.isAfter(nowMinusMinute)
     }
 
+    def 'should remove existing session'() {
+        mongoTemplate.save(new SessionDocument('id', 'user-id', DateTime.now()))
+
+
+        when:
+        sessionService.destroySession('id')
+
+        then:
+        mongoTemplate.findAll(SessionDocument).size() == 0
+    }
+
 }

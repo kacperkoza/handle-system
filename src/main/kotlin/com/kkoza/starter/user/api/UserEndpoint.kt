@@ -2,6 +2,7 @@ package com.kkoza.starter.user.api
 
 import com.kkoza.starter.session.InvalidSessionException
 import com.kkoza.starter.session.NotExistingUserException
+import com.kkoza.starter.session.SessionDto
 import com.kkoza.starter.session.SessionService
 import com.kkoza.starter.user.UserDocument
 import com.kkoza.starter.user.UserFacade
@@ -26,7 +27,7 @@ import java.net.URI
 
 @RestController
 @Api(description = "Register, login, edit user information")
-class UserEndpoint(private val userFacade: UserFacade, private val SessionService: SessionService) {
+class UserEndpoint(private val userFacade: UserFacade, private val sessionService: SessionService) {
 
     companion object {
         private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
@@ -76,10 +77,16 @@ class UserEndpoint(private val userFacade: UserFacade, private val SessionServic
     @PostMapping("/login")
     fun login(@RequestBody loginDto: LoginDto): ResponseEntity<Void> {
         val user = userFacade.findUserByCredentials(loginDto.email, loginDto.password) ?: throw NotExistingUserException(loginDto.email)
-        val session = SessionService.createSession(user.userId!!)
+        val session = sessionService.createSession(user.userId!!)
         val headers = HttpHeaders()
         headers.add("Set-Cookie", "SESSIONID=$session")
         return ResponseEntity(headers, HttpStatus.OK)
+    }
+
+    @PostMapping("/logout")
+    fun logout(@RequestBody sessionDto: SessionDto): ResponseEntity<Void> {
+        sessionService.destroySession(sessionDto.session)
+        return ResponseEntity.ok(null)
     }
 
     @ExceptionHandler(InvalidUserDataException::class)

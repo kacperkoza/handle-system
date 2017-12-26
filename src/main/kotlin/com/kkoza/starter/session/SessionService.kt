@@ -1,5 +1,6 @@
 package com.kkoza.starter.session
 
+import org.apache.log4j.Logger
 import org.joda.time.DateTime
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.MongoTemplate
@@ -10,17 +11,24 @@ import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
 import org.springframework.stereotype.Service
+import java.lang.invoke.MethodHandles
 
 @Service
 class SessionService(val mongoTemplate: MongoTemplate) {
 
+    companion object {
+        private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
+    }
+
     fun createSession(userId: String): String {
+        logger.info("Create session for userId = $userId")
         val session = SessionDocument(null, userId, DateTime.now())
         mongoTemplate.save(session)
         return session.id!!
     }
 
     fun findUserIdAndUpdateSession(sessionId: String): String {
+        logger.info("Find and update sesssion for $sessionId")
         val session = mongoTemplate.findOne(
                 Query(Criteria.where(SessionDocument.SESSION_ID).`is`(sessionId)),
                 SessionDocument::class.java) ?: throw InvalidSessionException(sessionId)
@@ -34,6 +42,11 @@ class SessionService(val mongoTemplate: MongoTemplate) {
                 Update().set(SessionDocument.VALID, DateTime.now()),
                 SessionDocument::class.java
         )
+    }
+
+    fun destroySession(sessionId: String) {
+        logger.info("Destroy session = $sessionId")
+        mongoTemplate.remove(Query(Criteria(SessionDocument.SESSION_ID).`is`(sessionId)), SessionDocument::class.java)
     }
 }
 
@@ -62,3 +75,7 @@ data class SessionDocument(
         const val ONE_HOUR_IN_SECONDS = 3600
     }
 }
+
+data class SessionDto(
+        val session: String
+)
