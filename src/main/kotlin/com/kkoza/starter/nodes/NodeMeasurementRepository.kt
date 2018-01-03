@@ -1,6 +1,5 @@
 package com.kkoza.starter.nodes
 
-import com.kkoza.starter.handles.HandleMeasurementDocument
 import com.kkoza.starter.nodes.api.NodeFilter
 import org.apache.log4j.Logger
 import org.springframework.data.domain.Sort
@@ -18,12 +17,12 @@ class NodeMeasurementRepository(
     }
 
     fun addNodeMeasurement(nodeMeasurementDocument: NodeMeasurementDocument): String {
-        logger.info("Save new node measurements $nodeMeasurementDocument")
+        logger.info("Save new node measurement $nodeMeasurementDocument")
         mongoTemplate.save(nodeMeasurementDocument)
         return nodeMeasurementDocument.id!!
     }
 
-    fun getNodeMeasurements(nodes: List<String>, sort: Sort, fieldFilters: List<NodeFilter>): List<NodeMeasurementDocument> {
+    fun getNodeMeasurements(nodes: List<String>, sort: Sort, fieldFilters: List<NodeFilter>?): List<NodeMeasurementDocument> {
         logger.info("Get measurement list for nodes = $nodes and sort = $sort")
         var criteria = whereNodeIdCriteria(nodes)
         fieldFilters?.forEach { criteria = whereFieldCriteria(criteria, it) }
@@ -43,13 +42,13 @@ class NodeMeasurementRepository(
                 NodeMeasurementDocument::class.java)
     }
 
-    fun findMostRecentNodeMeasurement(userId: String, handleId: String): NodeMeasurementDocument? {
-        logger.info("Find most recent for userId = $userId and handleId = $handleId")
+    fun findMostRecentNodeMeasurement(userId: String, nodeId: String): NodeMeasurementDocument? {
+        logger.info("Find most recent for userId = $userId and nodeId = $nodeId")
         return mongoTemplate.findOne(Query(
-                whereNodeId(handleId)),
+                whereNodeId(nodeId)),
                 NodeMeasurementDocument::class.java)
     }
 
-    private fun whereNodeId(handleId: String) = Criteria(HandleMeasurementDocument.HANDLE_ID).`is`(handleId)
+    private fun whereNodeId(handleId: String) = Criteria(NodeMeasurementDocument.NODE_ID).`is`(handleId)
 
 }

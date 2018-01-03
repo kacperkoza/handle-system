@@ -53,11 +53,11 @@ class NodeEndpoint(
             @ApiParam(value = "Ids of devices to filter (you can select multiple)")
             @RequestParam(value = "nodes", required = false) nodes: List<String>?,
             @ApiParam(value = "Filter by field set to true", allowableValues = "motion")
-            @RequestParam(value="filters", required = false) filters: List<String>
+            @RequestParam(value="filters", required = false) filters: List<String>?
     ): ResponseEntity<NodeMeasurementList> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
         val sortType = NodeSortType.from(sort)
-        val fieldFilters = filters.map { NodeFilter.from(it) }
+        val fieldFilters = filters?.map { NodeFilter.from(it) }
         val list = nodeFacade.getNodeMeasurement(userId, sortType, offset, limit, nodes, fieldFilters)
         return ResponseEntity.ok(list)
     }
@@ -97,6 +97,7 @@ data class NodeFilter private constructor(
 
         fun from(source: String): NodeFilter = filters[source] ?: throw InvalidNodeFilterException(source)
     }
+
 }
 
 class InvalidNodeFilterException(source: String) : RuntimeException("Wrong alarm filter value - $source." +
@@ -110,23 +111,4 @@ data class NodeMeasurementDto(
         val humidity: Double,
         val motion: Boolean,
         val carbonDioxide: Double
-)
-
-
-data class NodeMeasurementList(
-        val count: Int,
-        val limit: Int?,
-        val offset: Int?,
-        val nodesMeasurements: List<NodeMeasurement>,
-        val handles: List<DeviceDto>
-)
-
-data class NodeMeasurement(
-        val id: String? = null,
-        val date: DateTime,
-        val nodeId: String,
-        val temperature: Temperature,
-        val humidity: Humidity,
-        val carbonDioxide: CarbonDioxide,
-        val motion: Boolean
 )

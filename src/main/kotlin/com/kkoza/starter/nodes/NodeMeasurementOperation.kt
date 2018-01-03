@@ -3,12 +3,10 @@ package com.kkoza.starter.nodes
 import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.devices.api.DeviceDto
-import com.kkoza.starter.handles.DangerEventNotifier
 import com.kkoza.starter.handles.Temperature
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
 import com.kkoza.starter.handles.exception.InvalidSortTypeException
 import com.kkoza.starter.nodes.api.NodeFilter
-import com.kkoza.starter.user.UserFacade
 import com.kkoza.starter.util.dropIfNotNull
 import com.kkoza.starter.util.takeIfNotNull
 import org.apache.log4j.Logger
@@ -45,7 +43,7 @@ class NodeMeasurementOperation (
 //        }
 //    }
 
-    fun getNodeMeasurement(userId: String, sort: NodeSortType, offset: Int?, limit: Int?, nodes: List<String>?, fieldFilters: List<NodeFilter>): NodeMeasurementList {
+    fun getNodeMeasurement(userId: String, sort: NodeSortType, offset: Int?, limit: Int?, nodes: List<String>?, fieldFilters: List<NodeFilter>?): NodeMeasurementList {
         logger.info("get node measurement list with sort = $sort, offset = $offset, limit = $limit, devices = $nodes for userId = $userId")
         if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
         if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
