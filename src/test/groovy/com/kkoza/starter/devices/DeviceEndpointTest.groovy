@@ -29,21 +29,21 @@ class DeviceEndpointTest extends BaseIntegrationTest {
 
     def '[POST] should return CREATED (201) after successful adding new handle'() {
         given:
-        DeviceDto dto = DeviceBuilder.create().setId('handle-id').setDeviceName('handle-name').buildDto()
+        DeviceDto dto = DeviceBuilder.create().setId('node-id').setDeviceName('node-name').buildDto()
 
         when:
         String location = execute('/users/devices', POST, dto, Void).headers.getFirst("Location")
         DeviceDocument handle = mongoTemplate.findOne(new Query(), DeviceDocument)
 
         then:
-        location == "/users/devices/handle-id"
+        location == "/users/devices/node-id"
         handle.name == dto.name
     }
 
     def '[POST] should return UNPROCESSABLE_ENTITY (422) when handle-id already exists'() {
         given:
-        saveHandle('handle-id', 'handle-name')
-        DeviceDto dto = DeviceBuilder.create().setId('handle-id').setDeviceName('another').buildDto()
+        saveHandle('node-id', 'node-name')
+        DeviceDto dto = DeviceBuilder.create().setId('node-id').setDeviceName('another').buildDto()
 
         when:
         execute('/users/devices', POST, dto, Void)
@@ -104,16 +104,16 @@ class DeviceEndpointTest extends BaseIntegrationTest {
 
     def '[PUT] should override existing handle name with OK (200)'() {
         given:
-        save(new DeviceDocument('handle-id', 'handle-name', 'user-id', DeviceType.HANDLE))
-        def dto = DeviceBuilder.create().setId('handle-id').setDeviceName('new-name').setDeviceType(DeviceType.NODE).buildDto()
+        save(new DeviceDocument('node-id', 'node-name', 'user-id', DeviceType.HANDLE))
+        def dto = DeviceBuilder.create().setId('node-id').setDeviceName('new-name').setDeviceType(DeviceType.NODE).buildDto()
 
         when:
-        execute('/users/devices/handle-id', PUT, dto, Void)
+        execute('/users/devices/node-id', PUT, dto, Void)
         DeviceDocument handleDocument = mongoTemplate.findOne(new Query(), DeviceDocument.class)
 
         then:
         with(handleDocument) {
-            id == 'handle-id'
+            id == 'node-id'
             userId == 'user-id'
             name == 'new-name'
             deviceType == DeviceType.NODE
@@ -122,7 +122,7 @@ class DeviceEndpointTest extends BaseIntegrationTest {
 
     def '[PUT] should return UNPROCESSABLE_ENTITY [422] for blank name'() {
         when:
-        execute('/users/devices/handle-id', PUT, DeviceBuilder.create().setDeviceName(' ').buildDto(), Void)
+        execute('/users/devices/node-id', PUT, DeviceBuilder.create().setDeviceName(' ').buildDto(), Void)
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -131,10 +131,10 @@ class DeviceEndpointTest extends BaseIntegrationTest {
 
     def '[DELETE] should delete existing handle by id with status OK (200)'() {
         given:
-        save(DeviceBuilder.create().setId('handle-id').buildDocument())
+        save(DeviceBuilder.create().setId('node-id').buildDocument())
 
         when:
-        execute('/users/devices/handle-id', DELETE, null, Void)
+        execute('/users/devices/node-id', DELETE, null, Void)
 
         then:
         mongoTemplate.count(new Query(), DeviceDocument.class) == 0

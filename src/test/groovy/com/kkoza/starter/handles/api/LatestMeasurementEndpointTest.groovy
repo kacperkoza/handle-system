@@ -19,10 +19,10 @@ class LatestMeasurementEndpointTest extends BaseIntegrationTest {
         save(new SessionDocument('session-id', 'user-id', DateTime.now().plusMinutes(5)))
         save(MeasurementBuilder.create().setId('1').setHandleId('handle1').setDate(DateTime.now().plusMinutes(1)).build())
         save(MeasurementBuilder.create().setId('2').setHandleId('handle1').setDate(DateTime.now()).build())
-        save(MeasurementBuilder.create().setId('3').setHandleId('handle2').setDate(DateTime.now()).build())
-        save(MeasurementBuilder.create().setId('4').setHandleId('handle2').setDate(DateTime.now().minusSeconds(5)).build())
+        save(MeasurementBuilder.create().setId('3').setHandleId('node2').setDate(DateTime.now()).build())
+        save(MeasurementBuilder.create().setId('4').setHandleId('node2').setDate(DateTime.now().minusSeconds(5)).build())
         save(new DeviceDocument('handle1', 'klamka1', 'user-id', DeviceType.HANDLE))
-        save(new DeviceDocument('handle2', 'klamka2', 'user-id', DeviceType.HANDLE))
+        save(new DeviceDocument('node2', 'klamka2', 'user-id', DeviceType.HANDLE))
 
         save(NodeBuilder.create().setId('5').setNodeId('node1').setDate(DateTime.now()).build())
         save(NodeBuilder.create().setId('6').setNodeId('node1').setDate(DateTime.now().minusMinutes(5)).build())

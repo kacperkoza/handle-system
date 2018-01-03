@@ -49,10 +49,10 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     def user = UserBuilder.create('user-id').setHandles(['handle1']).buildDocument()
 
     @Shared
-    def handle = DeviceBuilder.create().setId('handle1').setDeviceName('handle-name').setUserId('user-id').buildDocument()
+    def handle = DeviceBuilder.create().setId('handle1').setDeviceName('node-name').setUserId('user-id').buildDocument()
 
     @Shared
-    def handle2 = DeviceBuilder.create().setId('handle2').setDeviceName('handle-name2').setUserId('user-id').buildDocument()
+    def handle2 = DeviceBuilder.create().setId('node2').setDeviceName('node-name2').setUserId('user-id').buildDocument()
 
     @Shared
     def session = new SessionDocument('session-id', 'user-id', DateTime.now())
@@ -194,14 +194,14 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
         where:
         handles           || expectedHandleId
-        'handle1'         || ['handle-name']
-        'handle2'         || ['handle-name2']
-        'handle1,handle2' || ['handle-name', 'handle-name2']
+        'handle1'         || ['node-name']
+        'node2'         || ['node-name2']
+        'handle1,node2' || ['node-name', 'node-name2']
     }
 
     def "[GET] should return all measurements when handle filter is not specified"() {
         given:
-        def expectedHandleName = ['handle-name', 'handle-name-2']
+        def expectedHandleName = ['node-name', 'node-name-2']
 
         when:
         def response = executeGet("users/measurements/handles")

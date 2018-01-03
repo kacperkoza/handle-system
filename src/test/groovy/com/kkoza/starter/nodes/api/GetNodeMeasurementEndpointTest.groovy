@@ -57,10 +57,10 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
     def user = UserBuilder.create('user-id').setHandles(['node1']).buildDocument()
 
     @Shared
-    def handle = DeviceBuilder.create().setId('node1').setDeviceName('node-name').setUserId('user-id').setDeviceType(DeviceType.NODE).buildDocument()
+    def node = DeviceBuilder.create().setId('node1').setDeviceName('node-name').setUserId('user-id').setDeviceType(DeviceType.NODE).buildDocument()
 
     @Shared
-    def handle2 = DeviceBuilder.create().setId('node1').setDeviceName('node-name2').setUserId('user-id').setDeviceType(DeviceType.NODE).buildDocument()
+    def node2 = DeviceBuilder.create().setId('node2').setDeviceName('node-name2').setUserId('user-id').setDeviceType(DeviceType.NODE).buildDocument()
 
     @Shared
     def session = new SessionDocument('session-id', 'user-id', DateTime.now())
@@ -70,8 +70,8 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
         save(first)
         save(third)
         save(user)
-        save(handle)
-        save(handle2)
+        save(node)
+        save(node2)
         save(session)
     }
 
@@ -132,24 +132,10 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
         }
 
         where: //ids sorted by latest date [1 3 2]
-        inputOffset | inputLimit || expectedIds | size
-        1           | 1          || ['1']       | 6
-        2           | 2          || ['3']       | 6
-        0           | 100        || []          | 6
-    }
-
-    @Unroll
-    def "[GET] should sort by temperature #sort"() {
-        when:
-        def response = executeGet("/users/measurements/nodes?sort=$sort")
-
-        then:
-        response.body.nodeMeasurements.collect({ it.id }) == expectedOrder
-
-        where:
-        sort        || expectedOrder
-        'temp_asc'  || ['3', '1', '2']
-        'temp_desc' || ['2', '1', '3']
+        inputOffset | inputLimit || expectedIds     | size
+        1           | 1          || ['3']           | 3
+        2           | 2          || ['2']           | 3
+        0           | 100        || ['1', '3', '2'] | 3
     }
 
     def "[GET] should return BAD_REQUEST [400] when limit or offset is lower than 0"() {
@@ -174,12 +160,15 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
 
         then:
         with(response.body) {
-            handles == [handle.toDto(), handle2.toDto()]
+            handles == [node.toDto(), node2.toDto()]
         }
     }
 
     @Unroll
-    def "[GET] should return measurements filtered by handle-id"() {
+    def "[GET] should return measurements filtered by node-id"() {
+        given:
+        save(NodeBuilder.create().setNodeId('node2').build())
+
         when:
         def response = executeGet("users/measurements/nodes?nodes=$handles")
 
@@ -190,10 +179,10 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
         }
 
         where:
-        handles           || expectedHandleId
-        'handle1'         || ['handle-name']
-        'handle2'         || ['handle-name2']
-        'handle1,handle2' || ['handle-name', 'handle-name2']
+        handles       || expectedHandleId
+        'node1'       || ['node-name']
+        'node2'       || ['node-name2']
+        'node1,node2' || ['node-name', 'node-name2']
     }
 
     def "[GET] should return all measurements when handle filter is not specified"() {
@@ -209,7 +198,7 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
     @Unroll
     def "[GET] should return measurements filter by true field"() {
         when:
-        def response = executeGet("users/measurements/nodes?alarms=$alarmFilters")
+        def response = executeGet("users/measurements/nodes?filters=$alarmFilters")
 
         then:
         with(response.body) {

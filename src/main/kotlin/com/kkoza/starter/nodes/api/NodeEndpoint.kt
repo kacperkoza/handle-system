@@ -91,7 +91,7 @@ data class NodeFilter private constructor(
 ) {
 
     companion object {
-        private val MOTION = NodeFilter("alarm.motion", true)
+        private val MOTION = NodeFilter("detectedMotion", true)
 
         val filters = mapOf("motion" to MOTION)
 
