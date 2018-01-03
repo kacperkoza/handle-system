@@ -26,7 +26,7 @@ class GraphDataProvider(
         return ItemsDto(fieldMapper.map(measurements))
     }
 
-    fun getGraphDataFromNode(startDate: DateTime?, endDate: DateTime?, nodeFieldFilter: NodeFieldFilter, nodeId: String): ItemsDto? {
+    fun getGraphDataFromNode(startDate: DateTime?, endDate: DateTime?, nodeFieldFilter: NodeFieldFilter, nodeId: String): ItemsDto {
         val (start, end) = evaluateDates(startDate, endDate)
         val measurements = graphRepository.getNodeMeasurements(start, end, nodeId)
         val fieldMapper = nodeMappers.find { it.shouldApply(nodeFieldFilter) }!!

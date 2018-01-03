@@ -12,7 +12,7 @@ class GraphFacade(
         return graphDataProvider.getGraphDataFromHandle(startDate, endDate, handleFieldFilter, handleId)
     }
 
-    fun getGraphDataFromNode(startDate: DateTime?, endDate: DateTime?, nodeFieldFilter: NodeFieldFilter, nodeId: String): ItemsDto? {
+    fun getGraphDataFromNode(startDate: DateTime?, endDate: DateTime?, nodeFieldFilter: NodeFieldFilter, nodeId: String): ItemsDto {
         return graphDataProvider.getGraphDataFromNode(startDate, endDate, nodeFieldFilter, nodeId)
     }
 

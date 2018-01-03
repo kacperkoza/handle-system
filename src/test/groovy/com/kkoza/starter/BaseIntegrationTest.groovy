@@ -2,6 +2,7 @@ package com.kkoza.starter
 
 import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.handles.HandleMeasurementDocument
+import com.kkoza.starter.nodes.NodeMeasurementDocument
 import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.settings.SettingsDocument
 import com.kkoza.starter.user.UserDocument
@@ -31,7 +32,10 @@ class BaseIntegrationTest extends Specification {
         restTemplate = new RestTemplate()
         mongoTemplate.dropCollection(HandleMeasurementDocument.class)
         mongoTemplate.dropCollection(UserDocument.class)
+        mongoTemplate.dropCollection(SessionDocument.class)
         mongoTemplate.dropCollection(DeviceDocument.class)
+        mongoTemplate.dropCollection(SettingsDocument.class)
+        mongoTemplate.dropCollection(NodeMeasurementDocument.class)
     }
 
     String localUrl(String endpoint) {
@@ -56,6 +60,10 @@ class BaseIntegrationTest extends Specification {
 
     def save(SettingsDocument settingsDocument) {
         mongoTemplate.save(settingsDocument)
+    }
+
+    def save(NodeMeasurementDocument nodeMeasurementDocument) {
+        mongoTemplate.save(nodeMeasurementDocument)
     }
 
 }

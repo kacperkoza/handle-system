@@ -1,8 +1,6 @@
 package com.kkoza.starter.graphs
 
-import com.kkoza.starter.handles.MeasurementFacade
 import com.kkoza.starter.handles.exception.IllegalQueryDateException
-import com.kkoza.starter.nodes.NodeFacade
 import com.kkoza.starter.session.InvalidSessionException
 import com.kkoza.starter.session.SessionService
 import io.swagger.annotations.*
@@ -64,7 +62,7 @@ class GraphEndpoint(
             @ApiParam(value = "Ending date in yyyy-MM-dd HH:mm pattern", required = false)
             @RequestParam("endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") endDate: DateTime?,
 
-            @ApiParam(value = "Query for given field in measurement (case insensitive)", allowableValues = "temperature, humidity, carbon", required = true)
+            @ApiParam(value = "Query for given field in measurement (case insensitive)", allowableValues = "temperature, humidity, carbon, light_intensity", required = true)
             @RequestParam("fieldName", required = true) fieldName: String,
 
             @ApiParam(value = "Node which data you want to get", required = true)
@@ -103,7 +101,7 @@ enum class HandleFieldFilter {
 }
 
 enum class NodeFieldFilter {
-    TEMPERATURE, HUMIDITY, CARBON;
+    TEMPERATURE, HUMIDITY, CARBON, LIGHT_INTENSITY;
 
     companion object {
         fun fromString(source: String): NodeFieldFilter {

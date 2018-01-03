@@ -1,4 +1,4 @@
-package com.kkoza.starter.handles.api
+package com.kkoza.starter.graphs
 
 import com.kkoza.starter.BaseIntegrationTest
 import com.kkoza.starter.graphs.ItemsDto
@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared
 
-class GraphEndpointTest extends BaseIntegrationTest {
+class GraphHandleEndpointTest extends BaseIntegrationTest {
 
     @Shared
     def dateTimeNow = DateTime.now()
