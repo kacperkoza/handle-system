@@ -6,14 +6,14 @@ open class DeviceFacade(
         private val deviceRepository: DeviceRepository,
         private val handleOperation: HandleOperation) {
 
-    fun findHandleByUserId(userId: String): List<DeviceDto> = deviceRepository.findByUserId(userId)
+    fun findByUserId(userId: String): List<DeviceDto> = deviceRepository.findByUserId(userId)
 
-    fun findHandleById(handleId: String): DeviceDocument? = deviceRepository.findById(handleId)
+    fun findById(handleId: String): DeviceDocument? = deviceRepository.findById(handleId)
 
-    fun deleteHandleById(handleId: String) = deviceRepository.deleteById(handleId)
+    fun deleteByHandleId(handleId: String) = deviceRepository.deleteById(handleId)
 
-    fun insertHandle(deviceDocument: DeviceDocument): DeviceDocument = handleOperation.insert(deviceDocument)
+    fun insert(deviceDocument: DeviceDocument): DeviceDocument = handleOperation.insert(deviceDocument)
 
-    fun saveHandle(deviceDocument: DeviceDocument) = handleOperation.save(deviceDocument)
+    fun save(deviceDocument: DeviceDocument) = handleOperation.save(deviceDocument)
 
 }

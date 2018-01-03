@@ -10,13 +10,13 @@ import java.net.URI
 
 @RestController
 @RequestMapping("/users/devices")
-@Api(value = "Information about user's devices", description = "Add, get, delete, update user's devices")
+@Api(value = "Information about user's devices", description = "Add, getHandleMeasurements, delete, update user's devices")
 
 class DeviceEndpoint(
         private val deviceFacade: DeviceFacade,
         private val sessionService: SessionService
 ) {
-    @ApiOperation(value = "Used to add new device")
+    @ApiOperation(value = "Used to addHandleMeasurement new device")
     @ApiResponses(ApiResponse(code = 201, message = "Successfully added new device. See 'Location' in headers"),
             ApiResponse(code = 401, message = "Expired or invalid cookie session"),
             ApiResponse(code = 422, message = "Handle with given ID already exists or device name is empty"))
@@ -27,7 +27,7 @@ class DeviceEndpoint(
             @RequestBody(required = true) deviceDto: DeviceDto
     ): ResponseEntity<Void> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
-        val handle = deviceFacade.insertHandle(DeviceDocument(deviceDto.id, deviceDto.name, userId, deviceDto.deviceType))
+        val handle = deviceFacade.insert(DeviceDocument(deviceDto.id, deviceDto.name, userId, deviceDto.deviceType))
         return ResponseEntity.created(URI("/users/devices/${handle.id}")).body(null)
     }
 
@@ -38,20 +38,20 @@ class DeviceEndpoint(
             @CookieValue("SESSIONID", required = true) sessionId: String
     ): ResponseEntity<HandleList> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
-        val list = deviceFacade.findHandleByUserId(userId)
+        val list = deviceFacade.findByUserId(userId)
         return ResponseEntity.ok(HandleList(list))
     }
 
     @ApiOperation(value = "Get devices by id")
     @ApiResponses(ApiResponse(code = 200, message = "Returns device with given id"),
             ApiResponse(code = 404, message = "Requested resource does not exists"))
-    @GetMapping("/{deviceId}")
+    @GetMapping("/{nodeId}")
     fun getByHandleId(
             @CookieValue("SESSIONID", required = true) sessionId: String,
-            @PathVariable("deviceId", required = true) handleId: String
+            @PathVariable("nodeId", required = true) handleId: String
     ): ResponseEntity<DeviceDto> {
         sessionService.findUserIdAndUpdateSession(sessionId)
-        val device: DeviceDocument? = deviceFacade.findHandleById(handleId)
+        val device: DeviceDocument? = deviceFacade.findById(handleId)
         return if (device != null) {
             ResponseEntity.ok(DeviceDto(device.id, device.name, device.deviceType))
         } else {
@@ -63,24 +63,24 @@ class DeviceEndpoint(
     @ApiResponses(ApiResponse(code = 204, message = "Resource was successfully overridden. Nothing to return"),
             ApiResponse(code = 404, message = "Requested resource does not exists"),
             ApiResponse(code = 422, message = "Handle name was empty"))
-    @PutMapping("/{deviceId}")
+    @PutMapping("/{nodeId}")
     fun updateHandle(
             @CookieValue("SESSIONID", required = true) sessionId: String,
-            @PathVariable(name = "deviceId", required = true) handleId: String,
+            @PathVariable(name = "nodeId", required = true) handleId: String,
             @RequestBody(required = true) deviceDto: DeviceDto
     ): ResponseEntity<Void> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
-        deviceFacade.saveHandle(DeviceDocument(handleId, deviceDto.name, userId, deviceDto.deviceType))
+        deviceFacade.save(DeviceDocument(handleId, deviceDto.name, userId, deviceDto.deviceType))
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
     @ApiOperation(value = "Override device if does not exists")
     @ApiResponses(ApiResponse(code = 204, message = "Resource was successfully deleted. Nothing to return"))
-    @DeleteMapping("/{deviceId}")
+    @DeleteMapping("/{nodeId}")
     fun deleteHandle(
             @CookieValue("SESSIONID", required = true) sessionId: String,
-            @PathVariable("deviceId") handleId: String): ResponseEntity<Void> {
-        deviceFacade.deleteHandleById(handleId)
+            @PathVariable("nodeId") handleId: String): ResponseEntity<Void> {
+        deviceFacade.deleteByHandleId(handleId)
         return ResponseEntity.noContent().build()
     }
 

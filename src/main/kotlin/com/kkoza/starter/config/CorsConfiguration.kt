@@ -27,7 +27,7 @@ class CorsConfiguration(
     }
 
     override fun addViewControllers(registry: ViewControllerRegistry) {
-        logger.info("add redirect for /")
+        logger.info("addHandleMeasurement redirect for /")
         registry.addRedirectViewController("/", "/swagger-ui.html")
     }
 
