@@ -1,5 +1,6 @@
 package com.kkoza.starter.handles
 
+import com.kkoza.starter.handles.dto.Temperature
 import com.kkoza.starter.infrastructure.smsclient.SmsClient
 
 class DangerEventNotifier(private val smsClient: SmsClient) {
@@ -15,7 +16,7 @@ class DangerEventNotifier(private val smsClient: SmsClient) {
                 smsClient.sendSMS(phoneNumber, smsMessageFactory.burglar(handleMeasurementDocument.date))
             }
             if (it.frost) {
-                smsClient.sendSMS(phoneNumber, smsMessageFactory.frost(handleMeasurementDocument.date, handleMeasurementDocument.temperature))
+                smsClient.sendSMS(phoneNumber, smsMessageFactory.frost(handleMeasurementDocument.date, Temperature(handleMeasurementDocument.temperature)))
             }
         }
     }

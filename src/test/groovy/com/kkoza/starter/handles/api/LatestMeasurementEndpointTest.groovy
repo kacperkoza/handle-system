@@ -6,7 +6,7 @@ import com.kkoza.starter.devices.DeviceType
 import com.kkoza.starter.handles.HandleMeasurementDocument
 import com.kkoza.starter.nodes.NodeMeasurementDocument
 import com.kkoza.starter.session.SessionDocument
-import com.kkoza.starter.testutil.MeasurementBuilder
+import com.kkoza.starter.testutil.HandleBuilder
 import com.kkoza.starter.testutil.NodeBuilder
 import org.joda.time.DateTime
 import org.springframework.http.HttpEntity
@@ -17,10 +17,10 @@ class LatestMeasurementEndpointTest extends BaseIntegrationTest {
 
     def setup() {
         save(new SessionDocument('session-id', 'user-id', DateTime.now().plusMinutes(5)))
-        save(MeasurementBuilder.create().setId('1').setHandleId('handle1').setDate(DateTime.now().plusMinutes(1)).build())
-        save(MeasurementBuilder.create().setId('2').setHandleId('handle1').setDate(DateTime.now()).build())
-        save(MeasurementBuilder.create().setId('3').setHandleId('handle2').setDate(DateTime.now()).build())
-        save(MeasurementBuilder.create().setId('4').setHandleId('handle2').setDate(DateTime.now().minusSeconds(5)).build())
+        save(HandleBuilder.create().setId('1').setHandleId('handle1').setDate(DateTime.now().plusMinutes(1)).build())
+        save(HandleBuilder.create().setId('2').setHandleId('handle1').setDate(DateTime.now()).build())
+        save(HandleBuilder.create().setId('3').setHandleId('handle2').setDate(DateTime.now()).build())
+        save(HandleBuilder.create().setId('4').setHandleId('handle2').setDate(DateTime.now().minusSeconds(5)).build())
         save(new DeviceDocument('handle1', 'klamka1', 'user-id', DeviceType.HANDLE))
         save(new DeviceDocument('handle2', 'klamka2', 'user-id', DeviceType.HANDLE))
 

@@ -6,7 +6,7 @@ import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.devices.DeviceType
 import com.kkoza.starter.infrastructure.smsclient.SmsClient
-import com.kkoza.starter.testutil.MeasurementBuilder
+import com.kkoza.starter.testutil.HandleBuilder
 import com.kkoza.starter.user.UserDocument
 import com.kkoza.starter.user.UserFacade
 import com.kkoza.starter.user.UserFacadeConfiguration
@@ -33,7 +33,7 @@ class HandleHandleMeasurementOperationTest extends Specification {
         given:
         mongoTemplate.save(new UserDocument('user-id', 'any', 'any', '123456789'))
         mongoTemplate.save(new DeviceDocument('node-id', 'name', 'user-id', DeviceType.HANDLE))
-        def measurement = MeasurementBuilder.create()
+        def measurement = HandleBuilder.create()
                 .setAlarm(fire, burglar, frost)
                 .setHandleId('node-id')
                 .build()

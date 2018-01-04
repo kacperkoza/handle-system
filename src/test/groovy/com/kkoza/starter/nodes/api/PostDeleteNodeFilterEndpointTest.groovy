@@ -3,6 +3,7 @@ package com.kkoza.starter.nodes.api
 import com.kkoza.starter.BaseIntegrationTest
 import com.kkoza.starter.handles.HandleMeasurementDocument
 import com.kkoza.starter.nodes.NodeMeasurementDocument
+import com.kkoza.starter.nodes.dto.NodeMeasurementDto
 import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.testutil.DeviceBuilder
 import com.kkoza.starter.testutil.NodeBuilder

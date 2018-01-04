@@ -4,6 +4,8 @@ import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.devices.DeviceType
 import com.kkoza.starter.handles.*
+import com.kkoza.starter.handles.dto.SoundLevel
+import com.kkoza.starter.handles.dto.Temperature
 import com.kkoza.starter.user.UserDocument
 import com.kkoza.starter.user.UserFacade
 import org.apache.log4j.Logger
@@ -53,27 +55,27 @@ class ScheduledAdder(
                 DateTime.now(),
                 "klamka1",
                 list[random.nextInt(3)],
-                Temperature(random.nextDouble() * 30),
+                random.nextDouble() * 30,
                 Alarm(random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean()),
-                SoundLevel(random.nextDouble() * (-50)),
+                random.nextDouble() * (-50),
                 random.nextInt(300))
         val measurement2 = HandleMeasurementDocument(
                 null,
                 DateTime.now(),
                 "klamka2",
                 list[random.nextInt(3)],
-                Temperature(random.nextDouble() * 30),
+                random.nextDouble() * 30,
                 Alarm(random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean()),
-                SoundLevel(random.nextDouble() * (-50)),
+                random.nextDouble() * (-50),
                 random.nextInt(300))
         val measurement3 = HandleMeasurementDocument(
                 null,
                 DateTime.now(),
                 "klamka3",
                 list[random.nextInt(3)],
-                Temperature(random.nextDouble() * 30),
+                random.nextDouble() * 30,
                 Alarm(random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean(), random.nextBoolean() && random.nextBoolean()),
-                SoundLevel(random.nextDouble() * (-50)),
+                random.nextDouble() * (-50),
                 random.nextInt(300))
         logger.info("Scheduler added new measurement $measurement")
         logger.info("Scheduler added new measurement $measurement2")

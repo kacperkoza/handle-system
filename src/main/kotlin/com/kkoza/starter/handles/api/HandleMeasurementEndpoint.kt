@@ -1,7 +1,11 @@
 package com.kkoza.starter.handles.api
 
-import com.kkoza.starter.devices.api.DeviceDto
-import com.kkoza.starter.handles.*
+import com.kkoza.starter.handles.Alarm
+import com.kkoza.starter.handles.HandleMeasurementDocument
+import com.kkoza.starter.handles.HandlePosition
+import com.kkoza.starter.handles.MeasurementFacade
+import com.kkoza.starter.handles.dto.HandleMeasurementDto
+import com.kkoza.starter.handles.dto.MeasurementList
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
 import com.kkoza.starter.handles.exception.InvalidSortTypeException
 import com.kkoza.starter.session.SessionService
@@ -12,7 +16,7 @@ import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
-@Api(value = "Information about user's handles", description = "Add, getHandleMeasurements, delete user's handles")
+@Api(value = "Information about user's handles", description = "Add, get, delete user's handles")
 class MeasurementsEndpoint(
         private val measurementFacade: MeasurementFacade,
         private val sessionService: SessionService
@@ -35,10 +39,9 @@ class MeasurementsEndpoint(
                     DateTime.now(),
                     it.deviceId,
                     handlePosition,
-                    Temperature(it.temperature),
+                    it.temperature,
                     Alarm(it.fire, it.burglary, it.frost),
-
-                    SoundLevel(it.soundLevel),
+                    it.soundLevel,
                     it.handleTime)
         })
         return ResponseEntity.created(URI("/measurements/handles/$id")).build()
@@ -69,7 +72,7 @@ class MeasurementsEndpoint(
     }
 
     @ApiOperation(value = "Delete measurement by ID")
-    @ApiResponses(ApiResponse(code = 200, message = "HandleMeasurementDocument was deleted if existed"),
+    @ApiResponses(ApiResponse(code = 200, message = "Handle measurement was deleted if existed"),
             ApiResponse(code = 401, message = "User is not authorized"))
     @DeleteMapping("users/measurements/handles/{id}")
     fun deleteMeasurement(
@@ -136,34 +139,3 @@ data class AlarmFilter private constructor(
 
 class InvalidAlarmFilterException(source: String) : RuntimeException("Wrong alarm filter value - $source." +
         " filter must be in values (case insensitive) ${AlarmFilter.alarmNames.keys.joinToString(", ", "[", "]")}")
-
-
-data class HandleMeasurementDto(
-        val deviceId: String,
-        val handlePosition: Int,
-        val temperature: Double,
-        val fire: Boolean,
-        val burglary: Boolean,
-        val frost: Boolean,
-        val soundLevel: Double,
-        val handleTime: Int
-)
-
-
-data class MeasurementList(
-        val count: Int,
-        val limit: Int?,
-        val offset: Int?,
-        val handleMeasurements: List<HandleMeasurement>,
-        val handles: List<DeviceDto>)
-
-data class HandleMeasurement(
-        val id: String? = null,
-        val date: DateTime,
-        val handleName: String,
-        val handlePosition: HandlePosition,
-        val temperature: Temperature,
-        val alarm: Alarm,
-        val soundLevel: SoundLevel,
-        val handleTime: Int //wtf?
-)

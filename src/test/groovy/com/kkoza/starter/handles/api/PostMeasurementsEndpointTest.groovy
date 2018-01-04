@@ -1,6 +1,7 @@
 package com.kkoza.starter.handles.api
 
 import com.kkoza.starter.BaseIntegrationTest
+import com.kkoza.starter.handles.dto.HandleMeasurementDto
 import com.kkoza.starter.testutil.DeviceBuilder
 import com.kkoza.starter.testutil.UserBuilder
 

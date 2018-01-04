@@ -1,9 +1,8 @@
 package com.kkoza.starter.graphs
 
 import com.kkoza.starter.BaseIntegrationTest
-import com.kkoza.starter.graphs.ItemsDto
 import com.kkoza.starter.session.SessionDocument
-import com.kkoza.starter.testutil.MeasurementBuilder
+import com.kkoza.starter.testutil.HandleBuilder
 import org.joda.time.DateTime
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -20,11 +19,11 @@ class GraphHandleEndpointTest extends BaseIntegrationTest {
     @Shared
     String dateQueryParamPattern = 'yyyy-MM-dd HH:mm'
 
-    def measurement = MeasurementBuilder.create().setId('1').setDate(dateTimeNow).setHandleId('nodeId-1').setTemperature(1.0).setSound(10.0).build()
-    def measurement2 = MeasurementBuilder.create().setId('2').setDate(dateTimeNow.minusMinutes(5)).setHandleId('nodeId-1').setTemperature(2.0).setSound(11.0).build()
-    def measurement3 = MeasurementBuilder.create().setId('3').setDate(dateTimeNow.minusMinutes(10)).setHandleId('nodeId-1').setTemperature(3.0).setSound(12.0).build()
-    def measurement4 = MeasurementBuilder.create().setId('4').setDate(dateTimeNow.minusMinutes(15)).setHandleId('nodeId-1').setTemperature(4.0).setSound(13.0).build()
-    def measurement5 = MeasurementBuilder.create().setId('5').setDate(dateTimeNow.minusMinutes(20)).setHandleId('nodeId-1').setTemperature(5.0).setSound(14.0).build()
+    def measurement = HandleBuilder.create().setId('1').setDate(dateTimeNow).setHandleId('nodeId-1').setTemperature(1.0).setSound(10.0).build()
+    def measurement2 = HandleBuilder.create().setId('2').setDate(dateTimeNow.minusMinutes(5)).setHandleId('nodeId-1').setTemperature(2.0).setSound(11.0).build()
+    def measurement3 = HandleBuilder.create().setId('3').setDate(dateTimeNow.minusMinutes(10)).setHandleId('nodeId-1').setTemperature(3.0).setSound(12.0).build()
+    def measurement4 = HandleBuilder.create().setId('4').setDate(dateTimeNow.minusMinutes(15)).setHandleId('nodeId-1').setTemperature(4.0).setSound(13.0).build()
+    def measurement5 = HandleBuilder.create().setId('5').setDate(dateTimeNow.minusMinutes(20)).setHandleId('nodeId-1').setTemperature(5.0).setSound(14.0).build()
 
     def setup() {
         save(new SessionDocument('session-id', 'any', DateTime.now().plusDays(1)))

@@ -25,7 +25,7 @@ class SettingsEndpoint(private val settingsService: SettingsService, private val
         return ResponseEntity.ok(null)
     }
 
-    @PostMapping("alarm")
+    @PostMapping("/alarm")
     fun updateAlarm(@CookieValue("SESSIONID") sessionId: String,
                     @RequestBody alarmDto: AlarmDto): ResponseEntity<Void> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
@@ -34,7 +34,6 @@ class SettingsEndpoint(private val settingsService: SettingsService, private val
     }
 
 }
-
 
 data class SettingsDto(
         val minTemperature: Double,

@@ -1,6 +1,8 @@
 package com.kkoza.starter.handles
 
-import com.kkoza.starter.handles.api.HandleMeasurement
+import com.kkoza.starter.handles.dto.HandleMeasurement
+import com.kkoza.starter.handles.dto.SoundLevel
+import com.kkoza.starter.handles.dto.Temperature
 import org.joda.time.DateTime
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
@@ -24,13 +26,13 @@ data class HandleMeasurementDocument(
         val handlePosition: HandlePosition,
 
         @Field(TEMPERATURE)
-        val temperature: Temperature,
+        val temperature: Double,
 
         @Field(ALARM)
         val alarm: Alarm,
 
         @Field(SOUND_LEVEL)
-        val soundLevel: SoundLevel,
+        val soundLevel: Double,
 
         @Field(HANDLE_TIME)
         val handleTime: Int //wtf?
@@ -48,23 +50,16 @@ data class HandleMeasurementDocument(
         const val HANDLE_TIME = "handle_time"
     }
 
-    fun toHandleMeasurement(handleName: String = ""): HandleMeasurement = HandleMeasurement(id, date, handleName, handlePosition, temperature, alarm, soundLevel, handleTime)
+    fun toHandleMeasurement(handleName: String = ""): HandleMeasurement {
+        return HandleMeasurement(id, date, handleName, handlePosition, Temperature(temperature), alarm, SoundLevel(soundLevel), handleTime)
+    }
+
 }
 
 data class Alarm(
         val fire: Boolean,
         val burglary: Boolean,
         val frost: Boolean
-)
-
-data class SoundLevel(
-        val value: Double,
-        val unit: String = "dB"
-)
-
-data class Temperature(
-        val value: Double,
-        val unit: String = "°C"
 )
 
 enum class HandlePosition {

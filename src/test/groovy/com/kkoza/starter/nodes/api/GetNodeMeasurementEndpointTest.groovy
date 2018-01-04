@@ -2,7 +2,7 @@ package com.kkoza.starter.nodes.api
 
 import com.kkoza.starter.BaseIntegrationTest
 import com.kkoza.starter.devices.DeviceType
-import com.kkoza.starter.nodes.NodeMeasurementList
+import com.kkoza.starter.nodes.dto.NodeMeasurementList
 import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.testutil.DeviceBuilder
 import com.kkoza.starter.testutil.NodeBuilder

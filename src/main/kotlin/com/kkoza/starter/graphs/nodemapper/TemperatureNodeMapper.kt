@@ -9,10 +9,12 @@ import org.springframework.stereotype.Component
 @Component
 class TemperatureNodeMapper : NodeMapper {
 
-    override fun shouldApply(nodeFieldFilter: NodeFieldFilter): Boolean = nodeFieldFilter == TEMPERATURE
+    override fun shouldApply(nodeFieldFilter: NodeFieldFilter): Boolean {
+        return nodeFieldFilter == TEMPERATURE
+    }
 
     override fun map(handleMeasurements: List<NodeMeasurementDocument>): List<GraphItem> {
-        return handleMeasurements.map { GraphItem(it.date, it.temperature.value) }
+        return handleMeasurements.map { GraphItem(it.date, it.temperature) }
     }
 
 }

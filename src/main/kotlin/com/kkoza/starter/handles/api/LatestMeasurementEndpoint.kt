@@ -1,8 +1,9 @@
 package com.kkoza.starter.handles.api
 
 import com.kkoza.starter.handles.MeasurementFacade
+import com.kkoza.starter.handles.dto.HandleMeasurement
 import com.kkoza.starter.nodes.NodeFacade
-import com.kkoza.starter.nodes.NodeMeasurement
+import com.kkoza.starter.nodes.dto.NodeMeasurement
 import com.kkoza.starter.session.SessionService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CookieValue

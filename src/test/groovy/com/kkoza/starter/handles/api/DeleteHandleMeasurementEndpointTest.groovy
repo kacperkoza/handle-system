@@ -3,7 +3,7 @@ package com.kkoza.starter.handles.api
 import com.kkoza.starter.BaseIntegrationTest
 import com.kkoza.starter.handles.HandleMeasurementDocument
 import com.kkoza.starter.session.SessionDocument
-import com.kkoza.starter.testutil.MeasurementBuilder
+import com.kkoza.starter.testutil.HandleBuilder
 import org.joda.time.DateTime
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -23,7 +23,7 @@ class DeleteHandleMeasurementEndpointTest extends BaseIntegrationTest {
     def '[DELETE] should return OK [200] when delete measurement by id'() {
         given:
         def id = '123'
-        save(MeasurementBuilder.create().setId(id).build())
+        save(HandleBuilder.create().setId(id).build())
 
         when:
         def response = executePost(id)

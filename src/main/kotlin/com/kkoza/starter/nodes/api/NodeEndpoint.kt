@@ -1,11 +1,12 @@
 package com.kkoza.starter.nodes.api
 
-import com.kkoza.starter.devices.api.DeviceDto
-import com.kkoza.starter.handles.Temperature
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
 import com.kkoza.starter.handles.exception.InvalidSortTypeException
-import com.kkoza.starter.nodes.*
-import com.kkoza.starter.nodes.NodeMeasurementList
+import com.kkoza.starter.nodes.NodeFacade
+import com.kkoza.starter.nodes.NodeMeasurementDocument
+import com.kkoza.starter.nodes.NodeSortType
+import com.kkoza.starter.nodes.dto.NodeMeasurementDto
+import com.kkoza.starter.nodes.dto.NodeMeasurementList
 import com.kkoza.starter.session.SessionService
 import io.swagger.annotations.*
 import org.joda.time.DateTime
@@ -29,11 +30,11 @@ class NodeEndpoint(
                     null,
                     DateTime.now(),
                     it.deviceId,
-                    Temperature(it.temperature),
-                    Humidity(it.humidity),
-                    LightIntensity(it.lightIntensity),
+                    it.temperature,
+                    it.humidity,
+                    it.lightIntensity,
                     it.motion,
-                    CarbonDioxide(it.carbonDioxide))
+                    it.carbonDioxide)
         })
         return ResponseEntity.created(URI("/measurements/nodes/$id")).build()
     }
@@ -104,11 +105,4 @@ class InvalidNodeFilterException(source: String) : RuntimeException("Wrong alarm
         " filter must be in values (case insensitive) ${NodeFilter.filters.keys.joinToString(", ", "[", "]")}")
 
 
-data class NodeMeasurementDto(
-        val deviceId: String,
-        val temperature: Double,
-        val lightIntensity: Double,
-        val humidity: Double,
-        val motion: Boolean,
-        val carbonDioxide: Double
-)
+

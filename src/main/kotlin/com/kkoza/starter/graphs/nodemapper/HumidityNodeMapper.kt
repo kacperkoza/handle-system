@@ -6,11 +6,14 @@ import com.kkoza.starter.nodes.NodeMeasurementDocument
 import org.springframework.stereotype.Component
 
 @Component
-class HumidityNodeMapper : NodeMapper{
+class HumidityNodeMapper : NodeMapper {
 
-    override fun shouldApply(nodeFieldFilter: NodeFieldFilter): Boolean = nodeFieldFilter == NodeFieldFilter.HUMIDITY
+    override fun shouldApply(nodeFieldFilter: NodeFieldFilter): Boolean {
+        return nodeFieldFilter == NodeFieldFilter.HUMIDITY
+    }
 
-    override fun map(handleMeasurements: List<NodeMeasurementDocument>): List<GraphItem> = handleMeasurements.map { GraphItem(it.date, it.humidity.value) }
-
+    override fun map(handleMeasurements: List<NodeMeasurementDocument>): List<GraphItem> {
+        return handleMeasurements.map { GraphItem(it.date, it.humidity) }
+    }
 
 }

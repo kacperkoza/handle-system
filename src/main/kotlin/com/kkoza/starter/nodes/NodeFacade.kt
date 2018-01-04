@@ -1,6 +1,8 @@
 package com.kkoza.starter.nodes
 
 import com.kkoza.starter.nodes.api.NodeFilter
+import com.kkoza.starter.nodes.dto.NodeMeasurement
+import com.kkoza.starter.nodes.dto.NodeMeasurementList
 
 class NodeFacade(
         private val nodeMeasurementOperation: NodeMeasurementOperation

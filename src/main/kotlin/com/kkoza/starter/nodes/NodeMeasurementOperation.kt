@@ -3,18 +3,18 @@ package com.kkoza.starter.nodes
 import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.devices.api.DeviceDto
-import com.kkoza.starter.handles.Temperature
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
 import com.kkoza.starter.handles.exception.InvalidSortTypeException
 import com.kkoza.starter.nodes.api.NodeFilter
+import com.kkoza.starter.nodes.dto.NodeMeasurement
+import com.kkoza.starter.nodes.dto.NodeMeasurementList
 import com.kkoza.starter.util.dropIfNotNull
 import com.kkoza.starter.util.takeIfNotNull
 import org.apache.log4j.Logger
-import org.joda.time.DateTime
 import org.springframework.data.domain.Sort
 import java.lang.invoke.MethodHandles
 
-class NodeMeasurementOperation (
+class NodeMeasurementOperation(
         private val nodeMeasurementRepository: NodeMeasurementRepository,
 //        private val dangerEventNotifier: DangerEventNotifier,
         private val deviceFacade: DeviceFacade
@@ -62,13 +62,7 @@ class NodeMeasurementOperation (
     private fun mapToMeasurement(list: List<NodeMeasurementDocument>, nodes: List<DeviceDto>): List<NodeMeasurement> {
         val nodeIdToName = nodes.associateBy({ it.id }, { it.name })
         return list.map {
-            NodeMeasurement(it.id,
-                    it.date,
-                    nodeIdToName[it.nodeId] ?: "Brak nazwy",
-                    it.temperature,
-                    it.lightIntensity,
-                    it.humidity,
-                    it.carbonDioxide)
+            it.toNodeMeasurement(nodeIdToName[it.nodeId] ?: "Brak nazwy")
         }
     }
 
@@ -124,19 +118,4 @@ enum class NodeSortType {
     }
 }
 
-data class NodeMeasurementList(
-        val count: Int,
-        val limit: Int?,
-        val offset: Int?,
-        val nodeMeasurements: List<NodeMeasurement>,
-        val handles: List<DeviceDto>)
 
-data class NodeMeasurement(
-        val id: String? = null,
-        val date: DateTime,
-        val nodeName: String,
-        val temperature: Temperature,
-        val lightIntensity: LightIntensity,
-        val alarm: Humidity,
-        val carbonDioxide: CarbonDioxide
-)

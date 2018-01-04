@@ -18,7 +18,7 @@ class GraphEndpoint(
         private val graphFacade: GraphFacade
 ) {
 
-    @ApiOperation(value = "Query for measurement graph data")
+    @ApiOperation(value = "Query graph data for any handle")
     @ApiResponses(ApiResponse(code = 200, message = "Return list with data for queried field and dates"),
             ApiResponse(code = 400, message = "Invalid fieldName for filtering"),
             ApiResponse(code = 401, message = "Invalid or expired cookie session"),
@@ -101,6 +101,7 @@ enum class HandleFieldFilter {
 }
 
 enum class NodeFieldFilter {
+
     TEMPERATURE, HUMIDITY, CARBON, LIGHT_INTENSITY;
 
     companion object {

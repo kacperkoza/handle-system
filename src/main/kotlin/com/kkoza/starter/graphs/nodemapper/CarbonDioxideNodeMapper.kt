@@ -8,8 +8,12 @@ import org.springframework.stereotype.Component
 @Component
 class CarbonDioxideNodeMapper : NodeMapper {
 
-    override fun shouldApply(nodeFieldFilter: NodeFieldFilter): Boolean  = nodeFieldFilter == NodeFieldFilter.CARBON
+    override fun shouldApply(nodeFieldFilter: NodeFieldFilter): Boolean {
+        return nodeFieldFilter == NodeFieldFilter.CARBON
+    }
 
-    override fun map(handleMeasurements: List<NodeMeasurementDocument>): List<GraphItem> = handleMeasurements.map { GraphItem(it.date, it.carbonDioxide.value) }
+    override fun map(handleMeasurements: List<NodeMeasurementDocument>): List<GraphItem> {
+        return handleMeasurements.map { GraphItem(it.date, it.carbonDioxide) }
+    }
 
 }

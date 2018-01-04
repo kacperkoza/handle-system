@@ -1,12 +1,15 @@
 package com.kkoza.starter.nodes
 
-import com.kkoza.starter.handles.Temperature
+import com.kkoza.starter.handles.dto.Temperature
+import com.kkoza.starter.nodes.dto.CarbonDioxide
+import com.kkoza.starter.nodes.dto.Humidity
+import com.kkoza.starter.nodes.dto.LightIntensity
+import com.kkoza.starter.nodes.dto.NodeMeasurement
 import org.joda.time.DateTime
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
-
 
 @Document(collection = NodeMeasurementDocument.COLLECTION_NAME)
 data class NodeMeasurementDocument(
@@ -22,19 +25,19 @@ data class NodeMeasurementDocument(
         val nodeId: String,
 
         @Field(TEMPERATURE)
-        val temperature: Temperature,
+        val temperature: Double,
 
         @Field(HUMIDITY)
-        val humidity: Humidity,
+        val humidity: Double,
 
         @Field(LIGHT_INTENSITY)
-        val lightIntensity: LightIntensity,
+        val lightIntensity: Double,
 
         @Field(DETECTED_MOTION)
         val detectedMotion: Boolean,
 
         @Field(CARBON_DIOXIDE)
-        val carbonDioxide: CarbonDioxide
+        val carbonDioxide: Double
 
 ) {
     companion object {
@@ -48,26 +51,18 @@ data class NodeMeasurementDocument(
         const val HUMIDITY = "humidity"
         const val LIGHT_INTENSITY = "light_intensity"
         const val DETECTED_MOTION = "detected_motion"
-        const val CARBON_DIOXIDE = "carbon_DIOXIDE"
-
-
+        const val CARBON_DIOXIDE = "carbon_dioxide"
     }
 
-    fun toNodeMeasurement(name: String): NodeMeasurement = NodeMeasurement(id, date, name, temperature, lightIntensity, humidity, carbonDioxide)
+    fun toNodeMeasurement(nodeName: String): NodeMeasurement = NodeMeasurement(
+            id,
+            date,
+            nodeName,
+            Temperature(temperature),
+            LightIntensity(lightIntensity),
+            Humidity(humidity),
+            CarbonDioxide(carbonDioxide))
 
 }
 
-data class Humidity(
-        val value: Double,
-        val unit: String = "jednostka?"
-)
 
-data class LightIntensity(
-        val value: Double,
-        val unit: String = "Lumeny?"
-)
-
-data class CarbonDioxide(
-        val value: Double,
-        val unit: String = "CO2"
-)

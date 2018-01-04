@@ -1,5 +1,6 @@
 package com.kkoza.starter.handles
 
+import com.kkoza.starter.handles.dto.Temperature
 import com.kkoza.starter.util.dayFormat
 import com.kkoza.starter.util.hourFormat
 import org.joda.time.DateTime

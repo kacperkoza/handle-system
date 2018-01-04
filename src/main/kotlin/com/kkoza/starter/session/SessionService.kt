@@ -48,6 +48,7 @@ class SessionService(val mongoTemplate: MongoTemplate) {
         logger.info("Destroy session = $sessionId")
         mongoTemplate.remove(Query(Criteria(SessionDocument.SESSION_ID).`is`(sessionId)), SessionDocument::class.java)
     }
+
 }
 
 class InvalidSessionException(sessionId: String) : RuntimeException("Session $sessionId is not valid")

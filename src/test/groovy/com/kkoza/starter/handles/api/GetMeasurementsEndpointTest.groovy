@@ -1,9 +1,10 @@
 package com.kkoza.starter.handles.api
 
 import com.kkoza.starter.BaseIntegrationTest
+import com.kkoza.starter.handles.dto.MeasurementList
 import com.kkoza.starter.session.SessionDocument
 import com.kkoza.starter.testutil.DeviceBuilder
-import com.kkoza.starter.testutil.MeasurementBuilder
+import com.kkoza.starter.testutil.HandleBuilder
 import com.kkoza.starter.testutil.UserBuilder
 import org.joda.time.DateTime
 import org.springframework.http.HttpEntity
@@ -16,7 +17,7 @@ import spock.lang.Unroll
 class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
     @Shared
-    def first = MeasurementBuilder.create()
+    def first = HandleBuilder.create()
             .setId('1')
             .setHandleId('handle1')
             .setAlarm(true, true, false)
@@ -26,7 +27,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
             .build()
 
     @Shared
-    def second = MeasurementBuilder.create()
+    def second = HandleBuilder.create()
             .setId('2')
             .setHandleId('handle1')
             .setAlarm(true, false, true)
@@ -36,7 +37,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
             .build()
 
     @Shared
-    def third = MeasurementBuilder.create()
+    def third = HandleBuilder.create()
             .setId('3')
             .setHandleId('handle1')
             .setAlarm(false, false, true)
@@ -105,9 +106,9 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
     @Unroll
     def "[GET] should use offset #inputOffset and limit #inputLimit properly"() {
         given:
-        save(MeasurementBuilder.create().setHandleId('handle1').setId('4').setDate(DateTime.now()).build())
-        save(MeasurementBuilder.create().setHandleId('handle1').setId('5').setDate(DateTime.now().minusMillis(100)).build())
-        save(MeasurementBuilder.create().setHandleId('handle1').setId('6').setDate(DateTime.now().minusMillis(200)).build())
+        save(HandleBuilder.create().setHandleId('handle1').setId('4').setDate(DateTime.now()).build())
+        save(HandleBuilder.create().setHandleId('handle1').setId('5').setDate(DateTime.now().minusMillis(100)).build())
+        save(HandleBuilder.create().setHandleId('handle1').setId('6').setDate(DateTime.now().minusMillis(200)).build())
 
         when:
         def response = executeGet("/users/measurements/handles?limit=$inputLimit&offset=$inputOffset")

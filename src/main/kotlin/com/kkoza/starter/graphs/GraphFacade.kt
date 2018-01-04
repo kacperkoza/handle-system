@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service
 @Service
 class GraphFacade(
         private val graphDataProvider: GraphDataProvider
-
 ) {
+
     fun getGraphDataFromHandle(startDate: DateTime?, endDate: DateTime?, handleFieldFilter: HandleFieldFilter, handleId: String): ItemsDto? {
         return graphDataProvider.getGraphDataFromHandle(startDate, endDate, handleFieldFilter, handleId)
     }

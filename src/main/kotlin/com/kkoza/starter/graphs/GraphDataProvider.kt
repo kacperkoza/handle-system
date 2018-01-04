@@ -15,7 +15,7 @@ class GraphDataProvider(
 ) {
     companion object {
         private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
-        const val ONE_DAY = 1
+        private const val ONE_DAY = 1
     }
 
     fun getGraphDataFromHandle(startDate: DateTime?, endDate: DateTime?, handleFieldName: HandleFieldFilter, handleId: String): ItemsDto {
@@ -27,6 +27,7 @@ class GraphDataProvider(
     }
 
     fun getGraphDataFromNode(startDate: DateTime?, endDate: DateTime?, nodeFieldFilter: NodeFieldFilter, nodeId: String): ItemsDto {
+        logger.info("Get node graph data for start = $startDate, end = $endDate, field = $nodeFieldFilter, nodeId = $nodeId")
         val (start, end) = evaluateDates(startDate, endDate)
         val measurements = graphRepository.getNodeMeasurements(start, end, nodeId)
         val fieldMapper = nodeMappers.find { it.shouldApply(nodeFieldFilter) }!!
@@ -34,15 +35,11 @@ class GraphDataProvider(
     }
 
     private fun evaluateDates(startDate: DateTime?, endDate: DateTime?): Pair<DateTime, DateTime> {
-        val start = evaluateStartDate(startDate)
-        val end = evaluateEndDate(endDate)
+        val start = startDate ?: DateTime.now().minusDays(ONE_DAY)
+        val end = endDate ?: DateTime.now()
         throwExceptionIfStartIsAfterEnd(start, end)
         return Pair(start, end)
     }
-
-    private fun evaluateEndDate(endDate: DateTime?) = endDate ?: DateTime.now()
-
-    private fun evaluateStartDate(startDate: DateTime?) = startDate ?: DateTime.now().minusDays(ONE_DAY)
 
     private fun throwExceptionIfStartIsAfterEnd(start: DateTime, end: DateTime) {
         if (start.isAfter(end)) {

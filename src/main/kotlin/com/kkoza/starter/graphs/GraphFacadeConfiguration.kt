@@ -20,4 +20,5 @@ class GraphFacadeConfiguration {
         val graphDataProvider =  GraphDataProvider(graphRepository, handleMappers, nodeMappers)
         return GraphFacade(graphDataProvider)
     }
+
 }

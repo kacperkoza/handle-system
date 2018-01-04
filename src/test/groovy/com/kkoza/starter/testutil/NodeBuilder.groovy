@@ -1,9 +1,5 @@
 package com.kkoza.starter.testutil
 
-import com.kkoza.starter.handles.Temperature
-import com.kkoza.starter.nodes.CarbonDioxide
-import com.kkoza.starter.nodes.Humidity
-import com.kkoza.starter.nodes.LightIntensity
 import com.kkoza.starter.nodes.NodeMeasurementDocument
 import org.joda.time.DateTime
 
@@ -67,11 +63,11 @@ class NodeBuilder {
                 id,
                 date,
                 nodeId,
-                new Temperature(temperature, "°C"),
-                new Humidity(humidity, "any"),
-                new LightIntensity(lightIntensity, "any"),
+                temperature,
+                humidity,
+                lightIntensity,
                 motion,
-                new CarbonDioxide(carbonDioxity, "CO2")
+                carbonDioxity
         )
     }
 

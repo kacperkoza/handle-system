@@ -1,13 +1,11 @@
 package com.kkoza.starter.testutil
 
 import com.kkoza.starter.handles.Alarm
-import com.kkoza.starter.handles.HandlePosition
 import com.kkoza.starter.handles.HandleMeasurementDocument
-import com.kkoza.starter.handles.SoundLevel
-import com.kkoza.starter.handles.Temperature
+import com.kkoza.starter.handles.HandlePosition
 import org.joda.time.DateTime
 
-class MeasurementBuilder {
+class HandleBuilder {
 
     String id = 'any'
     DateTime date = DateTime.now()
@@ -20,48 +18,48 @@ class MeasurementBuilder {
     Double sound = -35.3d
     Integer handleTime = 110
 
-    static MeasurementBuilder create() {
-        return new MeasurementBuilder()
+    static HandleBuilder create() {
+        return new HandleBuilder()
     }
 
-    MeasurementBuilder setId(String id) {
+    HandleBuilder setId(String id) {
         this.id = id
         return this
     }
 
-    MeasurementBuilder setDate(DateTime date) {
+    HandleBuilder setDate(DateTime date) {
         this.date = date
         return this
     }
 
-    MeasurementBuilder setHandleId(String handleId) {
+    HandleBuilder setHandleId(String handleId) {
         this.handleId = handleId
         return this
     }
 
-    MeasurementBuilder setHandlePosition(HandlePosition handlePosition) {
+    HandleBuilder setHandlePosition(HandlePosition handlePosition) {
         this.handlePosition = handlePosition
         return this
     }
 
-    MeasurementBuilder setTemperature(Double temperature) {
+    HandleBuilder setTemperature(Double temperature) {
         this.temperature = temperature
         return this
     }
 
-    MeasurementBuilder setAlarm(boolean fire, boolean burglar, boolean frost) {
+    HandleBuilder setAlarm(boolean fire, boolean burglar, boolean frost) {
         this.fire = fire
         this.burglar = burglar
         this.frost = frost
         return this
     }
 
-    MeasurementBuilder setSound(Double sound) {
+    HandleBuilder setSound(Double sound) {
         this.sound = sound
         return this
     }
 
-    MeasurementBuilder setHandleTime(Integer handleTime) {
+    HandleBuilder setHandleTime(Integer handleTime) {
         this.handleTime
         return this
     }
@@ -72,9 +70,9 @@ class MeasurementBuilder {
                 date,
                 handleId,
                 handlePosition,
-                new Temperature(temperature, "°C"),
+                temperature,
                 new Alarm(fire, burglar, frost),
-                new SoundLevel(sound, "dB"),
+                sound,
                 handleTime
         )
     }

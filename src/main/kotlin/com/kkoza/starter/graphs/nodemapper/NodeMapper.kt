@@ -9,4 +9,5 @@ interface NodeMapper {
     fun shouldApply(nodeFieldFilter: NodeFieldFilter): Boolean
 
     fun map(handleMeasurements: List<NodeMeasurementDocument>): List<GraphItem>
+
 }

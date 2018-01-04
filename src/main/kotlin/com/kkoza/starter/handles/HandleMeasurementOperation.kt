@@ -4,9 +4,11 @@ import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.devices.api.DeviceDto
 import com.kkoza.starter.handles.api.AlarmFilter
-import com.kkoza.starter.handles.api.HandleMeasurement
-import com.kkoza.starter.handles.api.MeasurementList
 import com.kkoza.starter.handles.api.HandleSortType
+import com.kkoza.starter.handles.dto.HandleMeasurement
+import com.kkoza.starter.handles.dto.MeasurementList
+import com.kkoza.starter.handles.dto.SoundLevel
+import com.kkoza.starter.handles.dto.Temperature
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
 import com.kkoza.starter.user.UserDocument
 import com.kkoza.starter.user.UserFacade
@@ -65,9 +67,9 @@ class HandleMeasurementOperation(
                     it.date,
                     handleIdToName[it.handleId] ?: "Brak nazwy",
                     it.handlePosition,
-                    it.temperature,
+                    Temperature(it.temperature),
                     it.alarm,
-                    it.soundLevel,
+                    SoundLevel(it.soundLevel),
                     it.handleTime)
         }
     }

@@ -6,11 +6,11 @@ open class DeviceFacade(
         private val deviceRepository: DeviceRepository,
         private val handleOperation: HandleOperation) {
 
-    fun findByUserId(userId: String): List<DeviceDto> = deviceRepository.findByUserId(userId)
+    fun findByUserId(userId: String): List<DeviceDto> = deviceRepository.findAllByUserId(userId)
 
-    fun findById(handleId: String): DeviceDocument? = deviceRepository.findById(handleId)
+    fun findById(deviceId: String): DeviceDocument? = deviceRepository.findById(deviceId)
 
-    fun deleteByHandleId(handleId: String) = deviceRepository.deleteById(handleId)
+    fun deleteById(deviceId: String) = deviceRepository.deleteById(deviceId)
 
     fun insert(deviceDocument: DeviceDocument): DeviceDocument = handleOperation.insert(deviceDocument)
 

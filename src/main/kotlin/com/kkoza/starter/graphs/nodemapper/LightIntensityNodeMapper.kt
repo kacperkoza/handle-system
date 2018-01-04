@@ -8,8 +8,12 @@ import org.springframework.stereotype.Component
 @Component
 class LightIntensityNodeMapper : NodeMapper {
 
-    override fun shouldApply(nodeFieldFilter: NodeFieldFilter) = nodeFieldFilter == NodeFieldFilter.LIGHT_INTENSITY
+    override fun shouldApply(nodeFieldFilter: NodeFieldFilter): Boolean {
+        return nodeFieldFilter == NodeFieldFilter.LIGHT_INTENSITY
+    }
 
-    override fun map(handleMeasurements: List<NodeMeasurementDocument>): List<GraphItem> = handleMeasurements.map { GraphItem(it.date, it.lightIntensity.value) }
+    override fun map(handleMeasurements: List<NodeMeasurementDocument>): List<GraphItem> {
+        return handleMeasurements.map { GraphItem(it.date, it.lightIntensity) }
+    }
 
 }
