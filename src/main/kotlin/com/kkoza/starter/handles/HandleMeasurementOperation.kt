@@ -10,6 +10,7 @@ import com.kkoza.starter.handles.dto.MeasurementList
 import com.kkoza.starter.handles.dto.SoundLevel
 import com.kkoza.starter.handles.dto.Temperature
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
+import com.kkoza.starter.nodes.dto.Humidity
 import com.kkoza.starter.user.UserDocument
 import com.kkoza.starter.user.UserFacade
 import com.kkoza.starter.util.dropIfNotNull
@@ -66,6 +67,7 @@ class HandleMeasurementOperation(
             HandleMeasurement(it.id,
                     it.date,
                     handleIdToName[it.handleId] ?: "Brak nazwy",
+                    it.handleId,
                     it.handlePosition,
                     Temperature(it.temperature),
                     it.alarm,

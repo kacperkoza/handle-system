@@ -51,7 +51,7 @@ data class HandleMeasurementDocument(
     }
 
     fun toHandleMeasurement(handleName: String = ""): HandleMeasurement {
-        return HandleMeasurement(id, date, handleName, handlePosition, Temperature(temperature), alarm, SoundLevel(soundLevel), handleTime)
+        return HandleMeasurement(id, date, handleName, handleId, handlePosition, Temperature(temperature), alarm, SoundLevel(soundLevel), handleTime)
     }
 
 }

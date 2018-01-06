@@ -10,6 +10,7 @@ data class HandleMeasurement(
         val id: String? = null,
         val date: DateTime,
         val handleName: String,
+        val handleId: String,
         val handlePosition: HandlePosition,
         val temperature: Temperature,
         val alarm: Alarm,

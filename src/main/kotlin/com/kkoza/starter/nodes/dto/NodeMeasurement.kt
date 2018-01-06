@@ -15,9 +15,11 @@ data class NodeMeasurement(
         val id: String? = null,
         val date: DateTime,
         val nodeName: String,
+        val nodeId: String,
         val temperature: Temperature,
         val lightIntensity: LightIntensity,
-        val alarm: Humidity,
+        val humidity: Humidity,
+        val motion: Boolean,
         val carbonDioxide: CarbonDioxide
 )
 

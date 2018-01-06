@@ -58,9 +58,11 @@ data class NodeMeasurementDocument(
             id,
             date,
             nodeName,
+            nodeId,
             Temperature(temperature),
             LightIntensity(lightIntensity),
             Humidity(humidity),
+            detectedMotion,
             CarbonDioxide(carbonDioxide))
 
 }
