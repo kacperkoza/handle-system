@@ -37,8 +37,8 @@ class GraphEndpoint(
             @ApiParam(value = "Query for given field in measurement (case insensitive)", allowableValues = "temperature, sound_level", required = true)
             @RequestParam("fieldName", required = true) fieldName: String,
 
-            @ApiParam(value = "Handle which data you want to getHandleMeasurements", required = true)
-            @RequestParam("nodeId", required = true) handleId: String
+            @ApiParam(value = "Handle which data you want to get", required = true)
+            @RequestParam("handleId", required = true) handleId: String
     ): ResponseEntity<ItemsDto> {
         sessionService.findUserIdAndUpdateSession(sessionId)
         val fieldFilter = HandleFieldFilter.fromString(fieldName)
