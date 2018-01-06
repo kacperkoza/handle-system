@@ -40,7 +40,7 @@ class GraphHandleEndpointTest extends BaseIntegrationTest {
         def endDate = end.toString(dateQueryParamPattern)
 
         when:
-        def response = executeGet("fieldName=temperature&nodeId=nodeId-1&startDate=$startDate&endDate=$endDate")
+        def response = executeGet("fieldName=temperature&handleId=nodeId-1&startDate=$startDate&endDate=$endDate")
 
         then:
         response.body.data.collect({ it.value }) == expectedValues
@@ -54,7 +54,7 @@ class GraphHandleEndpointTest extends BaseIntegrationTest {
 
     def '[GET] should get data based on queried field'() {
         when:
-        def response = executeGet("fieldName=$fieldName&nodeId=nodeId-1")
+        def response = executeGet("fieldName=$fieldName&handleId=nodeId-1")
 
         then:
         response.body.data.collect({ it.value })
@@ -87,7 +87,7 @@ class GraphHandleEndpointTest extends BaseIntegrationTest {
         def endDate = '2017-10-10 10:40'
 
         when:
-        executeGet("fieldName=temperature&nodeId=any&startDate=$startDate&endDate=$endDate")
+        executeGet("fieldName=temperature&handleId=any&startDate=$startDate&endDate=$endDate")
 
         then:
         def ex = thrown(HttpClientErrorException)
