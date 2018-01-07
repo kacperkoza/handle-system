@@ -59,9 +59,9 @@ class MeasurementsEndpoint(
             @RequestParam(value = "sort", required = false) sort: String?,
             @RequestParam(value = "offset", required = false) offset: Int?,
             @RequestParam(value = "limit", required = false) limit: Int?,
-            @ApiParam(value = "Ids of devices to filter (you can select multiple)")
-            @RequestParam(value = "alarms", required = false) alarms: List<String>?,
             @ApiParam(value = "Alarms to filter (you can select multiple", allowableValues = "fire, alarm, frost")
+            @RequestParam(value = "alarms", required = false) alarms: List<String>?,
+            @ApiParam(value = "Ids of devices to filter (you can use multiple)")
             @RequestParam(value = "handles", required = false) handles: List<String>?
     ): ResponseEntity<MeasurementList> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)

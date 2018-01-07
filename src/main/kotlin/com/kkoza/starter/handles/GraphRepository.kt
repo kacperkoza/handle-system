@@ -18,6 +18,7 @@ class GraphRepository(
         return getMeasurements(start, end, nodeId, NodeMeasurementDocument::class.java)
     }
 
+    @SuppressWarnings("unchecked")
     private fun <T> getMeasurements(startDate: DateTime, endDate: DateTime, deviceId: String, clazz: Class<T>): List<T> {
         return if (clazz == NodeMeasurementDocument::class.java) {
             mongoTemplate.find(

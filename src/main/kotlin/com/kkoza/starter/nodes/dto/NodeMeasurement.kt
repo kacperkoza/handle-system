@@ -12,8 +12,8 @@ data class NodeMeasurementList(
         val count: Int,
         val limit: Int?,
         val offset: Int?,
-        val nodeMeasurements: List<NodeMeasurement>,
-        val handles: List<DeviceDto>)
+        val measurements: List<NodeMeasurement>
+)
 
 data class NodeMeasurement(
         val id: String? = null,

@@ -81,7 +81,7 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
         def response = executeGet("/users/measurements/nodes?sort=$sortType")
 
         then:
-        response.body.nodeMeasurements.collect({ it.id }) == expectedOrder
+        response.body.measurements.collect({ it.id }) == expectedOrder
 
 
         where:
@@ -115,7 +115,7 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
         def response = executeGet("/users/measurements/nodes")
 
         then:
-        response.body.nodeMeasurements.id == ['1', '3', '2']
+        response.body.measurements.id == ['1', '3', '2']
     }
 
     @Unroll
@@ -127,7 +127,7 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
         with(response.body) {
             limit == inputLimit
             offset == inputOffset
-            nodeMeasurements.id == expectedIds
+            measurements.id == expectedIds
             count == size
         }
 
@@ -154,16 +154,6 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
         5     | -100
     }
 
-    def "[GET] should return all handles of user"() {
-        when:
-        def response = executeGet('users/measurements/nodes')
-
-        then:
-        with(response.body) {
-            handles == [node.toDto(), node2.toDto()]
-        }
-    }
-
     @Unroll
     def "[GET] should return measurements filtered by node-id"() {
         given:
@@ -174,7 +164,7 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
 
         then:
         with(response.body) {
-            nodeMeasurements.every({ it.nodeName in expectedHandleId })
+            measurements.every({ it.nodeName in expectedHandleId })
 
         }
 
@@ -191,7 +181,7 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
 
         then:
         with(response.body) {
-            nodeMeasurements.every({ it.nodeName in ['node-name2', 'node-name'] })
+            measurements.every({ it.nodeName in ['node-name2', 'node-name'] })
         }
     }
 
@@ -202,8 +192,8 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
 
         then:
         with(response.body) {
-            nodeMeasurements.every({ it.id in ids })
-            nodeMeasurements.size() == size
+            measurements.every({ it.id in ids })
+            measurements.size() == size
         }
 
         where:

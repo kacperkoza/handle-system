@@ -55,8 +55,7 @@ class NodeMeasurementOperation(
                 list.size,
                 limit,
                 offset,
-                mapToMeasurement(list, userNodes).dropIfNotNull(offset).takeIfNotNull(limit),
-                userNodes)
+                mapToMeasurement(list, userNodes).dropIfNotNull(offset).takeIfNotNull(limit))
     }
 
     private fun mapToMeasurement(list: List<NodeMeasurementDocument>, nodes: List<DeviceDto>): List<NodeMeasurement> {
