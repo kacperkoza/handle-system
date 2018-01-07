@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.util.MultiValueMap
 import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared
 
@@ -77,11 +78,20 @@ class LoginIntegrationTest extends BaseIntegrationTest {
         def dto = new SessionDto('session-id')
 
         when:
-        def response = restTemplate.exchange(localUrl('/logout'), HttpMethod.POST, new HttpEntity<Object>(dto), Void)
+        def response = restTemplate.exchange(localUrl('/logout'),
+                HttpMethod.POST,
+                new HttpEntity<Object>(dto, getHeadersWithSession('session-id')),
+                Void)
 
         then:
         response.statusCode == HttpStatus.OK
         mongoTemplate.findAll(SessionDocument).size() == 0
+    }
+
+    MultiValueMap<String, String> getHeadersWithSession(String s) {
+        def headers = new HttpHeaders()
+        headers.put("Cookie", ["SESSIONID=$s"])
+        headers
     }
 
     private ResponseEntity<Void> executePost(LoginDto loginDto) {

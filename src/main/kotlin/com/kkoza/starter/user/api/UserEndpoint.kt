@@ -84,7 +84,7 @@ class UserEndpoint(private val userFacade: UserFacade, private val sessionServic
     }
 
     @PostMapping("/logout")
-    fun logout(@RequestBody sessionDto: SessionDto): ResponseEntity<Void> {
+    fun logout(@CookieValue("SESSIONID") sessionDto: SessionDto): ResponseEntity<Void> {
         sessionService.destroySession(sessionDto.session)
         return ResponseEntity.ok(null)
     }

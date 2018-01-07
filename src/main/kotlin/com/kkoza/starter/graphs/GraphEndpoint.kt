@@ -1,5 +1,9 @@
 package com.kkoza.starter.graphs
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.kkoza.starter.config.CustomJodaDateTimeDeserializer
+import com.kkoza.starter.config.CustomJodaDateTimeSerializer
 import com.kkoza.starter.handles.exception.IllegalQueryDateException
 import com.kkoza.starter.session.InvalidSessionException
 import com.kkoza.starter.session.SessionService
@@ -123,6 +127,9 @@ data class ItemsDto(
 
 
 data class GraphItem(
+        @JsonSerialize(using = CustomJodaDateTimeSerializer::class)
+        @JsonDeserialize(using = CustomJodaDateTimeDeserializer::class)
         val date: DateTime,
+
         val value: Double
 )
