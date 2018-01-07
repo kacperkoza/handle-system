@@ -28,7 +28,7 @@ data class MeasurementList(
         val count: Long,
         val limit: Int?,
         val offset: Int?,
-        val handleMeasurements: List<HandleMeasurement>
+        val measurements: List<HandleMeasurement>
 )
 
 data class SoundLevel(

@@ -9,13 +9,7 @@ import com.kkoza.starter.testutil.UserBuilder
 import org.joda.time.DateTime
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpInputMessage
 import org.springframework.http.HttpMethod
-import org.springframework.http.HttpOutputMessage
-import org.springframework.http.MediaType
-import org.springframework.http.converter.HttpMessageConverter
-import org.springframework.http.converter.HttpMessageNotReadableException
-import org.springframework.http.converter.HttpMessageNotWritableException
 import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared
 import spock.lang.Unroll
@@ -80,7 +74,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         def response = executeGet("/users/measurements/handles?sort=$sortType")
 
         then:
-        response.body.handleMeasurements.collect({ it.id }) == expectedOrder
+        response.body.measurements.collect({ it.id }) == expectedOrder
 
 
         where:
@@ -106,7 +100,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         def response = executeGet("/users/measurements/handles")
 
         then:
-        response.body.handleMeasurements.collect({ it.id }) == ['1', '2', '3']
+        response.body.measurements.collect({ it.id }) == ['1', '2', '3']
     }
 
     @Unroll
@@ -123,7 +117,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         with(response.body) {
             limit == inputLimit
             offset == inputOffset
-            handleMeasurements.id == expectedIds
+            measurements.id == expectedIds
             count == size
         }
 
@@ -140,7 +134,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         def response = executeGet("/users/measurements/handles?sort=$sort")
 
         then:
-        response.body.handleMeasurements.collect({ it.id }) == expectedOrder
+        response.body.measurements.collect({ it.id }) == expectedOrder
 
         where:
         sort        || expectedOrder
@@ -154,7 +148,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         def response = executeGet("/users/measurements/handles?sort=$sort")
 
         then:
-        response.body.handleMeasurements.collect({ it.id }) == expectedOrder
+        response.body.measurements.collect({ it.id }) == expectedOrder
 
         where:
         sort         || expectedOrder
@@ -185,7 +179,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
         then:
         with(response.body) {
-            handleMeasurements.every({ it.handleName in expectedHandleId })
+            measurements.every({ it.handleName in expectedHandleId })
 
         }
 
@@ -205,7 +199,7 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
         then:
         with(response.body) {
-            handleMeasurements.every({ it.handleName in expectedHandleName })
+            measurements.every({ it.handleName in expectedHandleName })
         }
     }
 
@@ -216,8 +210,8 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
 
         then:
         with(response.body) {
-            handleMeasurements.every({ it.id in measurementsIds })
-            handleMeasurements.size() == size
+            measurements.every({ it.id in measurementsIds })
+            measurements.size() == size
         }
 
         where:
