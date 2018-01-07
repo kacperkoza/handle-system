@@ -43,7 +43,7 @@ class GraphNodeEndpointTest extends BaseIntegrationTest {
         def endDate = end.toString(dateQueryParamPattern)
 
         when:
-        def response = executeGet("fieldName=temperature&nodeId=node&startDate=$startDate&endDate=$endDate")
+        def response = executeGet("fieldName=temperature&deviceId=node&startDate=$startDate&endDate=$endDate")
 
         then:
         response.body.data.collect({ it.value }) == expectedValues
@@ -57,7 +57,7 @@ class GraphNodeEndpointTest extends BaseIntegrationTest {
 
     def '[GET] should get data based on queried field'() {
         when:
-        def response = executeGet("fieldName=$fieldName&nodeId=node")
+        def response = executeGet("fieldName=$fieldName&deviceId=node")
 
         then:
         response.body.data.collect({ it.value })
@@ -76,7 +76,7 @@ class GraphNodeEndpointTest extends BaseIntegrationTest {
         def field = unknownFieldName
 
         when:
-        executeGet("fieldName=$field&nodeId=any")
+        executeGet("fieldName=$field&deviceId=any")
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -92,7 +92,7 @@ class GraphNodeEndpointTest extends BaseIntegrationTest {
         def endDate = '2017-10-10 10:40'
 
         when:
-        executeGet("fieldName=temperature&nodeId=any&startDate=$startDate&endDate=$endDate")
+        executeGet("fieldName=temperature&deviceId=any&startDate=$startDate&endDate=$endDate")
 
         then:
         def ex = thrown(HttpClientErrorException)
@@ -102,8 +102,8 @@ class GraphNodeEndpointTest extends BaseIntegrationTest {
         unknownFieldName << ['unknown', 'klamka', 'temperatur', 'soundlevel', 'sound']
     }
 
-    NodeMeasurementDocument getNodeMeasurement(String id, DateTime date, String nodeId, Double temperature, Double humidity, Double lightIntensity, Double carbon) {
-        return NodeBuilder.create().setId(id).setDate(date).setNodeId(nodeId).setTemperature(temperature)
+    NodeMeasurementDocument getNodeMeasurement(String id, DateTime date, String deviceId, Double temperature, Double humidity, Double lightIntensity, Double carbon) {
+        return NodeBuilder.create().setId(id).setDate(date).setNodeId(deviceId).setTemperature(temperature)
                 .setHumidity(humidity).setLightIntensity(lightIntensity).setCarbonDioxity(carbon).build()
     }
 

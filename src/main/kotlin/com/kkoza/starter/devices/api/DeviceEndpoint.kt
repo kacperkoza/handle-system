@@ -45,13 +45,13 @@ class DeviceEndpoint(
     @ApiOperation(value = "Get devices by id")
     @ApiResponses(ApiResponse(code = 200, message = "Returns device with given id"),
             ApiResponse(code = 404, message = "Requested resource does not exists"))
-    @GetMapping("/{nodeId}")
+    @GetMapping("/{deviceId}")
     fun getByHandleId(
             @CookieValue("SESSIONID", required = true) sessionId: String,
-            @PathVariable("nodeId", required = true) handleId: String
+            @PathVariable("deviceId", required = true) deviceId: String
     ): ResponseEntity<DeviceDto> {
         sessionService.findUserIdAndUpdateSession(sessionId)
-        val device: DeviceDocument? = deviceFacade.findById(handleId)
+        val device: DeviceDocument? = deviceFacade.findById(deviceId)
         return if (device != null) {
             ResponseEntity.ok(DeviceDto(device.id, device.name, device.deviceType))
         } else {
@@ -63,24 +63,24 @@ class DeviceEndpoint(
     @ApiResponses(ApiResponse(code = 204, message = "Resource was successfully overridden. Nothing to return"),
             ApiResponse(code = 404, message = "Requested resource does not exists"),
             ApiResponse(code = 422, message = "Handle name was empty"))
-    @PutMapping("/{nodeId}")
+    @PutMapping("/{deviceId}")
     fun updateHandle(
             @CookieValue("SESSIONID", required = true) sessionId: String,
-            @PathVariable(name = "nodeId", required = true) handleId: String,
+            @PathVariable(name = "deviceId", required = true) deviceId: String,
             @RequestBody(required = true) deviceDto: DeviceDto
     ): ResponseEntity<Void> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
-        deviceFacade.save(DeviceDocument(handleId, deviceDto.name, userId, deviceDto.deviceType))
+        deviceFacade.save(DeviceDocument(deviceId, deviceDto.name, userId, deviceDto.deviceType))
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
     @ApiOperation(value = "Override device if does not exists")
     @ApiResponses(ApiResponse(code = 204, message = "Resource was successfully deleted. Nothing to return"))
-    @DeleteMapping("/{nodeId}")
+    @DeleteMapping("/{deviceId}")
     fun deleteHandle(
             @CookieValue("SESSIONID", required = true) sessionId: String,
-            @PathVariable("nodeId") handleId: String): ResponseEntity<Void> {
-        deviceFacade.deleteById(handleId)
+            @PathVariable("deviceId") deviceId: String): ResponseEntity<Void> {
+        deviceFacade.deleteById(deviceId)
         return ResponseEntity.noContent().build()
     }
 

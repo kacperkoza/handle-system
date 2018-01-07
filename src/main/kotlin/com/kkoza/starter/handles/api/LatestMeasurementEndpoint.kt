@@ -33,7 +33,7 @@ class LatestMeasurementEndpoint(
 }
 
 data class LatestMeasurementResponse(
-        val handleMeasurements: List<HandleMeasurement>,
+        val handles: List<HandleMeasurement>,
         val nodes: List<NodeMeasurement>
 )
 

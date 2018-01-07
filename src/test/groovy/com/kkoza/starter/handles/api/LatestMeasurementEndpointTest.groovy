@@ -42,8 +42,8 @@ class LatestMeasurementEndpointTest extends BaseIntegrationTest {
 
         then:
         with(response.body) {
-            handleMeasurements.id == ['1', '3']
-            handleMeasurements.handleName == ['klamka1', 'klamka2']
+            handles.id == ['1', '3']
+            handles.handleName == ['klamka1', 'klamka2']
 
             nodes.id == ['5', '7']
             nodes.nodeName == ['urzadzenie1', 'urzadzenie2']
@@ -64,7 +64,7 @@ class LatestMeasurementEndpointTest extends BaseIntegrationTest {
 
         then:
         with(response.body) {
-            handleMeasurements.size() == 0
+            handles.size() == 0
             nodes.size() == 0
         }
     }

@@ -1,5 +1,9 @@
 package com.kkoza.starter.nodes.dto
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.kkoza.starter.config.CustomJodaDateTimeDeserializer
+import com.kkoza.starter.config.CustomJodaDateTimeSerializer
 import com.kkoza.starter.devices.api.DeviceDto
 import com.kkoza.starter.handles.dto.Temperature
 import org.joda.time.DateTime
@@ -13,9 +17,13 @@ data class NodeMeasurementList(
 
 data class NodeMeasurement(
         val id: String? = null,
+
+        @JsonSerialize(using = CustomJodaDateTimeSerializer::class)
+        @JsonDeserialize(using = CustomJodaDateTimeDeserializer::class)
         val date: DateTime,
+
         val nodeName: String,
-        val nodeId: String,
+        val deviceId: String,
         val temperature: Temperature,
         val lightIntensity: LightIntensity,
         val humidity: Humidity,

@@ -93,7 +93,7 @@ class DeviceEndpointTest extends BaseIntegrationTest {
         }
     }
 
-    def '[GET] should return NOT_FOUND [404] when handle-id was not found'() {
+    def '[GET] should return NOT_FOUND [404] when device was not found'() {
         when:
         execute('/users/devices/id', GET, null, DeviceDto)
 
@@ -102,7 +102,7 @@ class DeviceEndpointTest extends BaseIntegrationTest {
         ex.statusCode == HttpStatus.NOT_FOUND
     }
 
-    def '[PUT] should override existing handle name with OK (200)'() {
+    def '[PUT] should override existing device name with OK (200)'() {
         given:
         save(new DeviceDocument('node-id', 'node-name', 'user-id', DeviceType.HANDLE))
         def dto = DeviceBuilder.create().setId('node-id').setDeviceName('new-name').setDeviceType(DeviceType.NODE).buildDto()

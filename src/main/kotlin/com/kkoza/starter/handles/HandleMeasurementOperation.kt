@@ -10,7 +10,6 @@ import com.kkoza.starter.handles.dto.MeasurementList
 import com.kkoza.starter.handles.dto.SoundLevel
 import com.kkoza.starter.handles.dto.Temperature
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
-import com.kkoza.starter.nodes.dto.Humidity
 import com.kkoza.starter.user.UserDocument
 import com.kkoza.starter.user.UserFacade
 import com.kkoza.starter.util.dropIfNotNull
@@ -46,19 +45,24 @@ class HandleMeasurementOperation(
     }
 
     fun getHandleMeasurement(userId: String, sort: HandleSortType, offset: Int?, limit: Int?, alarms: List<AlarmFilter>?, handles: List<String>?): MeasurementList {
-        logger.info("getHandleMeasurements list with sort = $sort, offset = $offset, limit = $limit, alarms = $alarms, devices = $handles for userId = $userId")
-        if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
-        if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
+        logger.info("get list with sort = $sort, offset = $offset, limit = $limit, alarms = $alarms, devices = $handles for userId = $userId")
+        validateInputParameters(offset, limit)
         val userHandles = deviceFacade.findByUserId(userId)
         val userHandlesIds = userHandles.map { it.id }
-        val filteredHandles = handles?.filter { it in userHandlesIds } ?: userHandlesIds
-        val list = handleMeasurementRepository.get(filteredHandles, getSortOrder(sort), alarms)
+        val userQueriedHandles = handles?.filter { it in userHandlesIds } ?: userHandlesIds
+        val sortOrder = getSortOrder(sort)
+        val list = handleMeasurementRepository.get(userQueriedHandles, sortOrder, alarms, offset ?: 0, limit ?: 0)
         return MeasurementList(
-                list.size,
+                handleMeasurementRepository.count(userQueriedHandles, sortOrder, alarms),
                 limit,
                 offset,
-                mapToMeasurement(list, userHandles).dropIfNotNull(offset).takeIfNotNull(limit),
-                userHandles)
+                mapToMeasurement(list, userHandles)
+        )
+    }
+
+    private fun validateInputParameters(offset: Int?, limit: Int?) {
+        if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
+        if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
     }
 
     private fun mapToMeasurement(list: List<HandleMeasurementDocument>, handles: List<DeviceDto>): List<HandleMeasurement> {

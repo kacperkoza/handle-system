@@ -9,7 +9,13 @@ import com.kkoza.starter.testutil.UserBuilder
 import org.joda.time.DateTime
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpInputMessage
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpOutputMessage
+import org.springframework.http.MediaType
+import org.springframework.http.converter.HttpMessageConverter
+import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.http.converter.HttpMessageNotWritableException
 import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared
 import spock.lang.Unroll
@@ -170,16 +176,6 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         -1    | 5
         5     | -1
         5     | -100
-    }
-
-    def "[GET] should return all handles of user"() {
-        when:
-        def response = executeGet('users/measurements/handles')
-
-        then:
-        with(response.body) {
-            handles == [handle.toDto(), handle2.toDto()]
-        }
     }
 
     @Unroll

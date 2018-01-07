@@ -22,11 +22,23 @@ class HandleMeasurementRepository(private val mongoTemplate: MongoTemplate) {
         return handleMeasurementDocument.id!!
     }
 
-    fun get(handles: List<String>, sort: Sort, alarms: List<AlarmFilter>?): List<HandleMeasurementDocument> {
+    fun get(handles: List<String>, sort: Sort, alarms: List<AlarmFilter>?, offset: Int, limit: Int): List<HandleMeasurementDocument> {
         logger.info("Get measurement list for $handles and $sort")
         var criteria = whereHandleIdCriteria(handles)
         alarms?.forEach { criteria = whereAlarmCriteria(criteria, it) }
         return mongoTemplate.find(
+                Query(criteria)
+                        .with(sort)
+                        .skip(offset)
+                        .limit(limit),
+                HandleMeasurementDocument::class.java)
+    }
+
+    fun count(handles: List<String>, sort: Sort, alarms: List<AlarmFilter>?): Long {
+        logger.info({ "Count documents for handles = $handles, sort = $sort, alarms = $alarms" })
+        var criteria = whereHandleIdCriteria(handles)
+        alarms?.forEach { criteria = whereAlarmCriteria(criteria, it) }
+        return mongoTemplate.count(
                 Query(criteria).with(sort),
                 HandleMeasurementDocument::class.java)
     }
@@ -43,7 +55,7 @@ class HandleMeasurementRepository(private val mongoTemplate: MongoTemplate) {
     }
 
     fun findMostRecent(userId: String, handleId: String): HandleMeasurementDocument? {
-        logger.info("Find most recent for userId = $userId and handleId = $handleId")
+        logger.info("Find most recent for userId = $userId and deviceId = $handleId")
         return mongoTemplate.findOne(Query(
                 whereHandleId(handleId)),
                 HandleMeasurementDocument::class.java)

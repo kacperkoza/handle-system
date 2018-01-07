@@ -38,7 +38,7 @@ class GraphEndpoint(
             @RequestParam("fieldName", required = true) fieldName: String,
 
             @ApiParam(value = "Handle which data you want to get", required = true)
-            @RequestParam("handleId", required = true) handleId: String
+            @RequestParam("deviceId", required = true) handleId: String
     ): ResponseEntity<ItemsDto> {
         sessionService.findUserIdAndUpdateSession(sessionId)
         val fieldFilter = HandleFieldFilter.fromString(fieldName)
@@ -66,11 +66,11 @@ class GraphEndpoint(
             @RequestParam("fieldName", required = true) fieldName: String,
 
             @ApiParam(value = "Node which data you want to get", required = true)
-            @RequestParam("nodeId", required = true) nodeId: String
+            @RequestParam("deviceId", required = true) deviceId: String
     ): ResponseEntity<ItemsDto> {
         sessionService.findUserIdAndUpdateSession(sessionId)
         val fieldFilter = NodeFieldFilter.fromString(fieldName)
-        val list = graphFacade.getGraphDataFromNode(startDate, endDate, fieldFilter, nodeId)
+        val list = graphFacade.getGraphDataFromNode(startDate, endDate, fieldFilter, deviceId)
         return ResponseEntity.ok(list)
     }
 
