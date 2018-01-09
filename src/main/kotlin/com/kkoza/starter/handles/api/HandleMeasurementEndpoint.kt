@@ -1,9 +1,6 @@
 package com.kkoza.starter.handles.api
 
-import com.kkoza.starter.handles.Alarm
-import com.kkoza.starter.handles.HandleMeasurementDocument
-import com.kkoza.starter.handles.HandlePosition
-import com.kkoza.starter.handles.MeasurementFacade
+import com.kkoza.starter.handles.*
 import com.kkoza.starter.handles.dto.HandleMeasurementDto
 import com.kkoza.starter.handles.dto.MeasurementList
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
@@ -94,6 +91,9 @@ class MeasurementsEndpoint(
 
     @ExceptionHandler(InvalidAlarmFilterException::class)
     fun handleAlarmFilterEx(ex: InvalidAlarmFilterException) = ResponseEntity.badRequest().body(ex.message)
+
+    @ExceptionHandler(InvalidHandleMeasurementException::class)
+    fun handle(ex: InvalidHandleMeasurementException) = ResponseEntity.badRequest().body(ex.message)
 
 }
 

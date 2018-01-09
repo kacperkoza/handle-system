@@ -54,6 +54,21 @@ data class NodeMeasurementDocument(
         const val CARBON_DIOXIDE = "carbon_dioxide"
     }
 
+    init {
+        if (temperature < -20 || temperature > 50) {
+            throw InvalidNodeMeasurementException("temperature must be in range <20 ; 50>")
+        }
+        if (humidity < 0 || humidity > 100) {
+            throw InvalidNodeMeasurementException("humidity must be in range <0 ; 100>")
+        }
+        if (lightIntensity < 0 || lightIntensity > 100000) {
+            throw InvalidNodeMeasurementException("light intensity must be in range <0 ; 100000>")
+        }
+        if (carbonDioxide < 0 || carbonDioxide > 100) {
+            throw InvalidNodeMeasurementException("carbonDioxide must be in range <0 ; 100>")
+        }
+    }
+
     fun toNodeMeasurement(nodeName: String): NodeMeasurement = NodeMeasurement(
             id,
             date,
@@ -67,4 +82,5 @@ data class NodeMeasurementDocument(
 
 }
 
+class InvalidNodeMeasurementException(message: String) : RuntimeException(message)
 

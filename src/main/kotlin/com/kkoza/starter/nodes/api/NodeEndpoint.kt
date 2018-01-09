@@ -2,6 +2,7 @@ package com.kkoza.starter.nodes.api
 
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
 import com.kkoza.starter.handles.exception.InvalidSortTypeException
+import com.kkoza.starter.nodes.InvalidNodeMeasurementException
 import com.kkoza.starter.nodes.NodeFacade
 import com.kkoza.starter.nodes.NodeMeasurementDocument
 import com.kkoza.starter.nodes.NodeSortType
@@ -83,6 +84,8 @@ class NodeEndpoint(
     @ExceptionHandler(InvalidPagingParameterException::class)
     fun handlePagingEx(ex: InvalidPagingParameterException) = ResponseEntity.badRequest().body(ex.message)
 
+    @ExceptionHandler(InvalidNodeMeasurementException::class)
+    fun handle(ex: InvalidNodeMeasurementException) = ResponseEntity.badRequest().body(ex.message)
 
 }
 

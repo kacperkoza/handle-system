@@ -50,6 +50,18 @@ data class HandleMeasurementDocument(
         const val HANDLE_TIME = "handle_time"
     }
 
+    init {
+        if (temperature < -20 && temperature > 60) {
+            throw InvalidHandleMeasurementException("temperature must be in range <-20 ; 60>")
+        }
+        if (soundLevel < -200 && soundLevel > 100) {
+            throw InvalidHandleMeasurementException("temperature must be in range <-200 ; 100>")
+        }
+        if (temperature == 0.0 && soundLevel == 0.0) {
+            throw InvalidHandleMeasurementException("cant be 0, probably handle bug")
+        }
+    }
+
     fun toHandleMeasurement(handleName: String = ""): HandleMeasurement {
         return HandleMeasurement(id, date, handleName, handleId, handlePosition, Temperature(temperature), alarm, SoundLevel(soundLevel), handleTime)
     }
@@ -65,3 +77,5 @@ data class Alarm(
 enum class HandlePosition {
     OPEN, CLOSED, REPEALED
 }
+
+class InvalidHandleMeasurementException(message: String) : RuntimeException(message)
