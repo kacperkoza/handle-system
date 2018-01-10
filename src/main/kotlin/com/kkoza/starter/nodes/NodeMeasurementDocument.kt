@@ -55,7 +55,7 @@ data class NodeMeasurementDocument(
     }
 
     init {
-        if (temperature < -20 || temperature > 50) {
+        if (temperature < -20 || temperature > 60) {
             throw InvalidNodeMeasurementException("temperature must be in range <20 ; 50>")
         }
         if (humidity < 0 || humidity > 100) {

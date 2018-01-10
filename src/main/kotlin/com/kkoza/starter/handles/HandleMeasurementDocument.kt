@@ -51,10 +51,10 @@ data class HandleMeasurementDocument(
     }
 
     init {
-        if (temperature < -20 && temperature > 60) {
+        if (temperature < -20 || temperature > 60) {
             throw InvalidHandleMeasurementException("temperature must be in range <-20 ; 60>")
         }
-        if (soundLevel < -200 && soundLevel > 100) {
+        if (soundLevel < -200 || soundLevel > 100) {
             throw InvalidHandleMeasurementException("temperature must be in range <-200 ; 100>")
         }
         if (temperature == 0.0 && soundLevel == 0.0) {
