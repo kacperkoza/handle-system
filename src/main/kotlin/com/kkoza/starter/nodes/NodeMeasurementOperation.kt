@@ -1,6 +1,5 @@
 package com.kkoza.starter.nodes
 
-import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.devices.api.DeviceDto
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
@@ -8,6 +7,7 @@ import com.kkoza.starter.handles.exception.InvalidSortTypeException
 import com.kkoza.starter.nodes.api.NodeFilter
 import com.kkoza.starter.nodes.dto.NodeMeasurement
 import com.kkoza.starter.nodes.dto.NodeMeasurementList
+import com.kkoza.starter.notification.NotificationCoordinator
 import com.kkoza.starter.util.dropIfNotNull
 import com.kkoza.starter.util.takeIfNotNull
 import org.apache.log4j.Logger
@@ -16,9 +16,8 @@ import java.lang.invoke.MethodHandles
 
 class NodeMeasurementOperation(
         private val nodeMeasurementRepository: NodeMeasurementRepository,
-//        private val dangerEventNotifier: DangerEventNotifier,
-        private val deviceFacade: DeviceFacade
-//        private val userFacade: UserFacade
+        private val deviceFacade: DeviceFacade,
+        private val notificationCoordinator: NotificationCoordinator
 ) {
 
     companion object {
@@ -26,22 +25,9 @@ class NodeMeasurementOperation(
     }
 
     fun addNodeMeasurement(nodeMeasurementDocument: NodeMeasurementDocument): String {
-        val device: DeviceDocument? = deviceFacade.findById(nodeMeasurementDocument.nodeId)
-        if (device != null) {
-            //todo: notify?
-//            notifyIfNecessaryAboutEvent(device, nodeMeasurementDocument)
-        }
+        notificationCoordinator.notifyIfNecessary(nodeMeasurementDocument)
         return nodeMeasurementRepository.addNodeMeasurement(nodeMeasurementDocument)
     }
-
-
-    //todo remove?
-//    private fun notifyIfNecessaryAboutEvent(device: DeviceDocument, handleMeasurementDocument: HandleMeasurementDocument) {
-//        val handleOwner: UserDocument? = userFacade.findUserById(device.userId)
-//        if (handleOwner != null) {
-//            dangerEventNotifier.notify(handleMeasurementDocument, handleOwner.phoneNumber)
-//        }
-//    }
 
     fun getNodeMeasurement(userId: String, sort: NodeSortType, offset: Int?, limit: Int?, nodes: List<String>?, fieldFilters: List<NodeFilter>?): NodeMeasurementList {
         logger.info("get node measurement list with sort = $sort, offset = $offset, limit = $limit, devices = $nodes for userId = $userId")

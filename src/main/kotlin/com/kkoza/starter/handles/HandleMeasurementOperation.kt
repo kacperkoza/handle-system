@@ -9,7 +9,7 @@ import com.kkoza.starter.handles.dto.MeasurementList
 import com.kkoza.starter.handles.dto.SoundLevel
 import com.kkoza.starter.handles.dto.Temperature
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
-import com.kkoza.starter.notification.NotificationService
+import com.kkoza.starter.notification.NotificationCoordinator
 import org.apache.log4j.Logger
 import org.springframework.data.domain.Sort
 import java.lang.invoke.MethodHandles
@@ -17,7 +17,7 @@ import java.lang.invoke.MethodHandles
 class HandleMeasurementOperation(
         private val handleMeasurementRepository: HandleMeasurementRepository,
         private val deviceFacade: DeviceFacade,
-        private val notificationService: NotificationService
+        private val notificationCoordinator: NotificationCoordinator
 ) {
 
     companion object {
@@ -25,7 +25,7 @@ class HandleMeasurementOperation(
     }
 
     fun addHandleMeasurement(handleMeasurementDocument: HandleMeasurementDocument): String {
-        notificationService.notifyIfNecessary(handleMeasurementDocument)
+        notificationCoordinator.notifyIfNecessary(handleMeasurementDocument)
         return handleMeasurementRepository.add(handleMeasurementDocument)
     }
 

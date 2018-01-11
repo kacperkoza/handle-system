@@ -5,6 +5,7 @@ import com.kkoza.starter.handles.HandleMeasurementDocument
 import com.kkoza.starter.nodes.NodeMeasurementDocument
 import com.kkoza.starter.nodes.dto.NodeMeasurementDto
 import com.kkoza.starter.session.SessionDocument
+import com.kkoza.starter.settings.SettingsDocument
 import com.kkoza.starter.testutil.DeviceBuilder
 import com.kkoza.starter.testutil.NodeBuilder
 import com.kkoza.starter.testutil.UserBuilder
@@ -44,6 +45,7 @@ class PostDeleteNodeFilterEndpointTest extends BaseIntegrationTest {
         given:
         save(DeviceBuilder.create().setId('device-id').setUserId('user-id').buildDocument())
         save(UserBuilder.create('user-id').buildDocument())
+        save(new SettingsDocument('user-id', 0, false))
         def measurement = new NodeMeasurementDto('device-id', 0d, 0d, 0d, true,15d)
 
         when:
