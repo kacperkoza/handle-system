@@ -26,9 +26,8 @@ class UserDocument(
     companion object {
         const val USERS_COLLECTION = "users"
         const val USER_ID = "_id"
-        const val LOGIN = "email"
-        const val PASSWORD = "password"
         const val EMAIL = "email"
+        const val PASSWORD = "password"
         const val PHONE_NUMBER = "phone_number"
     }
 

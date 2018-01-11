@@ -1,6 +1,5 @@
 package com.kkoza.starter.handles
 
-import com.kkoza.starter.devices.DeviceDocument
 import com.kkoza.starter.devices.DeviceFacade
 import com.kkoza.starter.devices.api.DeviceDto
 import com.kkoza.starter.handles.api.AlarmFilter
@@ -10,19 +9,15 @@ import com.kkoza.starter.handles.dto.MeasurementList
 import com.kkoza.starter.handles.dto.SoundLevel
 import com.kkoza.starter.handles.dto.Temperature
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
-import com.kkoza.starter.user.UserDocument
-import com.kkoza.starter.user.UserFacade
-import com.kkoza.starter.util.dropIfNotNull
-import com.kkoza.starter.util.takeIfNotNull
+import com.kkoza.starter.notification.NotificationService
 import org.apache.log4j.Logger
 import org.springframework.data.domain.Sort
 import java.lang.invoke.MethodHandles
 
 class HandleMeasurementOperation(
         private val handleMeasurementRepository: HandleMeasurementRepository,
-        private val dangerEventNotifier: DangerEventNotifier,
         private val deviceFacade: DeviceFacade,
-        private val userFacade: UserFacade
+        private val notificationService: NotificationService
 ) {
 
     companion object {
@@ -30,18 +25,8 @@ class HandleMeasurementOperation(
     }
 
     fun addHandleMeasurement(handleMeasurementDocument: HandleMeasurementDocument): String {
-        val device: DeviceDocument? = deviceFacade.findById(handleMeasurementDocument.handleId)
-        if (device != null) {
-            notifyIfNecessaryAboutEvent(device, handleMeasurementDocument)
-        }
+        notificationService.notifyIfNecessary(handleMeasurementDocument)
         return handleMeasurementRepository.add(handleMeasurementDocument)
-    }
-
-    private fun notifyIfNecessaryAboutEvent(device: DeviceDocument, handleMeasurementDocument: HandleMeasurementDocument) {
-        val handleOwner: UserDocument? = userFacade.findUserById(device.userId)
-        if (handleOwner != null) {
-            dangerEventNotifier.notify(handleMeasurementDocument, handleOwner.phoneNumber)
-        }
     }
 
     fun getHandleMeasurement(userId: String, sort: HandleSortType, offset: Int?, limit: Int?, alarms: List<AlarmFilter>?, handles: List<String>?): MeasurementList {

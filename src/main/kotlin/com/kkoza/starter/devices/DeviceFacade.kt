@@ -8,7 +8,7 @@ open class DeviceFacade(
 
     fun findByUserId(userId: String): List<DeviceDto> = deviceRepository.findAllByUserId(userId)
 
-    fun findById(deviceId: String): DeviceDocument? = deviceRepository.findById(deviceId)
+    open fun findById(deviceId: String): DeviceDocument? = deviceRepository.findById(deviceId)
 
     fun deleteById(deviceId: String) = deviceRepository.deleteById(deviceId)
 

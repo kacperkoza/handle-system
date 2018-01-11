@@ -46,7 +46,15 @@ class UserRepository(val mongoTemplate: MongoTemplate) {
     fun findUserByCredentials(login: String, password: String): UserDocument? {
         logger.info("Find user with credentials login = $login, password = $password")
         return mongoTemplate.findOne(
-                Query(Criteria.where(UserDocument.LOGIN).`is`(login).and(UserDocument.PASSWORD).`is`(password)),
+                Query(Criteria.where(UserDocument.EMAIL).`is`(login).and(UserDocument.PASSWORD).`is`(password)),
+                UserDocument::class.java
+        )
+    }
+
+    fun findUserByEmail(email: String): UserDocument? {
+        logger.info("Find user by email = $email")
+        return mongoTemplate.findOne(
+                Query(Criteria.where(UserDocument.EMAIL).`is`(email)),
                 UserDocument::class.java
         )
     }

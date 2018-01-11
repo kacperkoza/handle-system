@@ -12,12 +12,16 @@ open class UserFacade(
         userOperation.update(userDocument)
     }
 
-    fun findUserById(userId: String): UserDocument? {
+    open fun findUserById(userId: String): UserDocument? {
         return userOperation.findUserById(userId)
     }
 
     fun findUserByCredentials(login: String, password: String): UserDocument? {
         return userRepository.findUserByCredentials(login, password)
+    }
+
+    fun findUserByEmail(email: String): UserDocument? {
+        return userRepository.findUserByEmail(email)
     }
 
 }

@@ -20,6 +20,7 @@ import org.apache.log4j.Logger
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.bind.annotation.*
 import java.lang.invoke.MethodHandles
 import java.net.URI
@@ -31,6 +32,7 @@ class UserEndpoint(private val userFacade: UserFacade, private val sessionServic
 
     companion object {
         private val logger = Logger.getLogger(MethodHandles.lookup().lookupClass())
+        private val passwordEncoder = BCryptPasswordEncoder()
     }
 
     @ApiOperation(value = "Should be used to create new user")
@@ -41,7 +43,7 @@ class UserEndpoint(private val userFacade: UserFacade, private val sessionServic
         val userDocument: UserDocument = userFacade.save(UserDocument(
                 null,
                 userDto.email,
-                userDto.password,
+                passwordEncoder.encode(userDto.password),
                 userDto.phoneNumber
         ))
         return ResponseEntity.created(URI("/users/${userDocument.userId}")).build()
@@ -75,12 +77,16 @@ class UserEndpoint(private val userFacade: UserFacade, private val sessionServic
             ApiResponse(code = 200, message = "Credentials were found and new session is created"),
             ApiResponse(code = 401, message = "Provided credentials weren't found"))
     @PostMapping("/login")
-    fun login(@RequestBody loginDto: LoginDto): ResponseEntity<Void> {
-        val user = userFacade.findUserByCredentials(loginDto.email, loginDto.password) ?: throw NotExistingUserException(loginDto.email)
-        val session = sessionService.createSession(user.userId!!)
-        val headers = HttpHeaders()
-        headers.add("Set-Cookie", "SESSIONID=$session")
-        return ResponseEntity(headers, HttpStatus.OK)
+    fun login(@RequestBody loginDto: LoginDto): ResponseEntity<String> {
+        val user = userFacade.findUserByEmail(loginDto.email) ?: throw NotExistingUserException(loginDto.email)
+        if (passwordEncoder.matches(loginDto.password, user.password)) {
+            val session = sessionService.createSession(user.userId!!)
+            val headers = HttpHeaders()
+            headers.add("Set-Cookie", "SESSIONID=$session")
+            return ResponseEntity(headers, HttpStatus.OK)
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password")
+        }
     }
 
     @PostMapping("/logout")

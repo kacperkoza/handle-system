@@ -1,4 +1,4 @@
-package com.kkoza.starter.handles
+package com.kkoza.starter.notification
 
 import com.kkoza.starter.handles.dto.Temperature
 import com.kkoza.starter.util.dayFormat
@@ -15,5 +15,9 @@ class NotifierMessageFactory {
 
     fun frost(date: DateTime, temperature: Temperature): String = "Temperatura w Twoim mieszkaniu drastycznie się zmieniła." +
             " Wynosi ${temperature.value} ${temperature.unit} o godzinie ${hourFormat(date)}."
+
+    fun belowSet(date: DateTime, temperature: Double, settingsTemperature: Double) = "Temperatura w Twoim mieszkaniu spadła poniżej ustawionej." +
+            " Wynosi ${temperature} stopni o godzinie ${hourFormat(date)}. Minimalna wartość: $settingsTemperature"
+
 
 }

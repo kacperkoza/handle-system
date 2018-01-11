@@ -12,7 +12,7 @@ class UserOperation(private val userRepository: UserRepository,
     fun save(userDocument: UserDocument): UserDocument {
         userValidator.validate(userDocument)
         validateUserDocument(userDocument)
-        val user =userRepository.save(userDocument)
+        val user = userRepository.save(userDocument)
         settingsService.createDefaultSettings(user.userId!!)
         return user
     }

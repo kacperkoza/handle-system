@@ -21,11 +21,11 @@ class GraphNodeEndpointTest extends BaseIntegrationTest {
     String dateQueryParamPattern = 'yyyy-MM-dd HH:mm'
 
     //@formatter:off                                                                   temp hum light carbon
-    def measurement = getNodeMeasurement('1', DateTime.now(), 'node',                   10d, 7d, 0d, 100d)
-    def measurement2 = getNodeMeasurement('2', DateTime.now().minusMinutes(5), 'node',  11d, 6d, 0d, 200d)
-    def measurement3 = getNodeMeasurement('3', DateTime.now().minusMinutes(10), 'node', 12d, 5d, 3d, 300d)
-    def measurement4 = getNodeMeasurement('4', DateTime.now().minusMinutes(15), 'node', 13d, 4d, -2d, 400d)
-    def measurement5 = getNodeMeasurement('5', DateTime.now().minusMinutes(20), 'node', 14d, 3d, 5d, 350d)
+    def measurement = getNodeMeasurement('1', DateTime.now(), 'node',                   10d, 7d, 0d, 10d)
+    def measurement2 = getNodeMeasurement('2', DateTime.now().minusMinutes(5), 'node',  11d, 6d, 0d, 20d)
+    def measurement3 = getNodeMeasurement('3', DateTime.now().minusMinutes(10), 'node', 12d, 5d, 3d, 30d)
+    def measurement4 = getNodeMeasurement('4', DateTime.now().minusMinutes(15), 'node', 13d, 4d, 1d, 40d)
+    def measurement5 = getNodeMeasurement('5', DateTime.now().minusMinutes(20), 'node', 14d, 3d, 5d, 35d)
     //@formatter:on
 
     def setup() {
@@ -66,8 +66,8 @@ class GraphNodeEndpointTest extends BaseIntegrationTest {
         fieldName         || expectedValues
         "temperature"     || [14, 13, 12, 11, 10]
         "humidity"        || [7, 6, 5, 4, 3, 2]
-        "carbon"          || [100, 200, 300, 400, 350]
-        "light_intensity" || [0, 0, 3, -2, 5]
+        "carbon"          || [10, 20, 30, 35, 40]
+        "light_intensity" || [0, 0, 1, 3, 5]
     }
 
 

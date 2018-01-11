@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared
@@ -25,7 +26,7 @@ class LoginIntegrationTest extends BaseIntegrationTest {
     String existingPassword = 'existingPassword'
 
     @Shared
-    UserDocument userDocument = UserBuilder.create('user-id').setEmail(existingEmail).setPassword(existingPassword).buildDocument()
+    UserDocument userDocument = UserBuilder.create('user-id').setEmail(existingEmail).setPassword(new BCryptPasswordEncoder().encode(existingPassword)).buildDocument()
 
     def setup() {
         save(userDocument)

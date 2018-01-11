@@ -8,25 +8,34 @@ import org.springframework.data.mongodb.core.query.Query
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared
 
 class RegisterEndpointTest extends BaseIntegrationTest {
 
+    def encoder = new BCryptPasswordEncoder()
+
     def '[POST] should add new user with valid data with CREATED [201] status'() {
         given:
         UserDto validUserDto = UserBuilder.create(null)
                 .setEmail('email@gmail.com')
-                .setPassword('valid-existingPassword')
+                .setPassword('password')
                 .setPhoneNumber('123456789')
                 .buildDto()
 
         when:
         def location = postForLocation(validUserDto).toASCIIString()
+        def user = mongoTemplate.findOne(new Query(), UserDocument.class)
 
         then:
         location.contains('/users/')
         location.substring(location.lastIndexOf('/')).size() > 0
+        with(user) {
+            email == 'email@gmail.com'
+            encoder.matches('password', password)
+            phoneNumber == '123456789'
+        }
     }
 
     def '[POST] should return UNPROCESSABLE_ENTITY [422] when new user\'s login already exists'() {
