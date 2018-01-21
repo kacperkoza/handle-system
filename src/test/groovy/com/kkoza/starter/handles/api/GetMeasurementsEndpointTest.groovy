@@ -10,6 +10,7 @@ import org.joda.time.DateTime
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared
 import spock.lang.Unroll
@@ -184,8 +185,8 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         }
 
         where:
-        handles           || expectedHandleId
-        'handle1'         || ['node-name']
+        handles         || expectedHandleId
+        'handle1'       || ['node-name']
         'node2'         || ['node-name2']
         'handle1,node2' || ['node-name', 'node-name2']
     }
@@ -220,6 +221,36 @@ class GetMeasurementsEndpointTest extends BaseIntegrationTest {
         'burglary,frost' || []              | 0
         'frost,fire'     || ['2']           | 1
     }
+
+    @Unroll
+    def "[GET] should return measurements filtered by start date and end date"() {
+        given:
+        String startDate = formatDate(DateTime.now().minusDays(2))
+        String endDate = formatDate(DateTime.now().minusHours(2))
+
+        when:
+        def response = executeGet("/users/measurements/handles?startDate=$startDate&endDate=$endDate")
+
+        then:
+        with(response.body) {
+            measurements.collect { it.id } == ['2']
+        }
+    }
+
+    String formatDate(DateTime dateTime) {
+        return dateTime.toString("yyyy-MM-dd HH:mm")
+    }
+
+    @Unroll
+    def "[GET] should return UNPROCESSABLE_ENTIY [422] when start date is before end date"() {
+        when:
+        executeGet("/users/measurements/handles?startDate=2017-10-10 10:55&endDate=2017-10-10 10:50")
+
+        then:
+        def ex = thrown(HttpClientErrorException)
+        ex.statusCode == HttpStatus.UNPROCESSABLE_ENTITY
+    }
+
 
     def executeGet(String endpoint) {
         def headers = new HttpHeaders()

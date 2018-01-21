@@ -4,6 +4,7 @@ import com.kkoza.starter.handles.api.AlarmFilter
 import com.kkoza.starter.handles.api.HandleSortType
 import com.kkoza.starter.handles.dto.HandleMeasurement
 import com.kkoza.starter.handles.dto.MeasurementList
+import org.joda.time.DateTime
 
 class MeasurementFacade(
         private val handleMeasurementOperation: HandleMeasurementOperation
@@ -13,8 +14,8 @@ class MeasurementFacade(
         return handleMeasurementOperation.addHandleMeasurement(handleMeasurementDocument)
     }
 
-    fun getHandleMeasurements(userId: String, sort: HandleSortType, offset: Int?, limit: Int?, alarms: List<AlarmFilter>?, handles: List<String>?): MeasurementList {
-        return handleMeasurementOperation.getHandleMeasurement(userId, sort, offset, limit, alarms, handles)
+    fun getHandleMeasurements(userId: String, sort: HandleSortType, offset: Int?, limit: Int?, alarms: List<AlarmFilter>?, handles: List<String>?, startDate: DateTime?, endDate: DateTime?): MeasurementList {
+        return handleMeasurementOperation.getHandleMeasurement(userId, sort, offset, limit, alarms, handles, startDate, endDate)
     }
 
     fun deleteHandleMeasurementById(id: String) {

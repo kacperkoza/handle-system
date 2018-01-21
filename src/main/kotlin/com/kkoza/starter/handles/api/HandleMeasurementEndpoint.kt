@@ -8,13 +8,14 @@ import com.kkoza.starter.handles.exception.InvalidSortTypeException
 import com.kkoza.starter.session.SessionService
 import io.swagger.annotations.*
 import org.joda.time.DateTime
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
 @Api(value = "Information about user's handles", description = "Add, get, delete user's handles")
-class MeasurementsEndpoint(
+class HandleMeasurementEndpoint(
         private val measurementFacade: MeasurementFacade,
         private val sessionService: SessionService
 ) {
@@ -52,19 +53,28 @@ class MeasurementsEndpoint(
     fun getMeasurements(
             @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue(name = "SESSIONID", required = true) sessionId: String,
+
             @ApiParam(value = "Sort data by any of value (case insensitive)", allowableValues = "date_latest, date_oldest, temp_asc, temp_desc, sound_asc, sound_desc")
             @RequestParam(value = "sort", required = false) sort: String?,
+
             @RequestParam(value = "offset", required = false) offset: Int?,
+
             @RequestParam(value = "limit", required = false) limit: Int?,
+
             @ApiParam(value = "Alarms to filter (you can select multiple", allowableValues = "fire, alarm, frost")
             @RequestParam(value = "alarms", required = false) alarms: List<String>?,
+
             @ApiParam(value = "Ids of devices to filter (you can use multiple)")
-            @RequestParam(value = "handles", required = false) handles: List<String>?
+            @RequestParam(value = "handles", required = false) handles: List<String>?,
+
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") startDate: DateTime?,
+
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") endDate: DateTime?
     ): ResponseEntity<MeasurementList> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
         val sortType = HandleSortType.from(sort)
         val alarmFilters = alarms?.map { AlarmFilter.from(it) }
-        val list = measurementFacade.getHandleMeasurements(userId, sortType, offset, limit, alarmFilters, handles)
+        val list = measurementFacade.getHandleMeasurements(userId, sortType, offset, limit, alarmFilters, handles, startDate, endDate)
         return ResponseEntity.ok(list)
     }
 
@@ -94,6 +104,9 @@ class MeasurementsEndpoint(
 
     @ExceptionHandler(InvalidHandleMeasurementException::class)
     fun handle(ex: InvalidHandleMeasurementException) = ResponseEntity.badRequest().body(ex.message)
+
+    @ExceptionHandler(InvalidDateFiltersException::class)
+    fun handle(ex: InvalidDateFiltersException) = ResponseEntity.unprocessableEntity().body(ex.message)
 
 }
 

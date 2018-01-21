@@ -11,6 +11,7 @@ import com.kkoza.starter.handles.dto.Temperature
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
 import com.kkoza.starter.notification.NotificationCoordinator
 import org.apache.log4j.Logger
+import org.joda.time.DateTime
 import org.springframework.data.domain.Sort
 import java.lang.invoke.MethodHandles
 
@@ -29,23 +30,33 @@ class HandleMeasurementOperation(
         return handleMeasurementRepository.add(handleMeasurementDocument)
     }
 
-    fun getHandleMeasurement(userId: String, sort: HandleSortType, offset: Int?, limit: Int?, alarms: List<AlarmFilter>?, handles: List<String>?): MeasurementList {
+    fun getHandleMeasurement(userId: String, sort: HandleSortType, offset: Int?, limit: Int?, alarms: List<AlarmFilter>?, handles: List<String>?, startDate: DateTime?, endDate: DateTime?): MeasurementList {
         logger.info("get list with sort = $sort, offset = $offset, limit = $limit, alarms = $alarms, devices = $handles for userId = $userId")
-        validateInputParameters(offset, limit)
+        validatePaginationParameters(offset, limit)
+        validateDateFilters(startDate, endDate)
         val userHandles = deviceFacade.findByUserId(userId)
         val userHandlesIds = userHandles.map { it.id }
         val userQueriedHandles = handles?.filter { it in userHandlesIds } ?: userHandlesIds
         val sortOrder = getSortOrder(sort)
-        val list = handleMeasurementRepository.get(userQueriedHandles, sortOrder, alarms, offset ?: 0, limit ?: 0)
+        val list = handleMeasurementRepository.get(userQueriedHandles, sortOrder, alarms, offset ?: 0, limit ?: 0, startDate, endDate)
         return MeasurementList(
-                handleMeasurementRepository.count(userQueriedHandles, sortOrder, alarms),
+                handleMeasurementRepository.count(userQueriedHandles, sortOrder, alarms, startDate, endDate),
                 limit,
                 offset,
                 mapToMeasurement(list, userHandles)
         )
     }
 
-    private fun validateInputParameters(offset: Int?, limit: Int?) {
+    private fun validateDateFilters(startDate: DateTime?, endDate: DateTime?) {
+        if (startDate != null && endDate != null) {
+            if (startDate.isAfter(endDate)) {
+                throw InvalidDateFiltersException("startDate = $startDate cannot be before endDate = $endDate")
+            }
+
+        }
+    }
+
+    private fun validatePaginationParameters(offset: Int?, limit: Int?) {
         if (offset != null && offset < 0) throw InvalidPagingParameterException("offset")
         if (limit != null && limit < 0) throw InvalidPagingParameterException("limit")
     }
@@ -87,3 +98,5 @@ class HandleMeasurementOperation(
     }
 
 }
+
+class InvalidDateFiltersException(message: String) : RuntimeException(message)
