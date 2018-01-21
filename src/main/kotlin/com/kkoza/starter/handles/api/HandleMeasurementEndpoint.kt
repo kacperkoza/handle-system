@@ -67,8 +67,10 @@ class HandleMeasurementEndpoint(
             @ApiParam(value = "Ids of devices to filter (you can use multiple)")
             @RequestParam(value = "handles", required = false) handles: List<String>?,
 
+            @ApiParam(value = "Starting date in yyyy-MM-dd HH:mm pattern (can't be after 'endDate')", required = false)
             @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") startDate: DateTime?,
 
+            @ApiParam(value = "Ending date in yyyy-MM-dd HH:mm patterng", required = false)
             @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") endDate: DateTime?
     ): ResponseEntity<MeasurementList> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
