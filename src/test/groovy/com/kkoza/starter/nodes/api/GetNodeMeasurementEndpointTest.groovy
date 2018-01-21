@@ -11,6 +11,7 @@ import org.joda.time.DateTime
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import org.springframework.web.client.HttpClientErrorException
 import spock.lang.Shared
 import spock.lang.Unroll
@@ -199,6 +200,35 @@ class GetNodeMeasurementEndpointTest extends BaseIntegrationTest {
         where:
         alarmFilters || ids   | size
         'motion'     || ['1'] | 1
+    }
+
+    def '[GET] should return UNPROCESSABLE_ENTITY when start date is after end date'() {
+        given:
+        def startDate = '2017-10-10 10:50'
+        def endDate = '2017-10-10 10:40'
+
+        when:
+        executeGet("/users/measurements/nodes?startDate=$startDate&endDate=$endDate")
+
+        then:
+        def ex = thrown(HttpClientErrorException)
+        ex.statusCode == HttpStatus.UNPROCESSABLE_ENTITY
+    }
+
+    def "[GET] should return measurements filter by start and end date"() {
+        when:
+        def startDate = formatDate(DateTime.now().minusHours(5))
+        def endDate = formatDate(DateTime.now().minusHours(1))
+        def response = executeGet("users/measurements/nodes?startDate=$startDate&endDate=$endDate")
+
+        then:
+        with(response.body) {
+            measurements.collect { it.id } == ['3']
+        }
+    }
+
+    String formatDate(DateTime dateTime) {
+        return dateTime.toString("yyyy-MM-dd HH:mm")
     }
 
     def executeGet(String endpoint) {

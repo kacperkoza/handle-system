@@ -9,7 +9,7 @@ import com.kkoza.starter.handles.dto.Temperature
 import org.joda.time.DateTime
 
 data class NodeMeasurementList(
-        val count: Int,
+        val count: Long,
         val limit: Int?,
         val offset: Int?,
         val measurements: List<NodeMeasurement>

@@ -46,19 +46,16 @@ class HandleMeasurementRepository(private val mongoTemplate: MongoTemplate) {
         var criteria = whereHandleIdsCriteria(handles)
         alarms?.forEach { criteria = whereAlarmCriteria(criteria, it) }
         val startCriteria = whereStartDateCriteria(startDate)
-
-        if (startDate != null && endDate != null) {
-            val startCriteria = whereStartDateCriteria(startDate)
-            val endCriteria: Criteria = whereEndDateCriteria(endDate)
+        val endCriteria: Criteria = whereEndDateCriteria(endDate)
+        return if (startDate != null && endDate != null) {
             criteria.andOperator(startCriteria, endCriteria)
         } else if (startDate != null) {
-            val startCriteria = whereStartDateCriteria(startDate)
-            criteria.andOperator(startCriteria, startCriteria)
+            criteria.andOperator(startCriteria)
         } else if (endDate != null) {
-            val endCriteria: Criteria = whereEndDateCriteria(endDate)
-            criteria.andOperator(startCriteria, endCriteria)
+            criteria.andOperator(endCriteria)
+        } else {
+            criteria
         }
-        return criteria
     }
 
     private fun whereHandleIdsCriteria(handles: List<String>): Criteria = Criteria.where(HandleMeasurementDocument.HANDLE_ID).`in`(handles)

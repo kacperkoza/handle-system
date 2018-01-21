@@ -1,5 +1,6 @@
 package com.kkoza.starter.nodes.api
 
+import com.kkoza.starter.handles.InvalidDateFiltersException
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
 import com.kkoza.starter.handles.exception.InvalidSortTypeException
 import com.kkoza.starter.nodes.InvalidNodeMeasurementException
@@ -11,6 +12,7 @@ import com.kkoza.starter.nodes.dto.NodeMeasurementList
 import com.kkoza.starter.session.SessionService
 import io.swagger.annotations.*
 import org.joda.time.DateTime
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
@@ -48,19 +50,29 @@ class NodeEndpoint(
     fun getMeasurements(
             @ApiParam(value = "Valid user's session cookie", required = true)
             @CookieValue(name = "SESSIONID", required = true) sessionId: String,
+
             @ApiParam(value = "Sort data by any of value (case insensitive)", allowableValues = "date_latest, date_oldest, temp_asc, temp_desc, sound_asc, sound_desc, hum_asc, hum_desc, light_asc, light_desc, carbon_asc, carbon_desc")
             @RequestParam(value = "sort", required = false) sort: String?,
+
             @RequestParam(value = "offset", required = false) offset: Int?,
             @RequestParam(value = "limit", required = false) limit: Int?,
+
             @ApiParam(value = "Ids of devices to filter (you can select multiple)")
             @RequestParam(value = "nodes", required = false) nodes: List<String>?,
+
             @ApiParam(value = "Filter by field set to true", allowableValues = "motion")
-            @RequestParam(value="filters", required = false) filters: List<String>?
+            @RequestParam(value="filters", required = false) filters: List<String>?,
+
+            @ApiParam(value = "Starting date in yyyy-MM-dd HH:mm pattern (can't be after 'endDate')", required = false)
+            @RequestParam(value = "startDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") startDate: DateTime?,
+
+            @ApiParam(value = "Ending date in yyyy-MM-dd HH:mm patterng", required = false)
+            @RequestParam(value = "endDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm") endDate: DateTime?
     ): ResponseEntity<NodeMeasurementList> {
         val userId = sessionService.findUserIdAndUpdateSession(sessionId)
         val sortType = NodeSortType.from(sort)
         val fieldFilters = filters?.map { NodeFilter.from(it) }
-        val list = nodeFacade.getNodeMeasurement(userId, sortType, offset, limit, nodes, fieldFilters)
+        val list = nodeFacade.getNodeMeasurement(userId, sortType, offset, limit, nodes, fieldFilters, startDate, endDate)
         return ResponseEntity.ok(list)
     }
 
@@ -78,14 +90,17 @@ class NodeEndpoint(
     }
 
     @ExceptionHandler(InvalidSortTypeException::class)
-    fun handleSortEx(ex: InvalidSortTypeException) = ResponseEntity.badRequest().body(ex.message)
+    fun handle(ex: InvalidSortTypeException) = ResponseEntity.badRequest().body(ex.message)
 
 
     @ExceptionHandler(InvalidPagingParameterException::class)
-    fun handlePagingEx(ex: InvalidPagingParameterException) = ResponseEntity.badRequest().body(ex.message)
+    fun handle(ex: InvalidPagingParameterException) = ResponseEntity.badRequest().body(ex.message)
 
     @ExceptionHandler(InvalidNodeMeasurementException::class)
     fun handle(ex: InvalidNodeMeasurementException) = ResponseEntity.badRequest().body(ex.message)
+
+    @ExceptionHandler(InvalidDateFiltersException::class)
+    fun handle(ex: InvalidDateFiltersException) = ResponseEntity.unprocessableEntity().body(ex.message)
 
 }
 

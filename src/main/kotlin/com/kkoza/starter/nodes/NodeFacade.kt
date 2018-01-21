@@ -3,6 +3,7 @@ package com.kkoza.starter.nodes
 import com.kkoza.starter.nodes.api.NodeFilter
 import com.kkoza.starter.nodes.dto.NodeMeasurement
 import com.kkoza.starter.nodes.dto.NodeMeasurementList
+import org.joda.time.DateTime
 
 class NodeFacade(
         private val nodeMeasurementOperation: NodeMeasurementOperation
@@ -12,8 +13,8 @@ class NodeFacade(
         return nodeMeasurementOperation.addNodeMeasurement(nodeMeasurementDocument)
     }
 
-    fun getNodeMeasurement(userId: String, sort: NodeSortType, offset: Int?, limit: Int?, nodes: List<String>?, fieldFilters: List<NodeFilter>?): NodeMeasurementList {
-        return nodeMeasurementOperation.getNodeMeasurement(userId, sort, offset, limit, nodes, fieldFilters)
+    fun getNodeMeasurement(userId: String, sort: NodeSortType, offset: Int?, limit: Int?, nodes: List<String>?, fieldFilters: List<NodeFilter>?, startDate: DateTime?, endDate: DateTime?): NodeMeasurementList {
+        return nodeMeasurementOperation.getNodeMeasurement(userId, sort, offset, limit, nodes, fieldFilters, startDate, endDate)
     }
 
     fun deleteNodeMeasurementById(id: String) {

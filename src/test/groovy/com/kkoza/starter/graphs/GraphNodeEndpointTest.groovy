@@ -97,9 +97,6 @@ class GraphNodeEndpointTest extends BaseIntegrationTest {
         then:
         def ex = thrown(HttpClientErrorException)
         ex.statusCode == HttpStatus.UNPROCESSABLE_ENTITY
-
-        where:
-        unknownFieldName << ['unknown', 'klamka', 'temperatur', 'soundlevel', 'sound']
     }
 
     NodeMeasurementDocument getNodeMeasurement(String id, DateTime date, String deviceId, Double temperature, Double humidity, Double lightIntensity, Double carbon) {
