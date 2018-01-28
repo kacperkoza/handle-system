@@ -75,9 +75,11 @@ class HandleMeasurementRepository(private val mongoTemplate: MongoTemplate) {
 
     fun findMostRecent(userId: String, handleId: String): HandleMeasurementDocument? {
         logger.info("Find most recent for userId = $userId and deviceId = $handleId")
-        return mongoTemplate.findOne(Query(
-                whereHandleIdCriteria(handleId)),
-                HandleMeasurementDocument::class.java)
+        return mongoTemplate.find(Query(
+                whereHandleIdCriteria(handleId))
+                .with(Sort(Sort.Direction.DESC, HandleMeasurementDocument.DATE))
+                .limit(1),
+                HandleMeasurementDocument::class.java).firstOrNull()
     }
 
     private fun whereHandleIdCriteria(handleId: String) = Criteria(HandleMeasurementDocument.HANDLE_ID).`is`(handleId)

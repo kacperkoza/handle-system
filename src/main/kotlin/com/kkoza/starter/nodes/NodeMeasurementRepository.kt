@@ -71,10 +71,10 @@ class NodeMeasurementRepository(
     fun findMostRecentNodeMeasurement(userId: String, nodeId: String): NodeMeasurementDocument? {
         logger.info("Find most recent for userId = $userId and nodeId = $nodeId")
         return mongoTemplate.findOne(Query(
-                whereNodeId(nodeId)),
+                whereNodeId(nodeId)).with(Sort(Sort.Direction.DESC, NodeMeasurementDocument.DATE)),
                 NodeMeasurementDocument::class.java)
     }
 
-    private fun whereNodeId(handleId: String) = Criteria(NodeMeasurementDocument.NODE_ID).`is`(handleId)
+    private fun whereNodeId(nodeId: String) = Criteria(NodeMeasurementDocument.NODE_ID).`is`(nodeId)
 
 }
