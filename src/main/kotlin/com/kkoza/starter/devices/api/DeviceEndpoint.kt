@@ -1,6 +1,7 @@
 package com.kkoza.starter.devices.api
 
 import com.kkoza.starter.devices.*
+import com.kkoza.starter.session.InvalidSessionException
 import com.kkoza.starter.session.SessionService
 import io.swagger.annotations.*
 import org.springframework.http.HttpStatus
@@ -89,6 +90,9 @@ class DeviceEndpoint(
 
     @ExceptionHandler(EmptyHandleNameException::class)
     fun handle(ex: EmptyHandleNameException) = ResponseEntity.unprocessableEntity().body(ex.message)!!
+
+    @ExceptionHandler(InvalidSessionException::class)
+    fun handle(ex: InvalidSessionException) = ResponseEntity(ex.message!!, HttpStatus.UNAUTHORIZED)
 
 }
 

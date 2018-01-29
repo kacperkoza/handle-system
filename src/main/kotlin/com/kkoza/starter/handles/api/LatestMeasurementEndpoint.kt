@@ -4,12 +4,11 @@ import com.kkoza.starter.handles.MeasurementFacade
 import com.kkoza.starter.handles.dto.HandleMeasurement
 import com.kkoza.starter.nodes.NodeFacade
 import com.kkoza.starter.nodes.dto.NodeMeasurement
+import com.kkoza.starter.session.InvalidSessionException
 import com.kkoza.starter.session.SessionService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CookieValue
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/users/measurements/latest")
@@ -29,6 +28,9 @@ class LatestMeasurementEndpoint(
                         mostRecentNodeMeasurements))
 
     }
+
+    @ExceptionHandler(InvalidSessionException::class)
+    fun handle(ex: InvalidSessionException) = ResponseEntity(ex.message!!, HttpStatus.UNAUTHORIZED)
 
 }
 

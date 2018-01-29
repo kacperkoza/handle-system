@@ -1,6 +1,8 @@
 package com.kkoza.starter.settings
 
+import com.kkoza.starter.session.InvalidSessionException
 import com.kkoza.starter.session.SessionService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -32,6 +34,9 @@ class SettingsEndpoint(private val settingsService: SettingsService, private val
         settingsService.setAlarm(userId, alarmDto.enabled)
         return ResponseEntity.ok(null)
     }
+
+    @ExceptionHandler(InvalidSessionException::class)
+    fun handle(ex: InvalidSessionException) = ResponseEntity(ex.message!!, HttpStatus.UNAUTHORIZED)
 
 }
 

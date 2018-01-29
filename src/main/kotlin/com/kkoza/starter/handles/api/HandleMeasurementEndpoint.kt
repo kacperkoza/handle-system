@@ -5,10 +5,12 @@ import com.kkoza.starter.handles.dto.HandleMeasurementDto
 import com.kkoza.starter.handles.dto.MeasurementList
 import com.kkoza.starter.handles.exception.InvalidPagingParameterException
 import com.kkoza.starter.handles.exception.InvalidSortTypeException
+import com.kkoza.starter.session.InvalidSessionException
 import com.kkoza.starter.session.SessionService
 import io.swagger.annotations.*
 import org.joda.time.DateTime
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
@@ -109,6 +111,9 @@ class HandleMeasurementEndpoint(
 
     @ExceptionHandler(InvalidDateFiltersException::class)
     fun handle(ex: InvalidDateFiltersException) = ResponseEntity.unprocessableEntity().body(ex.message)
+
+    @ExceptionHandler(InvalidSessionException::class)
+    fun handle(ex: InvalidSessionException) = ResponseEntity(ex.message!!, HttpStatus.UNAUTHORIZED)
 
 }
 

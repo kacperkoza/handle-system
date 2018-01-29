@@ -9,10 +9,12 @@ import com.kkoza.starter.nodes.NodeMeasurementDocument
 import com.kkoza.starter.nodes.NodeSortType
 import com.kkoza.starter.nodes.dto.NodeMeasurementDto
 import com.kkoza.starter.nodes.dto.NodeMeasurementList
+import com.kkoza.starter.session.InvalidSessionException
 import com.kkoza.starter.session.SessionService
 import io.swagger.annotations.*
 import org.joda.time.DateTime
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
@@ -101,6 +103,9 @@ class NodeEndpoint(
 
     @ExceptionHandler(InvalidDateFiltersException::class)
     fun handle(ex: InvalidDateFiltersException) = ResponseEntity.unprocessableEntity().body(ex.message)
+
+    @ExceptionHandler(InvalidSessionException::class)
+    fun handle(ex: InvalidSessionException) = ResponseEntity(ex.message!!, HttpStatus.UNAUTHORIZED)
 
 }
 
