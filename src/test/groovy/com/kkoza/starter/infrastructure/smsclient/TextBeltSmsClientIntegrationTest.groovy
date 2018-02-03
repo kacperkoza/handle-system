@@ -13,6 +13,7 @@ class TextBeltSmsClientIntegrationTest extends BaseIntegrationTest {
     def 'should successfully send SMS'() {
         given:
         stubSmsClient()
+        Thread.sleep(3000)
 
         when:
         smsClient.sendSMS('123456789', 'message')

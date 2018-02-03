@@ -24,11 +24,12 @@ class TextBeltSmsClient(
 
     override fun sendSMS(phoneNumber: String, message: String) {
         val sms = Sms("$POLISH_PREFIX$phoneNumber", message)
-        logger.info("Try to send SMS = $sms")
+        logger.info("Try to send " +
+                "SMS = $sms")
         logger.info("url $url")
         try {
-            textBeltRestTemplate.exchange(url, HttpMethod.POST, HttpEntity(sms), String::class.java)
-            logger.info("Successfully sent $sms")
+            val report = textBeltRestTemplate.exchange(url, HttpMethod.POST, HttpEntity(sms), MessageReport::class.java).body
+            logger.info("Successfully sent to ${sms.phoneNumber} with report $report")
         } catch (ex: HttpClientErrorException) {
             logger.error("Problem with send SMS - client error", ex)
             throw TextBeltSmsClientException(sms, ex)
@@ -44,4 +45,10 @@ data class Sms(
         val phoneNumber: String,
         val message: String,
         val key: String = "textbelt"
+)
+
+data class MessageReport(
+        val sending: Boolean,
+        val quotaRemaining: Int,
+        val textId: Int
 )

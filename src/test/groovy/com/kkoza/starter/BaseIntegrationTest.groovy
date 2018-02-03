@@ -51,6 +51,10 @@ class BaseIntegrationTest extends Specification {
         mongoTemplate.dropCollection(NodeMeasurementDocument.class)
     }
 
+    def cleanup() {
+        wireMockRule.resetMappings()
+    }
+
     def stubSmsClient() {
         wireMockRule
                 .stubFor(post(urlEqualTo("/text"))

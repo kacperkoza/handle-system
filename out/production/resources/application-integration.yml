@@ -7,7 +7,7 @@ spring.data.mongodb.port: 0
 smsClient:
   client: textbelt
   url: http://localhost:8089/text
-  socketTimeout: 1000
-  connectionRequestTimeout: 1500
-  connectionTimeout: 3000
+  socketTimeout: 5000
+  connectionRequestTimeout: 5000
+  connectionTimeout: 5000
   connectionTotal: 5
