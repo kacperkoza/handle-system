@@ -54,7 +54,8 @@ class BaseIntegrationTest extends Specification {
     def stubSmsClient() {
         wireMockRule
                 .stubFor(post(urlEqualTo("/text"))
-                .willReturn(aResponse()))
+                .willReturn(aResponse()
+                .withStatus(200)))
     }
 
     def stubSmsClient(int statusCode, def requestBody) {

@@ -12,7 +12,7 @@ class TextBeltSmsClientIntegrationTest extends BaseIntegrationTest {
 
     def 'should successfully send SMS'() {
         given:
-        stubSmsClient(200, new Sms('+48123456789', 'message'))
+        stubSmsClient()
 
         when:
         smsClient.sendSMS('123456789', 'message')
@@ -23,7 +23,7 @@ class TextBeltSmsClientIntegrationTest extends BaseIntegrationTest {
 
     def 'should throw exception when server responds with client/server error'() {
         given:
-        stubSmsClient(400, new Sms('+48123456789', 'message'))
+        stubSmsClient(400, new Sms('+48123456789', 'message', 'textbelt'))
 
         when:
         smsClient.sendSMS('123456789', "message")

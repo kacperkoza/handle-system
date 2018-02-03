@@ -42,5 +42,6 @@ class TextBeltSmsClient(
 
 data class Sms(
         val phoneNumber: String,
-        val message: String
+        val message: String,
+        val key: String = "textbelt"
 )
