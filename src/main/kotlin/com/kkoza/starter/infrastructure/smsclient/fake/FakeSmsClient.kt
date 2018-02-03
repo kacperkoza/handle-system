@@ -1,5 +1,6 @@
-package com.kkoza.starter.infrastructure.smsclient
+package com.kkoza.starter.infrastructure.smsclient.fake
 
+import com.kkoza.starter.infrastructure.smsclient.SmsClient
 import org.apache.log4j.Logger
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.stereotype.Component

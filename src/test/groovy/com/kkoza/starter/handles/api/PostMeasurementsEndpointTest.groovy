@@ -8,6 +8,10 @@ import com.kkoza.starter.testutil.UserBuilder
 
 class PostMeasurementsEndpointTest extends BaseIntegrationTest {
 
+    def setup() {
+        stubSmsClient()
+    }
+
     def '[POST] should create new measurement with CREATED [201] status'() {
         given:
         save(DeviceBuilder.create().setId('device-id').setUserId('user-id').buildDocument())
@@ -25,4 +29,5 @@ class PostMeasurementsEndpointTest extends BaseIntegrationTest {
         location.contains("/measurements/handles")
         location.substring(location.lastIndexOf("/")).size() > 0
     }
+
 }

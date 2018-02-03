@@ -13,5 +13,5 @@ smsClient:
   client: fake
 
 origins:
-  github: https://jeremianastaziak3.github.io
+  github: https://biotplatform.github.io
   localhost: http://localhost:3000

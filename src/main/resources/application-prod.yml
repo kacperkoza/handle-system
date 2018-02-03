@@ -1,3 +1,11 @@
 origins:
-  github: https://jeremianastaziak3.github.io
+  github: https://biotplatform.github.io
   localhost: http://localhost:3000
+
+smsClient:
+  client: textbelt
+  url: https://textbelt.com/text
+  socketTimeout: 1000
+  connectionRequestTimeout: 1500
+  connectionTimeout: 3000
+  connectionTotal: 5

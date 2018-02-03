@@ -79,13 +79,14 @@ class UserEndpoint(private val userFacade: UserFacade, private val sessionServic
     @PostMapping("/login")
     fun login(@RequestBody loginDto: LoginDto): ResponseEntity<String> {
         val user = userFacade.findUserByEmail(loginDto.email) ?: throw NotExistingUserException(loginDto.email)
-        if (passwordEncoder.matches(loginDto.password, user.password)) {
+
+        return if (passwordEncoder.matches(loginDto.password, user.password)) {
             val session = sessionService.createSession(user.userId!!)
             val headers = HttpHeaders()
             headers.add("Set-Cookie", "SESSIONID=$session")
-            return ResponseEntity(headers, HttpStatus.OK)
+            ResponseEntity(headers, HttpStatus.OK)
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password")
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password")
         }
     }
 

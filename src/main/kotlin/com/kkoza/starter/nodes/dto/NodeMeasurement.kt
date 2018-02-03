@@ -33,15 +33,15 @@ data class NodeMeasurement(
 
 data class Humidity(
         val value: Double,
-        val unit: String = "jednostka?"
+        val unit: String = "%"
 )
 
 data class LightIntensity(
         val value: Double,
-        val unit: String = "Lumeny?"
+        val unit: String = "lx"
 )
 
 data class CarbonDioxide(
         val value: Double,
-        val unit: String = "CO2"
+        val unit: String = "%"
 )
