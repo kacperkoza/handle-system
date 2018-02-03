@@ -2,11 +2,11 @@ application:
   name: handle-system
 
 mongodb:
-  host: ds261745.mlab.com
-  port: 61745
+  host: ds223268.mlab.com
+  port: 23268
   database: handlesystem
-  username: kacper
-  password: kacper
+  username: inzynier
+  password: inzynier
   socketTimeout: 2000
 
 smsClient:
