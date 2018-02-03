@@ -29,7 +29,7 @@ class TextBeltSmsClient(
         logger.info("url $url")
         try {
             val report = textBeltRestTemplate.exchange(url, HttpMethod.POST, HttpEntity(sms), MessageReport::class.java).body
-            logger.info("Successfully sent to ${sms.phoneNumber} with report $report")
+            logger.info("Successfully sent to ${sms.phone} with report $report")
         } catch (ex: HttpClientErrorException) {
             logger.error("Problem with send SMS - client error", ex)
             throw TextBeltSmsClientException(sms, ex)
@@ -42,7 +42,7 @@ class TextBeltSmsClient(
 }
 
 data class Sms(
-        val phoneNumber: String,
+        val phone: String,
         val message: String,
         val key: String = "textbelt"
 )
