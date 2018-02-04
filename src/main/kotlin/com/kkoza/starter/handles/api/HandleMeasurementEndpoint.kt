@@ -36,7 +36,7 @@ class HandleMeasurementEndpoint(
         val id = measurementFacade.addHandleMeasurement(measurementDto.let {
             HandleMeasurementDocument(
                     null,
-                    DateTime.now(),
+                    DateTime.now().plusHours(1),
                     it.deviceId,
                     handlePosition,
                     it.temperature,

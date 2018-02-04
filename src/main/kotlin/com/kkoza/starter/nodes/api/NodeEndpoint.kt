@@ -33,7 +33,7 @@ class NodeEndpoint(
         val id = nodeFacade.addNodeMeasurement(nodeMeasurementDto.let {
             NodeMeasurementDocument(
                     null,
-                    DateTime.now(),
+                    DateTime.now().plusHours(1)),
                     it.deviceId,
                     it.temperature,
                     it.humidity,
